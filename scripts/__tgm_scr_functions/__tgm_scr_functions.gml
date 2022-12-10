@@ -7,7 +7,6 @@
 	
 	Special Thanks, contributions:
 	YellowAfterLife, Cecil, TheSnidr, Shaun Spalding
-
 ----------------------------------------------------------------------------------*/
 
 
@@ -754,25 +753,24 @@ function Vector3(x, y=x, z=x) constructor {
 
 #region GENERAL
 
-#macro fps_average __fps_average()
-function __fps_average() {
-	static _frames = 0;
-	static _totalFps = fps_real;
-	var _avgFps = 0;
-	_frames++;
-	if (_frames > 500) {
-		_frames = 0;
-		_totalFps = 0;
+#macro fps_average ___fps_average()
+function ___fps_average() {
+	static frames = 0;
+	static total_fps = 1;
+	static total_smooth = 0;
+	frames++;
+	if (frames > 250) {
+		frames = 1;
+		total_fps = 1;
 	}
-	_totalFps += fps_real;
-	_avgFps = _totalFps / _frames;
-	
-	return floor(_avgFps);
+	total_fps += fps_real;
+	var _fps_avg = total_fps / frames;
+	total_smooth = lerp(total_smooth, _fps_avg, 0.2);
+	return floor(total_smooth);
 }
 
 #macro DEBUG_SPEED_INIT var ___time = get_timer();
 #macro DEBUG_SPEED_GET show_debug_message(string((get_timer()-___time)/1000) + "ms");
-
 
 function game_is_IDE() {
 	if (debug_mode) return true;
@@ -805,17 +803,18 @@ function print() {
 }
 
 function print_format(msg, values_array) {
-	var _final_string = "";
-	var _vapos = 0;
-	for (var i = 1; i <= string_length(msg); ++i) {
+	var _final_string = "", _vapos = 0;
+	var i = 1, isize = string_length(msg);
+	repeat(isize) {
 		var _char = string_char_at(msg, i);
 		if (_char == "$") {
 			_final_string += string(values_array[_vapos]);
-			_vapos += 1;
-			i += 1;
+			_vapos++;
+			i++;
 		} else {
 			_final_string += _char;
 		}
+		++i;
 	}
 	show_debug_message(_final_string);
 }
@@ -848,7 +847,7 @@ function sleep(milliseconds=1000) {
 #region DELTA TIME & MOUSE
 
 // PLEASE NOTE: THIS IS A VERY BASIC IMPLEMENTATION OF DELTA TIMING
-// USE "IOTA" BY JUJU, FOR ROBUST DELTA TIME
+// USE "IOTA" BY JUJU, FOR ROBUST DELTA TIMING
 
 
 // frames
@@ -915,6 +914,7 @@ call_later(2, time_source_units_frames, function() {
 #macro gui_mouse_x_normalized (device_mouse_x_to_gui(0)/display_get_gui_width())
 #macro gui_mouse_y_normalized (device_mouse_y_to_gui(0)/display_get_gui_height())
 
+// this is useful for some libraries by Samuel
 function io_clear_both() {
 	keyboard_clear(keyboard_lastkey);
 	mouse_clear(mouse_lastbutton);

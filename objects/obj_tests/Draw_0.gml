@@ -66,3 +66,16 @@ draw_line(0, 0, transform.x, transform.y);
 draw_text(10, 300, transform);
 
 
+
+
+
+draw_text(10, 400, "Average FPS:" + string(fps_average));
+
+
+// Average FPS Test
+if keyboard_check(ord("P")) {
+	repeat(99999) {
+		var val = sqrt(99);
+	}
+}
+
