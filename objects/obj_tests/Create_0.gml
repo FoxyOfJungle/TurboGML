@@ -10,7 +10,7 @@ angle3 = 0;
 
 angle4 = 0;
 
-show_message(ANTIALIASING_MAX);
+
 
 
 /*var files = new directory_scanner("C:/_testfolder", "*.*", true, true, true, true, false);

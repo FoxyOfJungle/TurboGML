@@ -553,18 +553,10 @@ function Vector3(x, y=x, z=x) constructor {
 		return _vector;
 	}
 	
-	/// @desc Returns the yaw angle (z rotation) in degrees of this vector.
-	static yaw = function() {
+	/// @desc Returns the angle in degrees of this vector.
+	static angle = function() {
 		gml_pragma("forceinline");
 		return point_direction(0, 0, x, y);
-	}
-	
-	/// @desc Returns the pitch angle (x rotation) in degrees of this vector.
-	static pitch = function(vector3) {
-		gml_pragma("forceinline");
-		var _magnitude = point_distance_3d(x, y, z, vector3.x, vector3.y, vector3.z);
-		var _normal_z = (vector3.z - z) / _magnitude;
-		return darcsin(_normal_z);
 	}
 	
 	/// @desc Adds two vectors.
@@ -694,16 +686,15 @@ function Vector3(x, y=x, z=x) constructor {
 		return (sqr(x-vector3.x) + sqr(y-vector3.y) + sqr(z-vector3.z));
 	}
 	
-	/// @desc Returns the angle to the given vector.
-	static angleTo = function(vector3) {
+	/// @desc Returns the angle (z rotation) in degrees to the given vector.
+	static yawTo = function(vector3) {
 		gml_pragma("forceinline");
-		return darctan2(cross(vector3), dot(vector3));
+		return point_direction(x, y, vector3.x, vector3.y); // I was too lazy to write the math behind it for now
 	}
 	
-	/// @desc Returns the angle between the line connecting the two points.
-	static angleToPoint = function(vector3) {
-		gml_pragma("forceinline");
-		return -darctan2(y-vector3.y, x-vector3.x)+180;
+	/// @desc Returns the pitch angle (x rotation) in degrees to the given vector.
+	static pitchTo = function(vector3) {
+		return radtodeg(arctan2(vector3.z-z, point_distance(x, y, vector3.x, vector3.y)));
 	}
 	
 	/// @desc Returns a vector that is made from the largest components of two vectors.
@@ -741,12 +732,43 @@ function Vector3(x, y=x, z=x) constructor {
 }
 
 
-/*function Vector4(x, y=undefined, z=undefined, w=undefined) constructor {
+function Vector4(x, y=x, z=x, w=x) constructor {
 	self.x = x;
-	self.y = y ?? x;
-	self.z = z ?? x;
-	self.w = w ?? x;
-}*/
+	self.y = y;
+	self.z = z;
+	self.w = w;
+}
+
+#endregion
+
+
+#region CAMERA
+
+function camera_get_fov(proj_mat) {
+	return radtodeg(arctan(1.0/proj_mat[5]) * 2.0);
+}
+
+function camera_get_aspect(proj_mat) {
+	return proj_mat[5] / proj_mat[0];
+}
+
+function camera_get_far_plane(proj_mat) {
+	return -proj_mat[14] / (proj_mat[10]-1);
+}
+
+function camera_get_near_plane(proj_mat) {
+	return -2 * proj_mat[14] / (proj_mat[10]+1);
+}
+
+function camera_get_area_2d(view_mat, proj_mat) {
+	var _cam_x = -view_mat[12];
+	var _cam_y = -view_mat[13];
+	var _cam_w = round(abs(2/proj_mat[0]));
+	var _cam_h = round(abs(2/proj_mat[5]));
+	return new Vector4(_cam_x-_cam_w/2, _cam_y-_cam_h/2, _cam_w, _cam_h);
+}
+
+
 
 #endregion
 
@@ -1602,14 +1624,12 @@ function screen_to_world_dimension(view_mat, proj_mat, xx, yy) {
 }
 
 
-/// @desc Transforms a 3D coordinate to a 2D coordinate. Returns an array of the following format:
-/// [x, y]
-/// where x and y are between (0, 0) (top left) and (1, 1) (bottom right) of the screen
+/// @desc Transforms a 3D coordinate to a 2D coordinate. Returns a Vector2 with x and y.
 /// Returns [-1, -1] if the 3D point is behind the camera
 /// Works for both orthographic and perspective projections.
-function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz) {
+function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz, normalized=false) {
 	var _w = view_mat[2] * xx + view_mat[6] * yy + view_mat[10] * zz + view_mat[14];
-	if (_w <= 0) return new Vector2(-1);
+	if (_w <= 0) return new Vector2(-1, -1);
 	var _cx, _cy;
 	if (proj_mat[15] == 0) {
 		// this is a perspective projection
@@ -1617,10 +1637,15 @@ function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz) {
 		_cy = proj_mat[9] + proj_mat[5] * (view_mat[1] * xx + view_mat[5] * yy + view_mat[9] * zz + view_mat[13]) / _w;
 	} else {
 		// this is an ortho projection
-		_cx = proj_mat[12] + proj_mat[0] * (view_mat[0] * xx + view_mat[4] * yy + view_mat[8]  * zz + view_mat[12]);
-		_cy = proj_mat[13] + proj_mat[5] * (view_mat[1] * xx + view_mat[5] * yy + view_mat[9]  * zz + view_mat[13]);
+		_cx = proj_mat[12] + proj_mat[0] * (view_mat[0] * xx + view_mat[4] * yy + view_mat[8] * zz + view_mat[12]);
+		_cy = proj_mat[13] + proj_mat[5] * (view_mat[1] * xx + view_mat[5] * yy + view_mat[9] * zz + view_mat[13]);
 	}
-	return new Vector2(0.5+0.5*_cx, 0.5-0.5*_cy);
+	
+	if (normalized) {
+		return new Vector2((0.5+0.5*_cx), (0.5+0.5*_cy));
+	} else {
+		return new Vector2((0.5+0.5*_cx) * window_get_width(), (0.5+0.5*_cy) * window_get_height());
+	}
 }
 
 
