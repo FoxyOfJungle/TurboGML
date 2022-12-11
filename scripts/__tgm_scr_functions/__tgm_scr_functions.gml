@@ -841,6 +841,12 @@ function sleep(milliseconds=1000) {
 	}
 }
 
+function invoke(callback, args, time, repetitions=1) {
+	var _ts = time_source_create(time_source_game, time, time_source_units_frames, callback, args, repetitions);
+	time_source_start(_ts);
+	return _ts;
+}
+
 #endregion
 
 
@@ -849,19 +855,28 @@ function sleep(milliseconds=1000) {
 // PLEASE NOTE: THIS IS A VERY BASIC IMPLEMENTATION OF DELTA TIMING
 // USE "IOTA" BY JUJU, FOR ROBUST DELTA TIMING
 
+// Delta Time
+// base frame rate
+#macro FRAME_RATE 60
 
-// frames
-//global.__frame_count = 0;
-//#macro FRAME_COUNT global.__frame_count
+// delta time, used for multiplying things
+#macro DELTA_TIME global.__delta_time_multiplier
 
-// delta time
+// delta time scale, used for slow motion
+#macro DELTA_TIME_SCALE global.__delta_time_scale
+
+// delta update smoothness, is the interpolated speed used to smooth out sudden FPS changes (1 = default)
+#macro DELTA_UPDATE_LERP 1
+
+
+// internal
 global.__delta_speed = 0;
 global.__delta_time_multiplier_base = 1;
 global.__delta_time_multiplier = 1;
-#macro FRAME_RATE 60
-#macro DELTA_TIME global.__delta_time_multiplier
+global.__delta_time_scale = 1;
+//global.__frame_count
 
-// delta mouse
+// Delta Mouse
 global.__mouse_x_delta = 0;
 global.__mouse_y_delta = 0;
 global.__mouse_x_previous = 0;
@@ -880,7 +895,7 @@ call_later(1, time_source_units_frames, function() {
 	// delta time
 	global.__delta_speed = 1/FRAME_RATE;
 	global.__delta_time_multiplier_base = (delta_time/1000000)/global.__delta_speed;
-	global.__delta_time_multiplier = lerp(global.__delta_time_multiplier, global.__delta_time_multiplier_base, 0.2); // smooth delta
+	global.__delta_time_multiplier = lerp(global.__delta_time_multiplier, global.__delta_time_multiplier_base, 1) * global.__delta_time_scale;
 	
 	// delta mouse
 	global.__mouse_x_delta = mouse_x - global.__mouse_x_previous;
@@ -1185,16 +1200,23 @@ function folder_content_generate(struct_content) {
 
 #region ARRAYS
 
+#macro SORT_ASCENDING function(a, b) {return a - b}
+#macro SORT_DESCENDING function(a, b) {return b - a}
+
+
+
+
+
 function array_choose(array) {
 	return array[irandom_range(0, array_length(array)-1)];
 }
 
-function array_shuffle(array) {
-	static _f = function() {
-		return irandom_range(-1, 1);
-	}
-	array_sort(array, _f);
-}
+//function array_shuffle(array) {
+//	static _f = function() {
+//		return irandom_range(-1, 1);
+//	}
+//	array_sort(array, _f);
+//}
 
 function array_shift(array, reverse) {
 	if (reverse) {
@@ -1313,12 +1335,6 @@ function struct_copy(struct) {
 	return struct;
 }
 
-
-function struct_empty(struct) {
-	return (variable_struct_names_count(struct) == 0);
-}
-
-
 // clear the struct without deleting it
 function struct_clear(struct) {
 	if (is_struct(struct)) {
@@ -1331,19 +1347,21 @@ function struct_clear(struct) {
 	}
 }
 
+function struct_empty(struct) {
+	return (variable_struct_names_count(struct) == 0);
+}
+
+// get value from json only if exists, without returning undefined
+function struct_get_variable(struct, name, default_value=0) {
+	if (!is_struct(struct)) return default_value;
+	return struct[$ name] ?? default_value;
+}
 
 // get and remove a variable from a struct
 function struct_pop(struct, name) {
 	var _value = struct[$ name];
 	variable_struct_remove(struct, name);
 	return _value;
-}
-
-
-// get value from json only if exists, without returning undefined
-function struct_get_variable(struct, name, default_value=0) {
-	if (!is_struct(struct)) return default_value;
-	return struct[$ name] ?? default_value;
 }
 
 
@@ -1547,6 +1565,67 @@ function gui_to_room_dimension_ext(x1, y1, camera, angle, gui_width, gui_height,
 	_py = _cy + (_ch/2) - dsin(_wcenter_dir) * _wcenter_dis;
 	return normalize ? Vector2(_px/gui_width, _py/gui_height) : Vector2(_px, _py);
 }
+
+
+/// @desc Transforms a 2D coordinate (in window space) to a 3D vector.
+/// Returns an array of the following format:
+/// [dx, dy, dz, ox, oy, oz]
+/// where [dx, dy, dz] is the direction vector and [ox, oy, oz] is the origin of the ray.
+/// Works for both orthographic and perspective projections.
+function screen_to_world_dimension(view_mat, proj_mat, xx, yy) {
+	var _mx = 2 * (xx / window_get_width() - 0.5) / proj_mat[0];
+	var _my = 2 * (yy / window_get_height() - 0.5) / proj_mat[5];
+	var _cam_x = - (view_mat[12] * view_mat[0] + view_mat[13] * view_mat[1] + view_mat[14] * view_mat[2]);
+	var _cam_y = - (view_mat[12] * view_mat[4] + view_mat[13] * view_mat[5] + view_mat[14] * view_mat[6]);
+	var _cam_z = - (view_mat[12] * view_mat[8] + view_mat[13] * view_mat[9] + view_mat[14] * view_mat[10]);
+	var _matrix = undefined; // [dx, dy, dz, ox, oy, oz]
+	if (proj_mat[15] == 0) {
+	// perspective projection
+	_matrix = [view_mat[2]  + _mx * view_mat[0] + _my * view_mat[1],
+			view_mat[6]  + _mx * view_mat[4] + _my * view_mat[5],
+			view_mat[10] + _mx * view_mat[8] + _my * view_mat[9],
+			_cam_x,
+			_cam_y,
+			_cam_z];
+	} else {
+	// orthographic projection
+	_matrix = [view_mat[2],
+			view_mat[6],
+			view_mat[10],
+			_cam_x + _mx * view_mat[0] + _my * view_mat[1],
+			_cam_y + _mx * view_mat[4] + _my * view_mat[5],
+			_cam_z + _mx * view_mat[8] + _my * view_mat[9]];
+	}
+	var _xx = _matrix[0] * _matrix[5] / -_matrix[2] + _matrix[3];
+	var _yy = _matrix[1] * _matrix[5] / -_matrix[2] + _matrix[4];
+	return Vector2(_xx, _yy);
+}
+
+
+/// @desc Transforms a 3D coordinate to a 2D coordinate. Returns an array of the following format:
+/// [x, y]
+/// where x and y are between (0, 0) (top left) and (1, 1) (bottom right) of the screen
+/// Returns [-1, -1] if the 3D point is behind the camera
+/// Works for both orthographic and perspective projections.
+function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz) {
+	var _w = view_mat[2] * xx + view_mat[6] * yy + view_mat[10] * zz + view_mat[14];
+	if (_w <= 0) return Vector2(-1);
+	var _cx, _cy;
+	if (proj_mat[15] == 0) {
+		// this is a perspective projection
+		_cx = proj_mat[8] + proj_mat[0] * (view_mat[0] * xx + view_mat[4] * yy + view_mat[8] * zz + view_mat[12]) / _w;
+		_cy = proj_mat[9] + proj_mat[5] * (view_mat[1] * xx + view_mat[5] * yy + view_mat[9] * zz + view_mat[13]) / _w;
+	} else {
+		// this is an ortho projection
+		_cx = proj_mat[12] + proj_mat[0] * (view_mat[0] * xx + view_mat[4] * yy + view_mat[8]  * zz + view_mat[12]);
+		_cy = proj_mat[13] + proj_mat[5] * (view_mat[1] * xx + view_mat[5] * yy + view_mat[9]  * zz + view_mat[13]);
+	}
+	return Vector2(0.5+0.5*_cx, 0.5-0.5*_cy);
+}
+
+
+
+
 
 #endregion
 

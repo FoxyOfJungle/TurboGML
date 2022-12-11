@@ -74,8 +74,14 @@ draw_text(10, 400, "Average FPS:" + string(fps_average));
 
 // Average FPS Test
 if keyboard_check(ord("P")) {
-	repeat(99999) {
+	repeat(999999) {
 		var val = sqrt(99);
 	}
 }
+
+
+
+
+
+
 
