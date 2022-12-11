@@ -1598,7 +1598,7 @@ function screen_to_world_dimension(view_mat, proj_mat, xx, yy) {
 	}
 	var _xx = _matrix[0] * _matrix[5] / -_matrix[2] + _matrix[3];
 	var _yy = _matrix[1] * _matrix[5] / -_matrix[2] + _matrix[4];
-	return Vector2(_xx, _yy);
+	return new Vector2(_xx, _yy);
 }
 
 
@@ -1609,7 +1609,7 @@ function screen_to_world_dimension(view_mat, proj_mat, xx, yy) {
 /// Works for both orthographic and perspective projections.
 function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz) {
 	var _w = view_mat[2] * xx + view_mat[6] * yy + view_mat[10] * zz + view_mat[14];
-	if (_w <= 0) return Vector2(-1);
+	if (_w <= 0) return new Vector2(-1);
 	var _cx, _cy;
 	if (proj_mat[15] == 0) {
 		// this is a perspective projection
@@ -1620,7 +1620,7 @@ function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz) {
 		_cx = proj_mat[12] + proj_mat[0] * (view_mat[0] * xx + view_mat[4] * yy + view_mat[8]  * zz + view_mat[12]);
 		_cy = proj_mat[13] + proj_mat[5] * (view_mat[1] * xx + view_mat[5] * yy + view_mat[9]  * zz + view_mat[13]);
 	}
-	return Vector2(0.5+0.5*_cx, 0.5-0.5*_cy);
+	return new Vector2(0.5+0.5*_cx, 0.5-0.5*_cy);
 }
 
 
@@ -1959,6 +1959,14 @@ function color_gradient(colors_array, progress) {
 	var _prog = clamp(progress, 0, 1) * _len;
 	return merge_color(colors_array[floor(_prog)], colors_array[ceil(_prog)], frac(_prog));
 }
+
+
+#endregion
+
+
+#region GRAPHICS PIPELINE
+
+#macro ANTIALIASING_MAX_AVAILABLE max(display_aa & 2, display_aa & 4, display_aa & 8)
 
 
 #endregion
