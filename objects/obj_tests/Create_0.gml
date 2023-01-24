@@ -1,5 +1,14 @@
 
+gpu_set_tex_filter(true);
 show_debug_overlay(true);
+
+days = undefined;
+day = 10;
+day = days ?? day;
+
+show_debug_message(day);
+
+
 
 //
 angle = 0;
@@ -10,6 +19,8 @@ angle3 = 0;
 
 angle4 = 0;
 
+
+surf = -1;
 
 
 
@@ -38,6 +49,31 @@ array = [
 ]
 var aa = struct_get_variable(struct, "array", 2);
 show_debug_message(aa);*/
+
+
+
+scale_x = 1;
+scale_y = 1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

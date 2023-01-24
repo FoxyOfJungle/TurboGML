@@ -15,17 +15,28 @@ if abs(input_v) {
 
 time += 0.1 * DELTA_TIME;
 
-/*if mouse_check_button_pressed(mb_left) {
+if mouse_check_button_pressed(mb_left) {
+	// create enemy
 	instance_create_layer(mouse_x, mouse_y, "Instances", obj_enemy);
+	
+	
+	// create bullet towards enemy direction
+	_enemy = instance_nearest(x, y, obj_enemy);
+	
+	_bullet = instance_create_layer(x, y, "Instances", obj_bullet);
+	_bullet.direction = angle_predict_intersection(x, y, _enemy.x, _enemy.y, _enemy.speed, _enemy.direction, 1);
+	_bullet.speed = 1;
+	
+	
+	// calculate intersection position
+	//var _pos = motion_predict_intersection(x, y, _enemy.x, _enemy.y, _enemy.hspeed, _enemy.vspeed);
+	var _pos = motion_predict_intersection(x, y, _enemy.x, _enemy.y, _enemy.speed, _enemy.direction, 1);
+	//var _pos = motion_predict_intersection(x, y, _enemy.x, _enemy.y);
+	target_x = _pos.x;
+	target_y = _pos.y;
 }
 
+if keyboard_check_pressed(vk_space) {
+	instance_destroy(obj_enemy);
+}
 
-if mouse_check_button(mb_right) {
-	var _enemy = instance_nearest(x, y, obj_enemy);
-	
-	var _bullet = instance_create_layer(x, y, "Instances", obj_bullet);
-	_bullet.direction = angle_predict_intercession(id.x, id.y, _enemy.x, _enemy.y, _enemy.speed, _enemy.direction, 5);
-	_bullet.speed = 5;
-}*/
-
-//image_angle += 1;

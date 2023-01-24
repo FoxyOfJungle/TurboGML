@@ -1,6 +1,7 @@
 
 /*----------------------------------------------------------------------------------
 	TurboGML. Library by FoxyOfJungle (Mozart Junior). (C) 2022, MIT License.
+	Don't remove this notice, please. Credit is really appreciate! :D
 	
 	https://foxyofjungle.itch.io/
 	https://twitter.com/foxyofjungle
@@ -13,48 +14,84 @@
 #region MATH & OTHERS
 
 /// @desc Return the equivalent of v on an old range of [x0, x1], on a new range of [y0, y1].
-function relerp(oldmin, oldmax, value, newmin, newmax) {
-	return (value-oldmin) / (oldmax-oldmin) * (newmax-newmin) + newmin;
+function relerp(in_min, in_max, value, out_min, out_max) {
+	return (value-in_min) / (in_max-in_min) * (out_max-out_min) + out_min;
+	//return lerp(out_min, out_max, linearstep(in_min, in_max, value));
 }
 
-/// @desc Return the interpolating value t such that lerp(minv, maxv, t) would give v. (inverse_lerp).
+/// @desc This is the inverse lerp. lerp() returns a blend between a and b, based on a fraction t. Inverse lerp returns a fraction t, based on a value between a and b.
+/// @param {Real} minv The value of the lower edge
+/// @param {Real} maxv The value of the upper edge
+/// @param {Real} value he source value for interpolation.
 function linearstep(minv, maxv, value) {
 	return (value - minv) / (maxv - minv);
 }
 
+/// @desc Performs smooth Hermite interpolation between 0 and 1.
+/// @param {Real} minv The value of the lower edge of the Hermite function.
+/// @param {Real} maxv The value of the upper edge of the Hermite function.
+/// @param {Real} value The source value for interpolation.
+/// @returns {Real} Description
 function smoothstep(minv, maxv, value) {
 	var t = clamp((value - minv) / (maxv - minv), 0, 1);
 	return t * t * (3 - 2 * t);
 }
 
+/// @desc Calculates the distance traveled by an object in free fall under the influence of friction
+/// @param {Real} dist The distance an object falls
+/// @param {Real} fric Coefficient of friction acting on the object.
+/// @returns {Real}
 function speed_to_reach(dist, fric) {
 	return sqrt(2 * dist * fric);
 }
 
+/// @desc This function works like clamp(), but if the value is greater than max, it becomes min, and vice versa.
+/// @param {Real} val The value to check.
+/// @param {Real} vmin The min value.
+/// @param {Real} vmax The max value.
 function clamp_loop(val, vmin, vmax) {
 	if (val > vmax) val = vmin; else if (val < vmin) val = vmax;
 	return val;
 }
 
-function lerp_angle(val1, val2, amount) {
-	var _a = val1 + angle_difference(val2, val1);
-	return lerp(val1, _a, amount);
+/// @desc Works like a lerp() but for angles, no rotation limits.
+/// @param {Real} angle1 The first angle to check.
+/// @param {Real} angle2 The second angle to check.
+/// @param {Real} amount The amount to interpolate.
+/// @returns {Real} 
+function lerp_angle(angle1, angle2, amount) {
+	var _a = angle1 + angle_difference(angle2, angle1);
+	return lerp(angle1, _a, amount);
 }
-
 //function lerp_angle(_from, _to, _amount) {
 //    return _from - (angle_difference(_from, _to) * _amount);
 //}
 
+/// @desc Verify if a value is in a range and returns a boolean.
+/// @param {Real} value Value to check.
+/// @param {Real} val1 First value.
+/// @param {Real} val2 Second value.
+/// @returns {Bool} 
 function in_range(value, val1, val2) {
 	return (value >= val1 && value <= val2);
 }
 
-// returns the difference/distance between two values
+// 
+/// @desc Returns the difference/distance between two values
+/// @param {Real} val1 First value.
+/// @param {Real} val2 Second value.
+/// @returns {Real} 
 function distance(val1, val2) {
 	return abs(val1 - val2);
 }
 
+/// @desc Move linearly value 1 to value 2 in the specified amount.
+/// @param {Real} val1 First value.
+/// @param {Real} val2 Second value.
+/// @param {Real} amount Amount to move.
+/// @returns {Real} 
 function approach(val1, val2, amount) {
+	//return val1 - clamp(val1-val2, -amount, amount);
 	if (val1 < val2) {
 		return min(val1 + amount, val2);
 	} else {
@@ -62,86 +99,110 @@ function approach(val1, val2, amount) {
 	}
 }
 
-function angle_get_subimg(angle, frames_amount) {
-	var _angle_seg = 360 / frames_amount;
-	return ((angle + (_angle_seg / 2)) % 360) div _angle_seg;
+/// @desc This function moves linearly one angle to another by the specified amount.
+/// @param {Real} angle Current angle.
+/// @param {Real} dir Facing point direction.
+/// @param {Real} amount The amount to move.
+/// @returns {real} Description
+function angle_towards(angle, dir, amount) {
+	return median(-amount, amount, angle_difference(-dir, -angle));
 }
-
-function angle_towards(angle, dir, rate) {
-	return median(-rate, rate, angle_difference(-dir, -angle));
-}
-
 //function angle_towards(angle1, angle2, spd) {
 //	var _dir = angle_difference(angle1, angle2);
 //	return min(abs(_dir), spd) * sign(_dir);
 //}
 
+/// @desc This function returns the frame index to be used on a sprite, relative to the angle it is pointing at.
+/// @param {real} angle Description
+/// @param {real} frames_amount Description
+/// @returns {real} Description
+function angle_get_subimg(angle, frames_amount) {
+	var _angle_seg = 360 / frames_amount;
+	return ((angle + (_angle_seg / 2)) % 360) div _angle_seg;
+}
+
 // Based on: https://www.reddit.com/r/gamemaker/comments/b0zelv/need_a_help_about_the_prediction_shot/
-function angle_predict_intercession(x1, y1, x2, y2, target_speed, target_angle, bullet_speed) {
-	var _angle = point_direction(x1, y1, x2, y2);
-	var _beta = sin(degtorad(target_angle - _angle)) * (target_speed/bullet_speed);
+/// @desc This function predicts the angle that must be aimed until the bullet hits exactly on the target.
+/// @param {Real} x1 Origin X position.
+/// @param {Real} y1 Origin Y position.
+/// @param {Real} x2 Target X position.
+/// @param {Real} y2 Target Y position.
+/// @param {Real} target_speed Target moving speed.
+/// @param {Real} target_angle Target moving angle/direction.
+/// @param {Real} bullet_speed Bullet moving speed.
+/// @returns {Real} 
+function angle_predict_intersection(x1, y1, x2, y2, target_speed, target_angle, bullet_speed) {
+	var _angle = point_direction(x1, y1, x2, y2),
+	_beta = sin(degtorad(target_angle - _angle)) * (target_speed/bullet_speed);
 	return (abs(_beta) < 1) ? _angle+radtodeg(arcsin(_beta)) : -1;
 }
 
+// failed attempts
+//function motion_predict_intersection(x1, y1, x2, y2, target_hspeed, target_vspeed) {
+//	var _bullet_dir = point_direction(x1, y1, x2, y2),
+//	_nx = dsin(_bullet_dir),
+//	_ny = dcos(_bullet_dir),
+//	time = ((x1 - x2)*_nx + (y1 - y2)*_ny) / (target_hspeed*_nx + target_vspeed*_ny);
+//	return new Vector2(x2+target_hspeed*time, y2+target_vspeed*time);
+//}
 
-/*function angle_predict_interception(origin, target, target_speed, target_direction, bullet_speed) {
-	
-	//(p)osition of the target relative to shooter
-	var _px = target.x - origin.x;
-	var _py = target.y - origin.y;
-	
-	//(v)elocity of the target
-	//note: if shooter velocity is added to projectile, then subtract shooter velocity from this
-	var _vx = target.hspeed;
-	var _vy = target.vspeed;
+//function motion_predict_intersection(x1, y1, x2, y2, target_speed, target_angle, bullet_speed) {
+//	var _bullet_dir = point_direction(x1, y1, x2, y2);
+//	var alpha = target_speed / bullet_speed;
+//	var phi = degtorad(target_angle - _bullet_dir);
+//    var beta = alpha * sin(phi);
+//	var _distance_to_intercept = point_distance(x1, y1, x2, y2) * sin(phi) / sin(phi - arcsin(beta));
+//	var _intercept_x = x1 + dcos(_bullet_dir) * _distance_to_intercept;
+//	var _intercept_y = y1 - dsin(_bullet_dir) * _distance_to_intercept;
+//	return new Vector2(_intercept_x, _intercept_y);
+//}
 
-	var _A = _vx*_vx + _vy*_vy - bullet_speed*bullet_speed;
-	var _B = 2 * (_px*_vx + _py*_vy);
-	var _C = _px*_px + _py*_py;
-	var _delta = _B*_B - 4*_A*_C;
-	
-	if (_delta < 0) return -1;
-	
-	//var _time = ((_A < 0 ? -1 : 1) * sqrt(_delta) - _B) / (2 * _A);
-	
-	
-	var _ix = _px + _vx;
-	var _iy = _py + _vy;
-	
-	var _dir = point_direction(0, 0, _ix, _iy);
-	show_debug_message(_dir);
-	
-	return _dir;
-}*/
+//function motion_predict_intersection(x1, y1, x2, y2) {
+//	var _bullet_dir = point_direction(x1, y1, x2, y2);
+//	var _bullet_dist = point_distance(x1, y1, x2, y2);
+//	var _dist = speed_to_reach(_bullet_dist, 0.2);
+//	return new Vector2(
+//		x1 + lengthdir_x(_dist, _bullet_dir),
+//		y1 + lengthdir_y(_dist, _bullet_dir)
+//	);
+//}
 
-function motion_predict_intercession(x1, y1, x2, y2, target_speed, target_angle, bullet_speed) {
-	
+/// @desc This function returns the direction between two points, in radians (pi).
+/// @param {Real} x1 Origin X position.
+/// @param {Real} y1 Origin Y position.
+/// @param {Real} x2 Target X position.
+/// @param {Real} y2 Target Y position.
+/// @returns {real} 
+function point_direction_radians(x1, y1, x2, y2) {
+	return arctan2(y2-y1, x2-x1);
 }
 
-
-
-
-
-
-
-
-
-
-function point_direction_radians(x1, y1, x2, y2) {
+/// @desc This function returns the normalized direction between two points. Expected results: -1 to 1, both horizontal and vertical
+/// @param {Real} x1 Origin X position.
+/// @param {Real} y1 Origin Y position.
+/// @param {Real} x2 Target X position.
+/// @param {Real} y2 Target Y position.
+/// @returns {Struct} 
+function point_direction_normalized(x1, y1, x2, y2) {
+	//var dir = degtorad(-point_direction(x1, y1, x2, y2));
 	var dir = arctan2(y2-y1, x2-x1);
-	return Vector2(cos(dir), sin(dir));
+	return new Vector2(cos(dir), sin(dir));
 }
 
 function point_in_cone(px, py, x, y, angle, dist, fov) {
-	var _len_x1 = dcos(angle - fov/2) * dist;
-	var _len_y1 = dsin(angle - fov/2) * dist;
-	var _len_x2 = dcos(angle + fov/2) * dist;
-	var _len_y2 = dsin(angle + fov/2) * dist;
+	var _len_x1 = dcos(angle - fov/2) * dist,
+	_len_y1 = dsin(angle - fov/2) * dist,
+	_len_x2 = dcos(angle + fov/2) * dist,
+	_len_y2 = dsin(angle + fov/2) * dist;
     return point_in_triangle(px, py, x, y, x+_len_x1, y-_len_y1, x+_len_x2, y-_len_y2);
 }
 
-function non_zero(value) {
-	return value != 0 ? value : 1;
+function point_in_arc(px, py, x, y, angle, dist, fov) {
+	return (point_distance(px, py, x, y) < dist && abs(angle_difference(angle, point_direction(x, y, px, py))) < fov/2);
+}
+
+function non_zero(value, zero_value=1) {
+	return value != 0 ? value : zero_value;
 }
 
 function is_fractional(number) {
@@ -156,34 +217,36 @@ function pow2_previous(val) {
 	return 1 << floor(log2(val));
 }
 
-function bezier(position, points, straight) {
-	var _len = array_length(points);
-	if (_len == 0) return 0;
-	var _pos = max(0, min(1, position)) * _len;
-	var _ind = min(floor(_pos), _len - 1);
-	_pos -= _ind;
-	var _c = points[_ind];
-	var _n = points[min(_len - 1, _ind + 1)];
-	
-	if (straight) {
-		return lerp(_c, _n, _pos);
-	} else {
-		var _p = points[max(_ind - 1, 0)];
-		return 0.5 * (((_p - 2 * _c + _n) * _pos + 2 * (_c - _p)) * _pos + _p + _c);
-	}
-}
-
 function wave_normalized(spd=1) {
 	return 0.5 + sin(current_time*0.0025*spd) * 0.5;
 }
 
-function irandom_weighted(val) { // WIP
-	// credits: Xor
-	return floor(sqr(random(sqrt(val))));
+/// @desc Returns a random value depending on its weight.
+/// @param {Array} items Total array of items to be returned. It can be any data type: numbers, strings, arrays, structs, data structures, etc.
+/// @param {Array<Real>} weights Weight of items in order. Higher values have a higher probability of returning the item.
+/// You can use any range of numbers, either 0 to 1 or 0 to 9999 or inf.
+/// It is possible to use equal weights, having the same probability of being returned.
+function choose_weighted(items, weights) {
+	var isize = array_length(items);
+	var wsize = array_length(weights);
+	if (isize != wsize) show_error("Both arrays must be the same size.", true);
+	// sum weights
+	var _weights_sum = 0;
+	var i = 0;
+	repeat(wsize) {
+		_weights_sum += abs(weights[i]);
+		++i;
+	}
+	// randomize
+	var _val = random(_weights_sum);
+	i = 0;
+	repeat(isize) {
+		_val -= abs(weights[i]);
+		if (_val < 0) return items[i];
+		++i;
+	}
+	return items[0];
 }
-
-
-
 
 #endregion
 
@@ -418,7 +481,7 @@ function Vector2(x, y=x) constructor {
 	/// @desc Returns the angle to the given vector.
 	static angleTo = function(vector2) {
 		gml_pragma("forceinline");
-		return darctan2(cross(vector2), dot(vector2));
+		return point_direction(x, y, vector2.x, vector2.y);
 	}
 	
 	/// @desc Returns the angle between the line connecting the two points.
@@ -533,7 +596,7 @@ function Vector3(x, y=x, z=x) constructor {
 		return new Vector3(
 			clamp(x, min_vector.x, max_vector.x),
 			clamp(y, min_vector.y, max_vector.y),
-			clamp(z, min_vector.z, max_vector.z),
+			clamp(z, min_vector.z, max_vector.z)
 		);
 	};
 	
@@ -703,7 +766,7 @@ function Vector3(x, y=x, z=x) constructor {
 		return new Vector3(
 			max(x, vector3.x),
 			max(y, vector3.y),
-			max(z, vector3.z),
+			max(z, vector3.z)
 		);
 	};
 	
@@ -713,7 +776,7 @@ function Vector3(x, y=x, z=x) constructor {
 		return new Vector3(
 			min(x, vector3.x),
 			min(y, vector3.y),
-			min(z, vector3.z),
+			min(z, vector3.z)
 		);
 	};
 	
@@ -791,11 +854,11 @@ function ___fps_average() {
 	return floor(total_smooth);
 }
 
-#macro DEBUG_SPEED_INIT var ___time = get_timer();
-#macro DEBUG_SPEED_GET show_debug_message(string((get_timer()-___time)/1000) + "ms");
+#macro DEBUG_SPEED_INIT var ___time = get_timer()
+#macro DEBUG_SPEED_GET show_debug_message(string((get_timer()-___time)/1000) + "ms")
 
-function game_is_IDE() {
-	if (debug_mode) return true;
+function game_in_IDE() {
+	//if (debug_mode) return true;
 	if (code_is_compiled()) return false;
 	if (parameter_count() == 3 && parameter_string(1) == "-game") return true;
 	return false;
@@ -872,9 +935,94 @@ function invoke(callback, args, time, repetitions=1) {
 #endregion
 
 
+#region PROCEDURAL GENERATION	
+
+function pattern_read_sprite(sprite, wspace=1, hspace=1) {
+	var _width = sprite_get_width(sprite),
+	_height = sprite_get_height(sprite),
+	
+	_surf = surface_create(_width, _height);
+	surface_set_target(_surf);
+	draw_clear_alpha(c_black, 0);
+	draw_sprite(sprite, 0, 0, 0);
+	surface_reset_target();
+	
+	var _buff = buffer_create(_width * _height * 4, buffer_fixed, 1);
+	buffer_get_surface(_buff, _surf, 0);
+	
+	// data structure with info
+	var data = {
+		blocks : [],
+		width : 0,
+		height : 0,
+	};
+	
+	// read every sprite pixel
+	var _r, _g, _b, _a, _pixel, _col;
+	var i = 0, j = 0, _total = 0;
+	repeat(_width) {
+		j = 0;
+		repeat(_height) { 
+			_pixel = buffer_peek(_buff, 4 * (i + j * _width), buffer_u32); // get abgr
+			_r = _pixel & $ff;
+			_g = (_pixel >> 8) & $ff;
+			_b = (_pixel >> 16) & $ff;
+			_a = (_pixel >> 24) & $ff;
+			
+			_col = make_color_rgb(_r, _g, _b);
+			
+			// add pixel position data to array
+			var _json = {
+				x : i * wspace,
+				y : j * hspace,
+				p : (_col == c_white ? 1 : 0),
+			}
+			data.blocks[_total] = _json;
+			_total++;
+			++j;
+		}
+		++i;
+	}
+	data.width = i;
+	data.height = j;
+	
+	surface_free(_surf);
+	buffer_delete(_buff);
+	return data;
+}
+
+
+
+
+#endregion
+
+
+#region ASSERT
+
+function assert_array_or(condition, values_array) {
+	var i = 0, isize = array_length(values_array);
+	repeat(isize) {
+		if (condition == values_array[i]) return true;
+		++i;
+	}
+	return false;
+}
+
+function assert_array_and(condition, values_array) {
+	var i = 0, isize = array_length(values_array);
+	repeat(isize) {
+		if (condition != values_array[i]) return false;
+		++i;
+	}
+	return true;
+}
+
+#endregion
+
+
 #region DELTA TIME & MOUSE
 
-// PLEASE NOTE: THIS IS A VERY BASIC IMPLEMENTATION OF DELTA TIMING
+// PLEASE NOTE: THIS IS A BASIC IMPLEMENTATION OF DELTA TIMING
 // USE "IOTA" BY JUJU, FOR ROBUST DELTA TIMING
 
 // Delta Time
@@ -912,8 +1060,8 @@ global.__gui_mouse_y_previous = 0;
 #macro gui_mouse_x_delta global.__gui_mouse_x_delta
 #macro gui_mouse_y_delta global.__gui_mouse_y_delta
 
-
-call_later(1, time_source_units_frames, function() {
+var _tm;
+_tm = call_later(1, time_source_units_frames, function() {
 	// delta time
 	global.__delta_speed = 1/FRAME_RATE;
 	global.__delta_time_multiplier_base = (delta_time/1000000)/global.__delta_speed;
@@ -926,8 +1074,8 @@ call_later(1, time_source_units_frames, function() {
 	global.__gui_mouse_y_delta = mouse_y - global.__gui_mouse_y_previous;
 }, true);
 
-call_later(2, time_source_units_frames, function() {
-	call_later(1, time_source_units_frames, function() {
+_tm = call_later(2, time_source_units_frames, function() {
+	var _tm = call_later(1, time_source_units_frames, function() {
 		// delta mouse
 		global.__mouse_x_previous = mouse_x;
 		global.__mouse_y_previous = mouse_y;
@@ -1158,7 +1306,7 @@ function __directory_recursive_search(contents, source, extension, search_folder
 	return _contents;
 }
 
-function directory_scanner(path, extension="*.*", search_folders=true, search_files=true, search_subdir=true, full_info=true, get_size=false) constructor {
+function DirectoryScanner(path, extension="*.*", search_folders=true, search_files=true, search_subdir=true, full_info=true, get_size=false) constructor {
 	__contents = [];
 	__loaded = false;
 	__path_exists = false;
@@ -1169,15 +1317,15 @@ function directory_scanner(path, extension="*.*", search_folders=true, search_fi
 		__path_exists = true;
 	}
 	
-	static contents = function() {
+	static GetContents = function() {
 		return __path_exists ? __contents : undefined;
 	}
 	
-	static amount = function() {
+	static GetFilesAmount = function() {
 		return array_length(__contents);
 	}
 	
-	static loaded = function() {
+	static IsLoaded = function() {
 		return __loaded;
 	}
 	
@@ -1261,15 +1409,17 @@ function array_shift_index(array, index, way) {
 	array[index] = _next;
 }
 
+/// @desc Calculates the sum of all numbers contained in the array.
+/// @param {array} array Array to sum numbers.
+/// @returns {real}
 function array_sum(array) {
-	//return array_reduce(array, function(p, v) {return p+v;});
 	var _sum = 0;
 	var i = 0, isize = array_length(array);
 	repeat(isize) {
 		_sum += real(array[i]);
 		++i;
 	}
-	return _sum;	
+	return _sum;
 }
 
 function array_empty(array) {
@@ -1327,6 +1477,18 @@ function ds_list_to_array(list) {
 	return _array;
 }
 
+function array_contains(array, value) {
+	var i = 0, isize = array_length(array);
+	repeat(isize) {
+		if (array[i] == value) return true;
+		++i;
+	}
+	return false;
+}
+
+function array_copy_all(from, to) {
+	array_copy(to, 0, from, 0, array_length(from));
+}
 
 
 #endregion
@@ -1557,7 +1719,7 @@ function string_reverse(str) {
 function room_to_gui_dimension(x1, y1, camera, gui_width, gui_height, normalize) {
 	var _px = (x1-camera_get_view_x(camera)) * (gui_width/camera_get_view_width(camera)),
 	_py = (y1-camera_get_view_y(camera)) * (gui_height/camera_get_view_height(camera));
-	return normalize ? Vector2(_px/gui_width, _py/gui_height) : Vector2(_px, _py);
+	return normalize ? new Vector2(_px/gui_width, _py/gui_height) : new Vector2(_px, _py);
 }
 
 function room_to_gui_dimension_ext(x1, y1, camera, angle, gui_width, gui_height, normalize) {
@@ -1570,7 +1732,7 @@ function room_to_gui_dimension_ext(x1, y1, camera, angle, gui_width, gui_height,
 	_wcenter_dir = point_direction(_vcenter_x, _vcenter_y, x1, y1) + angle,
 	_px = (gui_width/2) + dcos(_wcenter_dir) * _wcenter_dis,
 	_py = (gui_height/2) - dsin(_wcenter_dir) * _wcenter_dis;
-	return normalize ? Vector2(_px/gui_width, _py/gui_height) : Vector2(_px, _py);
+	return normalize ? new Vector2(_px/gui_width, _py/gui_height) : new Vector2(_px, _py);
 }
 
 function gui_to_room_dimension_ext(x1, y1, camera, angle, gui_width, gui_height, normalize) {
@@ -1585,7 +1747,7 @@ function gui_to_room_dimension_ext(x1, y1, camera, angle, gui_width, gui_height,
 	_wcenter_dir = point_direction(_vcenter_x, _vcenter_y, x1, y1) - angle,
 	_px = _cx + (_cw/2) + dcos(_wcenter_dir) * _wcenter_dis,
 	_py = _cy + (_ch/2) - dsin(_wcenter_dir) * _wcenter_dis;
-	return normalize ? Vector2(_px/gui_width, _py/gui_height) : Vector2(_px, _py);
+	return normalize ? new Vector2(_px/gui_width, _py/gui_height) : new Vector2(_px, _py);
 }
 
 
@@ -1595,6 +1757,7 @@ function gui_to_room_dimension_ext(x1, y1, camera, angle, gui_width, gui_height,
 /// where [dx, dy, dz] is the direction vector and [ox, oy, oz] is the origin of the ray.
 /// Works for both orthographic and perspective projections.
 function screen_to_world_dimension(view_mat, proj_mat, xx, yy) {
+	// credits: TheSnidr
 	var _mx = 2 * (xx / window_get_width() - 0.5) / proj_mat[0];
 	var _my = 2 * (yy / window_get_height() - 0.5) / proj_mat[5];
 	var _cam_x = - (view_mat[12] * view_mat[0] + view_mat[13] * view_mat[1] + view_mat[14] * view_mat[2]);
@@ -1628,6 +1791,7 @@ function screen_to_world_dimension(view_mat, proj_mat, xx, yy) {
 /// Returns [-1, -1] if the 3D point is behind the camera
 /// Works for both orthographic and perspective projections.
 function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz, normalized=false) {
+	// credits: TheSnidr
 	var _w = view_mat[2] * xx + view_mat[6] * yy + view_mat[10] * zz + view_mat[14];
 	if (_w <= 0) return new Vector2(-1, -1);
 	var _cx, _cy;
@@ -1663,7 +1827,7 @@ function instance_top_position(px, py, object) {
 	var _list = ds_list_create();
 	var _num = collision_point_list(px, py, object, false, true, _list, false);
 	if (_num > 0) {
-		var i = 0,
+		var i = 0;
 		repeat(_num) {
 			_top_instance = _list[| ds_list_size(_list)-1];
 			++i;
@@ -1691,7 +1855,7 @@ function layer_instance_top_position(px, py,  layer_id) {
 		}
 		var _num = ds_list_size(_list);
 		if (_num > 0) {
-			var i = 0,
+			i = 0;
 			repeat(_num) {
 				_top_instance = _list[| ds_list_size(_list)-1];
 				++i;
@@ -1709,6 +1873,199 @@ function layer_instance_count(layer_id) {
 #endregion
 
 
+#region PATHS
+
+function distance_to_path(x, y, path) {
+	// calculates the shortest distance to the given path
+	var x0, y0;
+	x0 = x;
+	y0 = y;
+
+	var i, points, segments, length, pos, pmin, pmax, x1, y1, x2, y2, dx, dy, t, ix, iy, dist, min_dist;
+
+	if (path_get_kind(path) == 0) {
+		// Straight path
+		// Get the number of control points and line segments on the path
+		segments = points;
+		if (!path_get_closed(path)) segments -= 1;
+
+		// First, find the nearest control point.
+		min_dist = infinity;
+		for(i = 0; i < points; i++) {
+			x1 = path_get_point_x(path, i);
+			y1 = path_get_point_y(path, i);
+			dist = point_distance(x0, y0, x1, y1);
+			if (dist < min_dist) min_dist = dist;
+		}
+    
+		// Second, calculate the distance to each line segment and find the nearest one.
+		x1 = path_get_point_x(path, 0);
+		y1 = path_get_point_y(path, 0);
+		for(i = 0; i < segments; i++) {
+			x2 = path_get_point_x(path, (i+1) mod points);
+			y2 = path_get_point_y(path, (i+1) mod points);
+
+			dx = x2 - x1;
+			dy = y2 - y1;
+			if (dx != 0 || dy != 0) {
+				// See if there is an intersection between the line segment
+				// and the perpendicular line to it.
+				t = -(dx * (x1 - x0) + dy * (y1 - y0)) / (sqr(dx) + sqr(dy));
+				if (t >= 0 && t < 1) {
+					// Calculate the distance to the intersection point.
+					ix = x1 + dx * t;
+					iy = y1 + dy * t;
+					dist = point_distance(x0, y0, ix, iy);
+					if (dist < min_dist)
+					min_dist = dist;
+				}
+			}
+			x1 = x2;
+			y1 = y2;
+		}
+	} else {
+		// Smooth path
+		// First, split the path into a few segments and find the nearest one.
+		length = path_get_length(path);
+		segments = max(4, length / 32); // Hope this is enough
+		min_dist = infinity;
+		pmin = 0;
+		for(i = 0; i <= segments; i += 1) {
+			pos = i/segments;
+			x1 = path_get_x(path, pos);
+			y1 = path_get_y(path, pos);
+			dist = point_distance(x0, y0, x1, y1);
+			if (dist < min_dist) {
+				min_dist = dist;
+				pmin = pos;
+			}
+		}
+		
+		// Now, accurately find the nearest point on the segment.
+		// At this point, pmin has the position of the provisional nearest point,
+		// and the following two lines are to get two end points adjacent to it.
+		pmax = min(pmin + 1/segments, 1);
+		pos = max(0, pmin - 1/segments);
+		do {
+			x1 = path_get_x(path, pos);
+			y1 = path_get_y(path, pos);
+			dist = point_distance(x0, y0, x1, y1);
+			if (dist < min_dist) min_dist = dist;
+			pos += 1/length;
+		}
+		until (pos >= pmax);
+	}
+	return min_dist;
+}
+
+function path_get_closest_point(xx, yy, path) {
+	var i = 0, isize = path_get_number(path),
+	_px = 0, _py = 0, _dist = 0,
+	_pri_x = ds_priority_create(), _pri_y = ds_priority_create();
+	repeat(isize) {
+		_px = path_get_point_x(path, i);
+		_py = path_get_point_y(path, i);
+		_dist = point_distance(xx, yy, _px, _py);
+		ds_priority_add(_pri_x, i, _dist);
+		ds_priority_add(_pri_y, i, _dist);
+		++i;
+	}
+	var _pos = new Vector2(
+		ds_priority_find_min(_pri_x),
+		ds_priority_find_min(_pri_y)
+	);
+	ds_priority_destroy(_pri_x);
+	ds_priority_destroy(_pri_y);
+	return _pos;
+}
+
+function path_get_closest_point_position(xx, yy, path) {
+	var i = 0, isize = path_get_number(path),
+	_px = 0, _py = 0, _dist = 0,
+	_pri_x = ds_priority_create(), _pri_y = ds_priority_create();
+	repeat(isize) {
+		_px = path_get_point_x(path, i);
+		_py = path_get_point_y(path, i);
+		_dist = point_distance(xx, yy, _px, _py);
+		ds_priority_add(_pri_x, _px, _dist);
+		ds_priority_add(_pri_y, _py, _dist);
+		++i;
+	}
+	var _pos = new Vector2(
+		ds_priority_find_min(_pri_x),
+		ds_priority_find_min(_pri_y)
+	);
+	ds_priority_destroy(_pri_x);
+	ds_priority_destroy(_pri_y);
+	return _pos;
+}
+
+function path_get_direction(pth, pos) {
+	var reciprocal = (1 / path_get_length(pth)),
+	pos_1 = pos - reciprocal,
+	pos_2 = pos + reciprocal,
+	x1 = path_get_x(pth, pos_1),
+	y1 = path_get_y(pth, pos_1),
+	x2 = path_get_x(pth, pos_2),
+	y2 = path_get_y(pth, pos_2),
+	dir = point_direction(x1, y1, x2,y2);
+	return dir;
+}
+
+/*function path_get_position(path, xx, yy) {
+	// Return a path_position corresponding to the point (x, y) on the given path.
+	// If no path_position corresponds with this point, then return undefined.
+	// This script assumes that the given path is not smooth, but exists of a finite amount of line segments only.
+	var n = path_get_length(path);
+
+	// "px" is the x coordinate of the previous path point
+	// "py" is the y coordinate of the previous path point
+	// "nx" is the x coordinate of the current path point
+	// "ny" is the y coordinate of the current path point
+	// "result" conatins the distance in pixels of the path up to the point (px, py)
+	var px, py,
+	nx = path_get_point_x(path, 0),
+	ny = path_get_point_y(path, 0),
+	result = 0;
+	
+	// If (x, y) corresponds to the start of the path, return 0
+	if xx == nx && yy == ny
+	return 0;
+	
+	// Loop through every path point
+	for(var i = 1; i < n; i++) {
+		px = nx;
+		py = ny;
+		nx = path_get_point_x(path, i);
+		ny = path_get_point_y(path, i);
+		// Calculate the cross product of the vector from (px, py, 0) to (nx, ny, 0)
+		// and from (px, py, 0) to (x, y, 0)
+		// This product is 0 if and only if the two vectors share the same line
+		// If they don't share the same line, then the line through (px, py) ad (nx, ny) can't contain (x, y)
+		if (nx - px) * (yy - py) == (xx - px) * (ny - py) {
+			// If so, calculate the dot product p * d of these two vectors
+			// The point (x, y) is contained by the line segment from (px, py) to (nx, ny)
+			// if and only if 0 <= p <= d
+			var d = point_distance(px, py, xx, yy);
+			var p = (nx - px) * (xx - px) + (ny - py) * (yy - py);
+			if p >= 0 && p <= d * point_distance(px, py, nx, ny)
+			// The line segment contains the point, so add the remaining distance from (px, py) to (x, y)
+			// and normalize the path position to a number between 0 and 1
+			// by dividing result by the total path length
+			return (result + d) / path_get_length(path);
+		}
+		// If the line segment didn't contain the point, update the result and continue the loop
+		result += point_distance(px, py, nx, ny);
+	}
+	
+	// If no line segment containing (x, y) is found, return undefined
+	return undefined;
+}
+*/
+
+#endregion
+
+
 #region DRAWING
 
 global.__tgm_sh_uni = {
@@ -1716,6 +2073,14 @@ global.__tgm_sh_uni = {
 	sprite_pos_ucd : shader_get_uniform(__tgm_sh_quad_persp, "uCD"),
 	sprite_pos_uvs : shader_get_uniform(__tgm_sh_quad_persp, "uUVS"),
 };
+
+function draw_quad_lines(x1, y1, x2, y2, x3, y3, x4, y4, middle_line=false) {
+	draw_line(x1, y1, x2, y2);
+	draw_line(x1, y1, x4, y4);
+	draw_line(x4, y4, x3, y3);
+	draw_line(x2, y2, x3, y3);
+	if (middle_line) draw_line(x1, y1, x3, y3);
+}
 
 function draw_cone(x, y, angle, dist, fov) {
 	var _len_x1 = dcos(angle - fov/2) * dist;
@@ -1965,8 +2330,7 @@ function gpu_set_blendmode_test(index, debug_info=false) {
 		_bm4 = 1 + ((_ind div (p*p*p)) % p);
 		
 		_type = string_join_ext(", ", [__type1(_bm1), __type1(_bm2), __type1(_bm3), __type1(_bm4)]);
-		var _blends = [_bm1, _bm2, _bm3, _bm4];
-		gpu_set_blendmode_ext_sepalpha(_blends);
+		gpu_set_blendmode_ext_sepalpha(_bm1, _bm2, _bm3, _bm4);
 	}
 	
 	var _info = string(index) + " | " + string(_current) + " / " + string(_max) + " (" + _type + ");";
@@ -1985,6 +2349,9 @@ function color_gradient(colors_array, progress) {
 	return merge_color(colors_array[floor(_prog)], colors_array[ceil(_prog)], frac(_prog));
 }
 
+function make_color_shader(color) {
+	return [color_get_red(color)/255, color_get_green(color)/255, color_get_blue(color)/255];
+}
 
 #endregion
 
@@ -2056,16 +2423,16 @@ function audio_create_stream_wav(file_audio) {
 		};
 		
 		// read file bytes
-		var file_buff = buffer_load(file_audio);
-		var file_size = buffer_get_size(file_buff);
-		var audio_file_buff = buffer_create(file_size, buffer_fixed, 1);
+		var file_buff = buffer_load(file_audio),
+		file_size = buffer_get_size(file_buff),
+		audio_file_buff = buffer_create(file_size, buffer_fixed, 1),
+		audio_buff_length = buffer_get_size(audio_file_buff);
 		buffer_copy(file_buff, 0, file_size, audio_file_buff, 0);
 		buffer_delete(file_buff);
 		
 		// read header
 		with(audio_data) {
-			var audio_buff_length = buffer_get_size(audio_file_buff);
-			for (var i = 0; i <= _header_length; i++) {
+			for(var i = 0; i <= _header_length; i++) {
 				if (i >= _ho_chunk_id && i < _ho_chunk_size)
 					chunk_id += chr(buffer_peek(audio_file_buff, i, buffer_u8));
 				if (i >= _ho_audio_format && i < _ho_channels_num)
@@ -2078,9 +2445,9 @@ function audio_create_stream_wav(file_audio) {
 					bps += buffer_peek(audio_file_buff, i, buffer_u8);
 			}
 			if (string_lower(chunk_id) != "riff" || audio_format != 1) return -3;
-			var _format = (bps == 8) ? buffer_u8 : buffer_s16;
-			var _channels = (channels_num == 2) ? audio_stereo : ((channels_num == 1) ? audio_mono : audio_3d);
-			return audio_create_buffer_sound(audio_file_buff, _format, sample_rate, _ho_data, audio_buff_length-_ho_data, _channels);;
+			var _format = (bps == 8) ? buffer_u8 : buffer_s16,
+			_channels = (channels_num == 2) ? audio_stereo : ((channels_num == 1) ? audio_mono : audio_3d);
+			return audio_create_buffer_sound(audio_file_buff, _format, sample_rate, _ho_data, audio_buff_length-_ho_data, _channels);
 		}
 	} else {
 		return -1;

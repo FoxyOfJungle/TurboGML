@@ -13,11 +13,13 @@
     {"id":{"name":"obj_b3","path":"objects/obj_b3/obj_b3.yy",},"order":8,},
     {"id":{"name":"Sprite5","path":"sprites/Sprite5/Sprite5.yy",},"order":2,},
     {"id":{"name":"obj_enemy","path":"objects/obj_enemy/obj_enemy.yy",},"order":4,},
+    {"id":{"name":"Sprite10","path":"sprites/Sprite10/Sprite10.yy",},"order":5,},
     {"id":{"name":"obj_mover","path":"objects/obj_mover/obj_mover.yy",},"order":5,},
     {"id":{"name":"Sprite3","path":"sprites/Sprite3/Sprite3.yy",},"order":0,},
     {"id":{"name":"obj_box","path":"objects/obj_box/obj_box.yy",},"order":1,},
     {"id":{"name":"Sprite7","path":"sprites/Sprite7/Sprite7.yy",},"order":4,},
     {"id":{"name":"obj_b2","path":"objects/obj_b2/obj_b2.yy",},"order":7,},
+    {"id":{"name":"Script2","path":"scripts/Script2/Script2.yy",},"order":3,},
     {"id":{"name":"Sprite6","path":"sprites/Sprite6/Sprite6.yy",},"order":3,},
     {"id":{"name":"__tgm_scr_functions","path":"scripts/__tgm_scr_functions/__tgm_scr_functions.yy",},"order":0,},
     {"id":{"name":"Sprite4","path":"sprites/Sprite4/Sprite4.yy",},"order":1,},
@@ -64,6 +66,6 @@
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"explosion4.wav","CopyToMask":-1,"filePath":"datafiles",},
   ],
   "MetaData": {
-    "IDEVersion": "2022.11.0.54",
+    "IDEVersion": "2022.11.1.56",
   },
 }

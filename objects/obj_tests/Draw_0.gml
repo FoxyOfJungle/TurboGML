@@ -1,5 +1,6 @@
 
 //
+/*
 #region TESTS
 var mx = mouse_x/room_width;
 
@@ -41,6 +42,8 @@ draw_text(10, 120, string_zeros(125, 10));
 //draw_sprite_centered_ext(Sprite2, 0, room_width/2, room_height/2, mx, mx, 0, c_white, 1);
 
 #endregion
+*/
+
 
 draw_text(400, 20, gui_mouse_x_delta);
 draw_text(400, 40, gui_mouse_y_delta);
@@ -48,15 +51,17 @@ draw_text(400, 60, DELTA_TIME);
 
 
 angle4 += 0.1;
-draw_cone(room_width/2, room_height/2, angle4, 100, 35);
-draw_text(10, 150, point_in_cone(mouse_x, mouse_y, room_width/2, room_height/2, angle4, 100, 35));
+draw_cone(room_width/2, room_height/2, angle4, 100, 45);
+var _dist = point_in_arc(mouse_x, mouse_y, room_width/2, room_height/2, angle4, 100, 45); //point_in_cone(mouse_x, mouse_y, room_width/2, room_height/2, angle4, 100, 35);
+draw_text(10, 150, _dist);
+draw_text(10, 200, point_direction_normalized(room_width/2, room_height/2, mouse_x, mouse_y));
 
 
 draw_sprite_pos_persp(Sprite7, 0, obj_b1.x, obj_b1.y, obj_b2.x, obj_b2.y, obj_b3.x, obj_b3.y, obj_b4.x, obj_b4.y, 1);
 
 
 
-transform = new Vector2(mouse_x, mouse_y);
+var transform = new Vector2(mouse_x, mouse_y);
 
 //transform = transform.multiply(new Vector2_Down.negate());
 transform = transform.snapped(new Vector2(16, 16)).clampedMagnitude(300);
@@ -67,17 +72,44 @@ draw_text(10, 300, transform);
 
 
 
+var value = relerp(0, 1, gui_mouse_x_normalized, 50, 100);
+
+draw_text(10, 100, value);
 
 
-draw_text(10, 400, "Average FPS:" + string(fps_average));
 
 
-// Average FPS Test
-if keyboard_check(ord("P")) {
-	repeat(999999) {
-		var val = sqrt(99);
-	}
-}
+/*var dir = point_direction(150, 150, mouse_x, mouse_y);
+var aa = point_direction_radians_vec2(150, 150, mouse_x, mouse_y);
+*/
+
+//var a = -point_direction_radians(150, 150, mouse_x, mouse_y);
+
+//var a = degtorad();
+
+//var _matrix = [
+////  x  y  z  w     
+//	cos(a)*scale_x, -sin(a)*scale_y, 0, 0,
+//    sin(a)*scale_x, cos(a)*scale_y, 0, 0,
+//	0, 0, 1, 0,
+//	150, 150, 0, 1,
+//];
+
+
+//matrix_set(matrix_world, _matrix);
+
+//draw_sprite(Sprite3, 0, 0, 0);
+
+//matrix_set(matrix_world, matrix_build_identity());
+
+
+
+
+
+
+
+
+
 
 
 

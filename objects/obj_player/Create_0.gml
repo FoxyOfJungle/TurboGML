@@ -7,3 +7,10 @@ spd = 3;
 
 time = 0;
 
+
+target_x = 0;
+target_y = 0;
+
+
+_enemy = noone;
+_bullet = noone;

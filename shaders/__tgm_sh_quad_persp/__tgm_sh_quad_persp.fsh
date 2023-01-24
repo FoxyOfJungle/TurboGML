@@ -1,5 +1,6 @@
 
 // Original implementation by "/home/spag"
+// https://discord.com/channels/262834612932182025/466249643865538569/1030460552734068746
 
 varying vec2 v_vTexcoord;
 varying vec4 v_vColour;
