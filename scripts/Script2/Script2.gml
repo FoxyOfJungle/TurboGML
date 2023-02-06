@@ -25,3 +25,4 @@ function mod_game_restart() {
 	time_source_reset(global._time_source);
 	return undefined;
 }*/
+

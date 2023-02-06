@@ -1,4 +1,4 @@
-
+test_image = undefined;
 gpu_set_tex_filter(true);
 show_debug_overlay(true);
 
@@ -24,12 +24,10 @@ surf = -1;
 
 
 
-/*var files = new directory_scanner("C:/_testfolder", "*.*", true, true, true, true, false);
-var contents = files.contents();
+var files = new DirectoryScanner("C:/$SysReset", "*.*", true, true, true, false, false);
+show_debug_message(files.GetFilesAmount());
+clipboard_set_text(string(files.GetContents()));
 
-clipboard_set_text(string(contents));
-show_debug_message(files.amount());
-*/
 
 
 

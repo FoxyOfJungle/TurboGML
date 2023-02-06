@@ -40,3 +40,33 @@ if keyboard_check_pressed(vk_space) {
 	instance_destroy(obj_enemy);
 }
 
+/*
+var uni_test = shader_get_uniform(__tgm_sh_quad_persp, "u_hsv");
+
+
+DEBUG_SPEED_INIT
+
+var color = [0.22, 0.7, 0.44];
+
+repeat(9999) {
+	shader_set_uniform_f_array(uni_test, color);
+}
+
+
+DEBUG_SPEED_GET
+
+
+// 1.03
+// 1.82
+// 0.72
+*/
+
+
+
+
+
+
+
+
+
+

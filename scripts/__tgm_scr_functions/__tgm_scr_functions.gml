@@ -47,55 +47,53 @@ function speed_to_reach(dist, fric) {
 
 /// @desc This function works like clamp(), but if the value is greater than max, it becomes min, and vice versa.
 /// @param {Real} val The value to check.
-/// @param {Real} vmin The min value.
-/// @param {Real} vmax The max value.
-function clamp_loop(val, vmin, vmax) {
-	if (val > vmax) val = vmin; else if (val < vmin) val = vmax;
+/// @param {Real} minn The min value.
+/// @param {Real} maxx The max value.
+function clamp_loop(val, minn, maxx) {
+	if (val > maxx) val = minn; else if (val < minn) val = maxx;
 	return val;
 }
 
 /// @desc Works like a lerp() but for angles, no rotation limits.
-/// @param {Real} angle1 The first angle to check.
-/// @param {Real} angle2 The second angle to check.
+/// @param {Real} a The first angle to check.
+/// @param {Real} b The second angle to check.
 /// @param {Real} amount The amount to interpolate.
 /// @returns {Real} 
-function lerp_angle(angle1, angle2, amount) {
-	var _a = angle1 + angle_difference(angle2, angle1);
-	return lerp(angle1, _a, amount);
+function lerp_angle(a, b, amount) {
+	var _a = a + angle_difference(b, a);
+	return lerp(a, _a, amount);
+	//return a - (angle_difference(a, b) * _amount);
 }
-//function lerp_angle(_from, _to, _amount) {
-//    return _from - (angle_difference(_from, _to) * _amount);
-//}
 
 /// @desc Verify if a value is in a range and returns a boolean.
 /// @param {Real} value Value to check.
-/// @param {Real} val1 First value.
-/// @param {Real} val2 Second value.
+/// @param {Real} a First value.
+/// @param {Real} b Second value.
 /// @returns {Bool} 
-function in_range(value, val1, val2) {
-	return (value >= val1 && value <= val2);
+function in_range(value, a, b) {
+	return (value >= a && value <= b);
 }
 
 // 
 /// @desc Returns the difference/distance between two values
-/// @param {Real} val1 First value.
-/// @param {Real} val2 Second value.
+/// @param {Real} a First value.
+/// @param {Real} b Second value.
 /// @returns {Real} 
-function distance(val1, val2) {
-	return abs(val1 - val2);
+function distance(a, b) {
+	return abs(a - b);
 }
 
 /// @desc Move linearly value 1 to value 2 in the specified amount.
-/// @param {Real} val1 First value.
-/// @param {Real} val2 Second value.
+/// @param {Real} a First value.
+/// @param {Real} b Second value.
 /// @param {Real} amount Amount to move.
 /// @returns {Real} 
-function approach(val1, val2, amount) {
-	//return val1 - clamp(val1-val2, -amount, amount);
-	if (val1 < val2) {
-		return min(val1 + amount, val2);
+function approach(a, b, amount) {
+	//return a - clamp(a-b, -amount, amount);
+	if (a < b) {
+		return min(a + amount, b);
 	} else {
-		return max(val1 - amount, val2);
+		return max(a - amount, b);
 	}
 }
 
@@ -138,23 +136,23 @@ function angle_predict_intersection(x1, y1, x2, y2, target_speed, target_angle, 
 }
 
 // failed attempts
+function motion_predict_intersection(x1, y1, x2, y2, target_speed, target_angle, bullet_speed) { // doesn't works as expected!!
+	var _bullet_dir = point_direction(x1, y1, x2, y2);
+	var alpha = target_speed / bullet_speed;
+	var phi = degtorad(target_angle - _bullet_dir);
+    var beta = alpha * sin(phi);
+	var _distance_to_intercept = point_distance(x1, y1, x2, y2) * sin(phi) / sin(phi - arcsin(beta));
+	var _intercept_x = x1 + dcos(_bullet_dir) * _distance_to_intercept;
+	var _intercept_y = y1 - dsin(_bullet_dir) * _distance_to_intercept;
+	return new Vector2(_intercept_x, _intercept_y);
+}
+
 //function motion_predict_intersection(x1, y1, x2, y2, target_hspeed, target_vspeed) {
 //	var _bullet_dir = point_direction(x1, y1, x2, y2),
 //	_nx = dsin(_bullet_dir),
 //	_ny = dcos(_bullet_dir),
 //	time = ((x1 - x2)*_nx + (y1 - y2)*_ny) / (target_hspeed*_nx + target_vspeed*_ny);
 //	return new Vector2(x2+target_hspeed*time, y2+target_vspeed*time);
-//}
-
-//function motion_predict_intersection(x1, y1, x2, y2, target_speed, target_angle, bullet_speed) {
-//	var _bullet_dir = point_direction(x1, y1, x2, y2);
-//	var alpha = target_speed / bullet_speed;
-//	var phi = degtorad(target_angle - _bullet_dir);
-//    var beta = alpha * sin(phi);
-//	var _distance_to_intercept = point_distance(x1, y1, x2, y2) * sin(phi) / sin(phi - arcsin(beta));
-//	var _intercept_x = x1 + dcos(_bullet_dir) * _distance_to_intercept;
-//	var _intercept_y = y1 - dsin(_bullet_dir) * _distance_to_intercept;
-//	return new Vector2(_intercept_x, _intercept_y);
 //}
 
 //function motion_predict_intersection(x1, y1, x2, y2) {
@@ -166,6 +164,7 @@ function angle_predict_intersection(x1, y1, x2, y2, target_speed, target_angle, 
 //		y1 + lengthdir_y(_dist, _bullet_dir)
 //	);
 //}
+
 
 /// @desc This function returns the direction between two points, in radians (pi).
 /// @param {Real} x1 Origin X position.
@@ -218,7 +217,7 @@ function pow2_previous(val) {
 }
 
 function wave_normalized(spd=1) {
-	return 0.5 + sin(current_time*0.0025*spd) * 0.5;
+	return sin(current_time*0.0025*spd) * 0.5 + 0.5;
 }
 
 /// @desc Returns a random value depending on its weight.
@@ -962,7 +961,7 @@ function pattern_read_sprite(sprite, wspace=1, hspace=1) {
 	var i = 0, j = 0, _total = 0;
 	repeat(_width) {
 		j = 0;
-		repeat(_height) { 
+		repeat(_height) {
 			_pixel = buffer_peek(_buff, 4 * (i + j * _width), buffer_u32); // get abgr
 			_r = _pixel & $ff;
 			_g = (_pixel >> 8) & $ff;
@@ -1119,21 +1118,6 @@ function window_mouse_y() {
 
 #region DATA
 
-function hex_to_dec(decimal) {
-	var count = string_length(decimal);
-	var final = 0;
-	static __sillies = {
-		a: 10, b: 11, c: 12, d: 13, e: 14, f: 15
-	}
-	for (var i = 1; i < string_length(decimal) + 1; i += 1) {
-		count--;
-		var digit = __sillies[$ string_lower(string_char_at(decimal, i))] ?? real(string_char_at(decimal, i));
-		var base = power(16, count);
-		final += digit * base;
-	}
-	return final;
-}
-
 function string_to_hex(str) {
 	return int64(ptr(str));
 }
@@ -1222,6 +1206,13 @@ function file_write_string(file_path, str) {
 	buffer_delete(_buff);
 }
 
+function file_write_text(file_path, str) {
+	var _buff = buffer_create(1, buffer_grow, 1);
+	buffer_write(_buff, buffer_text, str);
+	buffer_save(_buff, file_path);
+	buffer_delete(_buff);
+}
+
 
 function file_read_string(file_path) {
 	if (!file_exists(file_path)) return undefined;
@@ -1232,7 +1223,16 @@ function file_read_string(file_path) {
 }
 
 
-function bytes_to_size(bytes) {
+function file_read_text(file_path) {
+	if (!file_exists(file_path)) return undefined;
+	var _buffer = buffer_load(file_path);
+	var _result = buffer_read(_buffer, buffer_text);
+	buffer_delete(_buffer);
+	return _result;
+}
+
+
+function bytes_get_size(bytes) {
 	var _sizes = ["B", "KB", "MB", "GB", "TB", "PB"]; // you can add more
 	if (bytes == 0) return "0 B";
 	var i = floor(log2(bytes) / log2(1024));
@@ -1296,7 +1296,7 @@ function __directory_recursive_search(contents, source, extension, search_folder
 					ext : filename_ext(_fname),
 					path : _path,
 					root_folder : _dir_name,
-					size : get_size ? bytes_to_size(file_get_size(_path)) : -1,
+					size : get_size ? bytes_get_size(file_get_size(_path)) : -1,
 				} : _fname);
 			}
 		}
@@ -1315,6 +1315,8 @@ function DirectoryScanner(path, extension="*.*", search_folders=true, search_fil
 		__directory_recursive_search(__contents, path, string(extension), search_folders, search_files, search_subdir, full_info, get_size);
 		__loaded = true;
 		__path_exists = true;
+	} else {
+		show_debug_message("Directory Scanner: Error, can't find directory to scan.");
 	}
 	
 	static GetContents = function() {
@@ -1372,10 +1374,6 @@ function folder_content_generate(struct_content) {
 
 #macro SORT_ASCENDING function(a, b) {return a - b}
 #macro SORT_DESCENDING function(a, b) {return b - a}
-
-
-
-
 
 function array_choose(array) {
 	return array[irandom_range(0, array_length(array)-1)];
@@ -1519,6 +1517,7 @@ function struct_copy(struct) {
 	return struct;
 }
 
+
 // clear the struct without deleting it
 function struct_clear(struct) {
 	if (is_struct(struct)) {
@@ -1531,15 +1530,18 @@ function struct_clear(struct) {
 	}
 }
 
+
 function struct_empty(struct) {
 	return (variable_struct_names_count(struct) == 0);
 }
+
 
 // get value from json only if exists, without returning undefined
 function struct_get_variable(struct, name, default_value=0) {
 	if (!is_struct(struct)) return default_value;
 	return struct[$ name] ?? default_value;
 }
+
 
 // get and remove a variable from a struct
 function struct_pop(struct, name) {
@@ -1596,9 +1598,6 @@ function ds_map_to_struct(map) {
 }
 
 
-
-
-
 #endregion
 
 
@@ -1608,14 +1607,17 @@ function string_password(str, char="*") {
 	return string_repeat(char, string_length(str));
 }
 
+
 function string_zeros(str, zero_amount) {
 	return string_replace_all(string_format(str, zero_amount, 0), " ", "0");
 }
+
 
 function string_limit(str, width) {
 	var _len = width / string_width("M");
 	return string_width(str) < width ? str : string_copy(str, 1, _len) + "...";
 }
+
 
 function string_limit_nonmono(str, width) {
 	if (string_width(str) < width) return str;
@@ -1630,6 +1632,7 @@ function string_limit_nonmono(str, width) {
 	return _str + "...";
 }
 
+
 function string_split_each_char(str) {
 	var _array = [];
 	var i = 1, _size = string_length(str);
@@ -1639,6 +1642,7 @@ function string_split_each_char(str) {
 	}
 	return _array;
 }
+
 
 function string_random_letter_case(str, first_is_upper=true, sequence=1) {
 	var _str_final = "", _f1 = -1, _f2 = -1;
@@ -1658,6 +1662,7 @@ function string_random_letter_case(str, first_is_upper=true, sequence=1) {
 	return _str_final;
 }
 
+
 function string_first_letter_upper_case(str) {
 	var _string = string_lower(str);
 	var _str_final = "";
@@ -1669,6 +1674,7 @@ function string_first_letter_upper_case(str) {
 	}
 	return _str_final;
 }
+
 
 function string_word_first_letter_upper_case(str) {
 	var _string = string_lower(str);
@@ -1683,6 +1689,7 @@ function string_word_first_letter_upper_case(str) {
 	return _str_final;
 }
 
+
 function string_case_reverse(str) {
 	var _str_final = "";
 	var i = 1, isize = string_length(str);
@@ -1696,6 +1703,7 @@ function string_case_reverse(str) {
 	return _str_final;
 }
 
+
 function string_reverse(str) {
 	var _str_final = "";
 	var isize = string_length(str), i = isize;
@@ -1705,11 +1713,6 @@ function string_reverse(str) {
 	}
 	return _str_final;
 }
-
-
-
-
-
 
 #endregion
 
@@ -1721,6 +1724,7 @@ function room_to_gui_dimension(x1, y1, camera, gui_width, gui_height, normalize)
 	_py = (y1-camera_get_view_y(camera)) * (gui_height/camera_get_view_height(camera));
 	return normalize ? new Vector2(_px/gui_width, _py/gui_height) : new Vector2(_px, _py);
 }
+
 
 function room_to_gui_dimension_ext(x1, y1, camera, angle, gui_width, gui_height, normalize) {
 	var _cw = camera_get_view_width(camera),
@@ -1734,6 +1738,7 @@ function room_to_gui_dimension_ext(x1, y1, camera, angle, gui_width, gui_height,
 	_py = (gui_height/2) - dsin(_wcenter_dir) * _wcenter_dis;
 	return normalize ? new Vector2(_px/gui_width, _py/gui_height) : new Vector2(_px, _py);
 }
+
 
 function gui_to_room_dimension_ext(x1, y1, camera, angle, gui_width, gui_height, normalize) {
 	var _cx = camera_get_view_x(camera),
@@ -1812,10 +1817,6 @@ function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz, normalized=fa
 	}
 }
 
-
-
-
-
 #endregion
 
 
@@ -1836,6 +1837,7 @@ function instance_top_position(px, py, object) {
 	ds_list_destroy(_list);
 	return _top_instance;
 }
+
 
 // get the top instance of a layer (without conflicting with other layers)
 function layer_instance_top_position(px, py,  layer_id) {
@@ -1865,6 +1867,7 @@ function layer_instance_top_position(px, py,  layer_id) {
 	}
 	return _top_instance;
 }
+
 
 function layer_instance_count(layer_id) {
 	return layer_exists(layer_id) ? array_length(layer_get_all_elements(layer_id)) : 0;
@@ -1958,6 +1961,7 @@ function distance_to_path(x, y, path) {
 	return min_dist;
 }
 
+
 function path_get_closest_point(xx, yy, path) {
 	var i = 0, isize = path_get_number(path),
 	_px = 0, _py = 0, _dist = 0,
@@ -1978,6 +1982,7 @@ function path_get_closest_point(xx, yy, path) {
 	ds_priority_destroy(_pri_y);
 	return _pos;
 }
+
 
 function path_get_closest_point_position(xx, yy, path) {
 	var i = 0, isize = path_get_number(path),
@@ -2000,17 +2005,19 @@ function path_get_closest_point_position(xx, yy, path) {
 	return _pos;
 }
 
+
 function path_get_direction(pth, pos) {
-	var reciprocal = (1 / path_get_length(pth)),
-	pos_1 = pos - reciprocal,
-	pos_2 = pos + reciprocal,
-	x1 = path_get_x(pth, pos_1),
-	y1 = path_get_y(pth, pos_1),
-	x2 = path_get_x(pth, pos_2),
-	y2 = path_get_y(pth, pos_2),
-	dir = point_direction(x1, y1, x2,y2);
-	return dir;
+	var _reciprocal = (1 / path_get_length(pth)),
+	_pos_1 = pos - _reciprocal,
+	_pos_2 = pos + _reciprocal,
+	_x1 = path_get_x(pth, _pos_1),
+	_y1 = path_get_y(pth, _pos_1),
+	_x2 = path_get_x(pth, _pos_2),
+	_y2 = path_get_y(pth, _pos_2),
+	_dir = point_direction(_x1, _y1, _x2, _y2);
+	return _dir;
 }
+
 
 /*function path_get_position(path, xx, yy) {
 	// Return a path_position corresponding to the point (x, y) on the given path.
@@ -2074,6 +2081,7 @@ global.__tgm_sh_uni = {
 	sprite_pos_uvs : shader_get_uniform(__tgm_sh_quad_persp, "uUVS"),
 };
 
+
 function draw_quad_lines(x1, y1, x2, y2, x3, y3, x4, y4, middle_line=false) {
 	draw_line(x1, y1, x2, y2);
 	draw_line(x1, y1, x4, y4);
@@ -2081,6 +2089,7 @@ function draw_quad_lines(x1, y1, x2, y2, x3, y3, x4, y4, middle_line=false) {
 	draw_line(x2, y2, x3, y3);
 	if (middle_line) draw_line(x1, y1, x3, y3);
 }
+
 
 function draw_cone(x, y, angle, dist, fov) {
 	var _len_x1 = dcos(angle - fov/2) * dist;
@@ -2092,19 +2101,23 @@ function draw_cone(x, y, angle, dist, fov) {
 	draw_line(x+_len_x1, y-_len_y1, x+_len_x2, y-_len_y2);
 }
 
+
 function draw_nineslice_stretched_ext(sprite, subimg, x, y, width, height, xscale, yscale, rot, col, alpha) {
 	draw_sprite_ext(sprite, subimg, x, y, (width/sprite_get_width(sprite))*xscale, (height/sprite_get_height(sprite))*yscale, rot, col, alpha);
 }
+
 
 // useful when applying a shader to a sprite that is offset at 0, 0, but still wants to draw centered.
 function draw_sprite_centered(sprite, subimg, x, y) {
 	draw_sprite(sprite, subimg, x-sprite_get_width(sprite)/2, y-sprite_get_height(sprite)/2);
 }
 
+
 // useful when applying a shader to a sprite that is offset at 0, 0, but still wants to draw centered and scaled.
 function draw_sprite_centered_ext(sprite, subimg, x, y, xscale, yscale, rot, col, alpha) {
 	draw_sprite_ext(sprite, subimg, x-(sprite_get_width(sprite)/2)*xscale, y-(sprite_get_height(sprite)/2)*yscale, xscale, yscale, rot, col, alpha);
 }
+
 
 // useful for grass wave effects
 function draw_sprite_pos_ext(sprite, subimg, x, y, width, height, xoffset, yoffset, xscale, yscale, skew_x, skew_y, angle, alpha) {
@@ -2114,6 +2127,7 @@ function draw_sprite_pos_ext(sprite, subimg, x, y, width, height, xoffset, yoffs
 	draw_sprite_pos(sprite_index, subimg, xo+skew_x, yo+skew_y, width+xo+skew_x, yo+skew_y, width+xo, height+yo, xo, height+yo, alpha);
 	matrix_set(matrix_world, _current_matrix);
 }
+
 
 function draw_text_wave(x, y, str, str_width, wave_amplitude=3, wave_speed=0.01) {
 	var _xx = x, _yy = y;
@@ -2127,6 +2141,7 @@ function draw_text_wave(x, y, str, str_width, wave_amplitude=3, wave_speed=0.01)
 		i++;
 	}
 }
+
 
 function draw_text_wave_colorful(x, y, str, str_width, wave_amplitude=3, wave_speed=0.01, color_speed=0.1) {
 	var _xx = x, _yy = y;
@@ -2142,6 +2157,7 @@ function draw_text_wave_colorful(x, y, str, str_width, wave_amplitude=3, wave_sp
 	}
 }
 
+
 function draw_text_wave_rainbow(x, y, str, str_width, wave_amplitude=3, wave_speed=0.01, color_speed=0.1) {
 	var _xx = x, _yy = y;
 	var i = 1, isize = string_length(str);
@@ -2155,6 +2171,7 @@ function draw_text_wave_rainbow(x, y, str, str_width, wave_amplitude=3, wave_spe
 		i++;
 	}
 }
+
 
 function draw_text_rainbow(x, y, str, str_width, color_speed=0.1) {
 	var _xx = x, _yy = y;
@@ -2170,6 +2187,7 @@ function draw_text_rainbow(x, y, str, str_width, color_speed=0.1) {
 	}
 }
 
+
 function draw_text_shake(x, y, str, str_width, dist=1) {
 	var _xx = x, _yy = y;
 	var i = 1, isize = string_length(str);
@@ -2182,6 +2200,7 @@ function draw_text_shake(x, y, str, str_width, dist=1) {
 		i++;
 	}
 }
+
 
 function draw_sprite_pos_persp(sprite, subimg, x1, y1, x2, y2, x3, y3, x4, y4, alpha) {
 	/*p1--p2
@@ -2370,6 +2389,10 @@ function make_color_shader(color) {
 #macro gui_h display_get_gui_height()
 
 function draw_button_test(x, y, text, callback=undefined) {
+	var _old_font = draw_get_font(),
+	old_halign = draw_get_halign(),
+	old_valign = draw_get_valign(),
+	old_color = draw_get_color(),
 	var _pressed = false, _color_bg = c_dkgray, _color_text = c_white;
 	var _ww = string_width(text)+8, _hh = string_height(text)+8;
 	if point_in_rectangle(device_mouse_x_to_gui(0), device_mouse_y_to_gui(0), x, y, x+_ww, y+_hh) {
@@ -2377,7 +2400,7 @@ function draw_button_test(x, y, text, callback=undefined) {
 		_color_text = c_dkgray;
 		if mouse_check_button(mb_left) {
 			_color_text = c_lime;
-			_color_bg = c_gray;
+			_color_bg = c_black;
 		}
 		if mouse_check_button_released(mb_left) {
 			if !is_undefined(callback) callback();
@@ -2389,10 +2412,12 @@ function draw_button_test(x, y, text, callback=undefined) {
 	draw_set_color(_color_bg);
 	draw_rectangle(x, y, x+_ww, y+_hh, false);
 	draw_set_color(_color_text);
+	draw_set_font(-1);
 	draw_text(x+_ww/2, y+_hh/2, text);
-	draw_set_halign(fa_left);
-	draw_set_valign(fa_top);
-	draw_set_color(c_white);
+	draw_set_font(_old_font);
+	draw_set_halign(old_halign);
+	draw_set_valign(old_valign);
+	draw_set_color(old_color);
 	return _pressed;
 }
 
@@ -2423,31 +2448,31 @@ function audio_create_stream_wav(file_audio) {
 		};
 		
 		// read file bytes
-		var file_buff = buffer_load(file_audio),
-		file_size = buffer_get_size(file_buff),
-		audio_file_buff = buffer_create(file_size, buffer_fixed, 1),
-		audio_buff_length = buffer_get_size(audio_file_buff);
-		buffer_copy(file_buff, 0, file_size, audio_file_buff, 0);
-		buffer_delete(file_buff);
+		var _file_buff = buffer_load(file_audio),
+		_file_size = buffer_get_size(_file_buff),
+		_audio_file_buff = buffer_create(_file_size, buffer_fixed, 1),
+		_audio_buff_length = buffer_get_size(_audio_file_buff);
+		buffer_copy(_file_buff, 0, _file_size, _audio_file_buff, 0);
+		buffer_delete(_file_buff);
 		
 		// read header
 		with(audio_data) {
 			for(var i = 0; i <= _header_length; i++) {
 				if (i >= _ho_chunk_id && i < _ho_chunk_size)
-					chunk_id += chr(buffer_peek(audio_file_buff, i, buffer_u8));
+					chunk_id += chr(buffer_peek(_audio_file_buff, i, buffer_u8));
 				if (i >= _ho_audio_format && i < _ho_channels_num)
-					audio_format += buffer_peek(audio_file_buff, i, buffer_u8);
+					audio_format += buffer_peek(_audio_file_buff, i, buffer_u8);
 				if (i >= _ho_channels_num && i < _ho_sample_rate)
-					channels_num += buffer_peek(audio_file_buff, i, buffer_u8);
+					channels_num += buffer_peek(_audio_file_buff, i, buffer_u8);
 				if (i == _ho_sample_rate)
-					sample_rate += buffer_peek(audio_file_buff, i, buffer_u32);
+					sample_rate += buffer_peek(_audio_file_buff, i, buffer_u32);
 				if (i >= _ho_bps && i < _ho_subchunk_id2)
-					bps += buffer_peek(audio_file_buff, i, buffer_u8);
+					bps += buffer_peek(_audio_file_buff, i, buffer_u8);
 			}
 			if (string_lower(chunk_id) != "riff" || audio_format != 1) return -3;
 			var _format = (bps == 8) ? buffer_u8 : buffer_s16,
 			_channels = (channels_num == 2) ? audio_stereo : ((channels_num == 1) ? audio_mono : audio_3d);
-			return audio_create_buffer_sound(audio_file_buff, _format, sample_rate, _ho_data, audio_buff_length-_ho_data, _channels);
+			return audio_create_buffer_sound(_audio_file_buff, _format, sample_rate, _ho_data, _audio_buff_length-_ho_data, _channels);
 		}
 	} else {
 		return -1;
@@ -2455,6 +2480,153 @@ function audio_create_stream_wav(file_audio) {
 	return undefined;
 }
 
+
+#endregion
+
+
+#region 3D
+
+vertex_format_begin();
+vertex_format_add_position_3d();
+vertex_format_add_normal();
+vertex_format_add_texcoord();
+vertex_format_add_colour();
+global.vbf_default_format = vertex_format_end();
+
+/// @func vertex_add_point(vbuff, xx, yy, zz, nx, ny, nz, u, v, color, alpha)
+function vertex_add_point(vbuff, xx, yy, zz, nx, ny, nz, u, v, color, alpha) {
+	gml_pragma("forceinline");
+	vertex_position_3d(vbuff, xx, yy, zz);
+	vertex_normal(vbuff, nx, ny, nz);
+	vertex_texcoord(vbuff, u, v);
+	vertex_color(vbuff, color, alpha);
+}
+
+
+function model_build_plane(x1, y1, z1, x2, y2, z2, hrepeat, vrepeat, color=c_white, alpha=1) {
+	var _vbuff = vertex_create_buffer();
+	
+	vertex_begin(_vbuff, global.vf_default);
+	vertex_add_point(_vbuff, x1, y1, z1, 0, 0, 1, 0, 0, color, alpha);
+	vertex_add_point(_vbuff, x2, y1, z1, 0, 0, 1, hrepeat, 0, color, alpha);
+	vertex_add_point(_vbuff, x1, y2, z2, 0, 0, 1, 0, vrepeat, color, alpha);
+	
+	vertex_add_point(_vbuff, x2, y1, z1, 0, 0, 1, hrepeat, 0, color, alpha);
+	vertex_add_point(_vbuff, x2, y2, z2, 0, 0, 1, hrepeat, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x1, y2, z2, 0, 0, 1, 0, vrepeat, color, alpha);
+	vertex_end(_vbuff);
+	
+	vertex_freeze(_vbuff);
+	return _vbuff;
+}
+
+
+function model_build_cube(x1, y1, z1, x2, y2, z2, hrepeat, vrepeat, color=c_white, alpha=1) {
+	var _vbuff = vertex_create_buffer();
+	
+	vertex_begin(_vbuff, global.vf_default);
+	
+	// top
+	vertex_add_point(_vbuff, x1, y1, z2, 0, 0, 1, 0, 0, color, alpha);
+	vertex_add_point(_vbuff, x2, y1, z2, 0, 0, 1, hrepeat, 0, color, alpha);
+	vertex_add_point(_vbuff, x1, y2, z2, 0, 0, 1, 0, vrepeat, color, alpha);
+	
+	vertex_add_point(_vbuff, x2, y1, z2, 0, 0, 1, hrepeat, 0, color, alpha);
+	vertex_add_point(_vbuff, x2, y2, z2, 0, 0, 1, hrepeat, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x1, y2, z2, 0, 0, 1, 0, vrepeat, color, alpha);
+	
+	// bottom
+	vertex_add_point(_vbuff, x1, y2, z1, 0, 0, -1, 0, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x2, y1, z1, 0, 0, -1, hrepeat, 0, color, alpha);
+	vertex_add_point(_vbuff, x1, y1, z1, 0, 0, -1, 0, 0, color, alpha);
+	
+	vertex_add_point(_vbuff, x1, y2, z1, 0, 0, -1, 0, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x2, y2, z1, 0, 0, -1, hrepeat, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x2, y1, z1, 0, 0, -1, hrepeat, 0, color, alpha);
+	
+	// front
+	vertex_add_point(_vbuff, x1, y2, z2, 0, 1, 0, 0, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x2, y2, z1, 0, 1, 0, hrepeat, 0, color, alpha);
+	vertex_add_point(_vbuff, x1, y2, z1, 0, 1, 0, 0, 0, color, alpha);
+	
+	vertex_add_point(_vbuff, x1, y2, z2, 0, 1, 0, 0, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x2, y2, z2, 0, 1, 0, hrepeat, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x2, y2, z1, 0, 1, 0, hrepeat, 0, color, alpha);
+	
+	// back
+	vertex_add_point(_vbuff, x1, y1, z1, 0, -1, 0, 0, 0, color, alpha);
+	vertex_add_point(_vbuff, x2, y1, z1, 0, -1, 0, hrepeat, 0, color, alpha);
+	vertex_add_point(_vbuff, x1, y1, z2, 0, -1, 0, 0, vrepeat, color, alpha);
+	
+	vertex_add_point(_vbuff, x2, y1, z1, 0, -1, 0, hrepeat, 0, color, alpha);
+	vertex_add_point(_vbuff, x2, y1, z2, 0, -1, 0, hrepeat, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x1, y1, z2, 0, -1, 0, 0, vrepeat, color, alpha);
+	
+	// right
+	vertex_add_point(_vbuff, x2, y1, z1, 1, 0, 0, 0, 0, color, alpha);
+	vertex_add_point(_vbuff, x2, y2, z1, 1, 0, 0, hrepeat, 0, color, alpha);
+	vertex_add_point(_vbuff, x2, y1, z2, 1, 0, 0, 0, vrepeat, color, alpha);
+	
+	vertex_add_point(_vbuff, x2, y2, z1, 1, 0, 0, hrepeat, 0, color, alpha);
+	vertex_add_point(_vbuff, x2, y2, z2, 1, 0, 0, hrepeat, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x2, y1, z2, 1, 0, 0, 0, vrepeat, color, alpha);
+	
+	// left
+	vertex_add_point(_vbuff, x1, y1, z2, -1, 0, 0, 0, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x1, y2, z1, -1, 0, 0, hrepeat, 0, color, alpha);
+	vertex_add_point(_vbuff, x1, y1, z1, -1, 0, 0, 0, 0, color, alpha);
+	
+	vertex_add_point(_vbuff, x1, y1, z2, -1, 0, 0, 0, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x1, y2, z2, -1, 0, 0, hrepeat, vrepeat, color, alpha);
+	vertex_add_point(_vbuff, x1, y2, z1, -1, 0, 0, hrepeat, 0, color, alpha);
+	
+	// finalize VBO
+	vertex_end(_vbuff);
+	vertex_freeze(_vbuff);
+	return _vbuff;
+}
+
+//function model_build_ellipsoid(x1, y1, z1, x2, y2, z2, hrepeat, vrepeat, steps, color=c_white, alpha=1) {
+//	steps = clamp(steps, 3, 128);
+	
+//	var _vbuff = vertex_create_buffer();
+//	var _cc;
+//	var _ss;
+//	_cc[steps] = 0;
+//	_ss[steps] = 0;
+	
+//	var i;
+//	for(i = 0; i <= steps; i++) {
+//		var __rad = (i * 2.0 * pi) / steps;
+//		_cc[i] = cos(__rad);
+//		_ss[i] = sin(__rad);
+//	}
+	
+//	var _mx = (x2 + x1) / 2,
+//	_my = (y2 + y1) / 2,
+//	_mz = (z2 + z1) / 2,
+//	_rx = (x2 - x1) / 2,
+//	_ry = (y2 - y1) / 2,
+//	_rz = (z2 - z1) / 2,
+//	_rows = (steps+1)/2, j;
+	
+//	for(j = 0; j <= (_rows - 1); j++) {
+//		var __row1rad = (j*pi)/_rows;
+//		var __row2rad = ((j+1)*pi)/_rows;
+//		var __rh1 = cos(__row1rad);
+//		var __rd1 = sin(__row1rad);
+//		var __rh2 = cos(__row2rad);
+//		var __rd2 = sin(__row2rad);
+	
+//		vertex_begin(_vbuff, global.vf_default);
+//		for(i = 0; i <= steps; i++) {
+//			vertex_add_point(_vbuff, _mx+_rx*__rd1*_cc[i], _my+_ry*__rd1*_ss[i], _mz+_rz*__rh1,__rd1*_cc[i], __rd1*_ss[i], __rh1, hrepeat*i/steps, j*vrepeat/_rows, color, alpha);
+//			vertex_add_point(_vbuff, _mx+_rx*__rd2*_cc[i], _my+_ry*__rd2*_ss[i], _mz+_rz*__rh2,__rd2*_cc[i], __rd2*_ss[i], __rh2, hrepeat*i/steps, (j+1)*vrepeat/_rows, color, alpha);
+//		}
+//		vertex_end(_vbuff);
+//	}
+//	return _vbuff;
+//}
 
 #endregion
 
