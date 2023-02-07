@@ -13,3 +13,6 @@ x2 = o_Player.x - x;
 y2 = o_Player.y - y;
 if dot_product(x1, y1, x2, y2) > 0 seen=true else seen=false;
 */
+
+if keyboard_check_pressed(ord("G")) tests -= 1;
+if keyboard_check_pressed(ord("H")) tests += 1;

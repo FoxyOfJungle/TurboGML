@@ -1,4 +1,4 @@
-test_image = undefined;
+
 gpu_set_tex_filter(true);
 show_debug_overlay(true);
 
@@ -24,9 +24,10 @@ surf = -1;
 
 
 
-var files = new DirectoryScanner("C:/$SysReset", "*.*", true, true, true, false, false);
-show_debug_message(files.GetFilesAmount());
-clipboard_set_text(string(files.GetContents()));
+
+//var files = new DirectoryScanner("C:/$SysReset", "*.*", true, true, true, false, false);
+//show_debug_message(files.GetFilesAmount());
+//clipboard_set_text(string(files.GetContents()));
 
 
 
@@ -57,7 +58,7 @@ scale_y = 1;
 
 
 
-
+tests = 0;
 
 
 

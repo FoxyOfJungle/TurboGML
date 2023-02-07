@@ -13,6 +13,24 @@
 
 #region MATH & OTHERS
 
+// pi = The ratio of the circumference of a circle to its diameter.
+// Tau = The ratio of the circumference of a circle to its radius, equal to 2π.
+// Phi = Golden Ratio
+
+#macro Tau 2 * pi
+#macro HalfPi pi / 2
+#macro Phi 1.6180339887
+#macro GoldenAngle 2.3999632297
+#macro EulerNumber 2.7182818280
+
+function fibonacci(number) {
+	if (n == 0 || n == 1) {
+		return n;
+	} else {
+		return fibonacci(number - 1) + fibonacci(number - 2);
+	}
+}
+
 /// @desc Return the equivalent of v on an old range of [x0, x1], on a new range of [y0, y1].
 function relerp(in_min, in_max, value, out_min, out_max) {
 	return (value-in_min) / (in_max-in_min) * (out_max-out_min) + out_min;
@@ -206,6 +224,24 @@ function non_zero(value, zero_value=1) {
 
 function is_fractional(number) {
 	return (frac(number) > 0);
+}
+
+function is_number_even(number) {
+	return (number % 2 == 0);
+}
+
+function is_number_odd(number) {
+	return (number % 2 == 1);
+}
+
+function is_number_prime(number) {
+	if (number < 2) return false;
+	for(var i = 2; i < number; i++) {
+		if (number % i == 0) {
+			return false;
+		}
+	}
+	return true;
 }
 
 function pow2_next(val) {

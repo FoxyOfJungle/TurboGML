@@ -1,4 +1,6 @@
 
+draw_text(50, 50, tests);
+draw_text(50, 70, is_number_prime(tests));
 
 
 //
