@@ -1,4 +1,7 @@
 
+draw_text(10, 70, tests);
+
+tests = clamp_wrap(tests, -10, 10);
 
 
 
@@ -8,7 +11,7 @@
 var mx = mouse_x/room_width;
 
 angle2 += 2;
-angle2 = clamp_loop(angle2, 0, 360);
+angle2 = clamp_wrap(angle2, 0, 360);
 draw_text(10, 10, angle2);
 
 

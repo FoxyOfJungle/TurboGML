@@ -67,7 +67,7 @@ function speed_to_reach(dist, fric) {
 /// @param {Real} val The value to check.
 /// @param {Real} minn The min value.
 /// @param {Real} maxx The max value.
-function clamp_loop(val, minn, maxx) {
+function clamp_wrap(val, minn, maxx) {
 	if (val > maxx) val = minn; else if (val < minn) val = maxx;
 	return val;
 }
