@@ -17,18 +17,18 @@
 // Tau = The ratio of the circumference of a circle to its radius, equal to 2π.
 // Phi = Golden Ratio
 
-#macro Tau 2 * pi
-#macro HalfPi pi / 2
+#macro Tau (2 * pi)
+#macro HalfPi (pi / 2)
 #macro Phi 1.6180339887
 #macro GoldenAngle 2.3999632297
 #macro EulerNumber 2.7182818280
 
-function fibonacci(number) {
-	if (n == 0 || n == 1) {
-		return n;
-	} else {
-		return fibonacci(number - 1) + fibonacci(number - 2);
+function fibonacci(n) {
+	var fib_numbers = [0, 1];
+	for(var i = 2; i <= n; i++) {
+		fib_numbers[i] = fib_numbers[i - 1] + fib_numbers[i - 2];
 	}
+	return fib_numbers[n];
 }
 
 /// @desc Return the equivalent of v on an old range of [x0, x1], on a new range of [y0, y1].
@@ -1241,6 +1241,7 @@ function file_write_string(file_path, str) {
 	buffer_save(_buff, file_path);
 	buffer_delete(_buff);
 }
+
 
 function file_write_text(file_path, str) {
 	var _buff = buffer_create(1, buffer_grow, 1);
