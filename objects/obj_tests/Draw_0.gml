@@ -1,7 +1,14 @@
 
-draw_text(10, 70, tests);
 
-tests = clamp_wrap(tests, -10, 10);
+draw_path(Path1, 0, 0, true);
+
+var _pos = path_get_closest_point_position(mouse_x, mouse_y, Path1);
+
+//var _xx = path_get_x(Path1, _pos);
+//var _yy = path_get_y(Path1, _pos);
+
+draw_circle(_pos.x, _pos.y, 4, true);
+
 
 
 
@@ -50,7 +57,7 @@ draw_text(10, 120, string_zeros(125, 10));
 #endregion
 */
 
-
+/*
 draw_text(400, 20, gui_mouse_x_delta);
 draw_text(400, 40, gui_mouse_y_delta);
 draw_text(400, 60, DELTA_TIME);
@@ -82,7 +89,7 @@ var value = relerp(0, 1, gui_mouse_x_normalized, 50, 100);
 
 draw_text(10, 100, value);
 
-
+*/
 
 
 /*var dir = point_direction(150, 150, mouse_x, mouse_y);

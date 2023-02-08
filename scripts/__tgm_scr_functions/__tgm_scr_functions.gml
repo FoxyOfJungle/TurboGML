@@ -7,7 +7,11 @@
 	https://twitter.com/foxyofjungle
 	
 	Special Thanks, contributions:
-	YellowAfterLife, Cecil, TheSnidr, Shaun Spalding
+	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, Juju Adams
+	(authors' names written in comment inside the functions used)
+	
+	Supporters:
+	RookTKO
 ----------------------------------------------------------------------------------*/
 
 
@@ -137,6 +141,7 @@ function angle_get_subimg(angle, frames_amount) {
 	return ((angle + (_angle_seg / 2)) % 360) div _angle_seg;
 }
 
+
 // Based on: https://www.reddit.com/r/gamemaker/comments/b0zelv/need_a_help_about_the_prediction_shot/
 /// @desc This function predicts the angle that must be aimed until the bullet hits exactly on the target.
 /// @param {Real} x1 Origin X position.
@@ -148,10 +153,12 @@ function angle_get_subimg(angle, frames_amount) {
 /// @param {Real} bullet_speed Bullet moving speed.
 /// @returns {Real} 
 function angle_predict_intersection(x1, y1, x2, y2, target_speed, target_angle, bullet_speed) {
+	// Original author: Xot
 	var _angle = point_direction(x1, y1, x2, y2),
 	_beta = sin(degtorad(target_angle - _angle)) * (target_speed/bullet_speed);
 	return (abs(_beta) < 1) ? _angle+radtodeg(arcsin(_beta)) : -1;
 }
+
 
 // failed attempts
 function motion_predict_intersection(x1, y1, x2, y2, target_speed, target_angle, bullet_speed) { // doesn't works as expected!!
@@ -256,6 +263,7 @@ function wave_normalized(spd=1) {
 	return sin(current_time*0.0025*spd) * 0.5 + 0.5;
 }
 
+
 /// @desc Returns a random value depending on its weight.
 /// @param {Array} items Total array of items to be returned. It can be any data type: numbers, strings, arrays, structs, data structures, etc.
 /// @param {Array<Real>} weights Weight of items in order. Higher values have a higher probability of returning the item.
@@ -282,6 +290,38 @@ function choose_weighted(items, weights) {
 	}
 	return items[0];
 }
+
+
+function random_pseudo_array(amount) {
+	var _array = [];
+	var i = 0;
+	repeat(amount) {
+		_array[i] = i;
+		++i;
+	}
+	array_shuffle(_array);
+	return _array;
+}
+
+
+function random_pseudo_array_ext(amount, func=undefined) {
+	var _func = func;
+	if (is_undefined(_func)) {
+		_func = function(_val) {
+			return _val;
+		}
+	}
+	var _array = [], _val;
+	var i = 0;
+	repeat(amount) {
+		_val = _func(i);
+		if (!is_undefined(_val)) _array[i] = _val;
+		++i;
+	}
+	array_shuffle(_array);
+	return _array;
+}
+
 
 #endregion
 
@@ -1416,12 +1456,12 @@ function array_choose(array) {
 	return array[irandom_range(0, array_length(array)-1)];
 }
 
-//function array_shuffle(array) {
-//	static _f = function() {
-//		return irandom_range(-1, 1);
-//	}
-//	array_sort(array, _f);
-//}
+function array_shuffle(array) {
+	static _f = function() {
+		return irandom_range(-1, 1);
+	}
+	array_sort(array, _f);
+}
 
 function array_shift(array, reverse) {
 	if (reverse) {
@@ -1632,6 +1672,133 @@ function ds_map_to_struct(map) {
 		++i;
 	}
 	return _struct;
+}
+
+
+// alternative: https://yal.cc/gamemaker-beautifying-json/
+function json_beautify(json_string, indent_size=4, newline_char="\n", map_spacing=1) {
+	// credits: 2017/12/08 @jujuadams; with thanks to yal.cc
+	// if you use this, shoot me a tweet!
+	
+	var _in_string = false,
+	_string_escape = false,
+	_string_delimiter = undefined,
+	
+	_in_number_string = false,
+	_number_string = "",
+	_number_string_dot = 0,
+	_number_string_last_sig = 0,
+	
+	_output = "",
+	_indent = 0,
+	
+	_index = 0,
+	_len = string_length(json_string);
+	repeat(_len) {
+		_index++;
+		
+		var _char = string_char_at(json_string, _index),
+		_ord = ord(_char),
+		_do_main = true;
+		
+		if (_in_string) {   
+			if ((_ord == _string_delimiter) && !_string_escape) {
+				_in_string = false;
+			} else if (_ord == 92) && (!_string_escape) {
+				_string_escape = true;
+			} else {
+				_string_escape = false;
+			}
+			_output += _char;
+			_do_main = false;
+		} else if ( _in_number_string ) {
+			if (_ord < 45) || (_ord == 47) || (_ord > 57) {
+				_in_number_string = false;
+				if (_number_string_dot >= _number_string_last_sig) _number_string_last_sig = _number_string_dot-1;
+				_output += string_copy(_number_string, 1, _number_string_last_sig);
+			} else {
+				_do_main = false;
+				_number_string += _char;
+				if (_ord == 46) {
+					_number_string_dot = string_length( _number_string );
+					_number_string_last_sig = _number_string_dot;
+				} else if (_number_string_dot == 0) || (_ord != 48) {
+					_number_string_last_sig++;
+				}
+			}
+		}
+		
+		if (_do_main) switch(_ord) {
+			case 58: // :
+				if (map_spacing) {
+					_output += ":";
+					repeat(map_spacing) _output += " ";
+				} else {
+					_output += ":";
+				}
+				break;
+				
+			case 34: // "
+			case 39: // '
+				_string_delimiter = _ord;
+				_in_string = true;
+				_output += _char;
+				break;
+				
+			case 44: // ,
+				_output += _char;
+				_output += newline_char;
+				repeat(_indent) _output += " ";
+				break;
+				
+			case  91: // [
+			case 123: // {
+				_output += _char;
+				_indent += indent_size;
+				_output += newline_char;
+				repeat(_indent) _output += " ";
+				break;
+				
+			case  93: // ]
+			case 125: // }
+				_indent -= indent_size;
+				_output += newline_char;
+				repeat(_indent) _output += " ";
+				_output += _char;
+				break;
+				
+			case  9: //remove whitespace
+			case 10:
+			case 11:
+			case 12:
+			case 13:
+			case 32:
+				break;
+				
+			case  45: // -
+			case  46: // .
+			case  48: // 0
+			case  49: // 1
+			case  50: // 2
+			case  51: // 3
+			case  52: // 4
+			case  53: // 5
+			case  54: // 6
+			case  55: // 7
+			case  56: // 8
+			case  57: // 9
+				_number_string = _char;
+				_in_number_string = true;
+				_number_string_dot = 0;
+				_number_string_last_sig = 1;
+				break;
+			
+			default:
+				//_output += _char;
+				break;
+		}
+	}
+	return _output;
 }
 
 
@@ -1857,13 +2024,13 @@ function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz, normalized=fa
 #endregion
 
 
-#region LAYERS
+#region INSTANCES & OBJECTS
 
 // get the top instance of any layer/depth
 function instance_top_position(px, py, object) {
-	var _top_instance = noone;
-	var _list = ds_list_create();
-	var _num = collision_point_list(px, py, object, false, true, _list, false);
+	var _top_instance = noone,
+	_list = ds_list_create(),
+	_num = collision_point_list(px, py, object, false, true, _list, false);
 	if (_num > 0) {
 		var i = 0;
 		repeat(_num) {
@@ -1876,8 +2043,22 @@ function instance_top_position(px, py, object) {
 }
 
 
+function instance_number_object(object) {
+	var _number = 0;
+	with(object) {
+		if (object_index == object) _number++;
+	}
+	return _number;
+}
+
+
+#endregion
+
+
+#region LAYERS
+
 // get the top instance of a layer (without conflicting with other layers)
-function layer_instance_top_position(px, py,  layer_id) {
+function layer_instance_top_position(px, py, layer_id) {
 	var _top_instance = noone;
 	if (layer_exists(layer_id) && layer_get_visible(layer_id)) {
 		var _list = ds_list_create();
@@ -2043,69 +2224,32 @@ function path_get_closest_point_position(xx, yy, path) {
 }
 
 
-function path_get_direction(pth, pos) {
-	var _reciprocal = (1 / path_get_length(pth)),
+function path_get_nearest_position(xx, yy, path, pixel_precision=4) {
+	// original by: gnysek
+	var _raycast = infinity, _pos = 0, _dst,
+	_precision = (1 / path_get_length(path)) * clamp(pixel_precision, 1, 100);
+	for(var i = 0; i < 1; i += _precision;) {
+		_dst = point_distance(xx, yy, path_get_x(0, i), path_get_y(0, i));
+		if (_dst < _raycast) {
+			_pos = i;
+			_raycast = _dst;
+		}
+	}
+	return _pos;
+}
+
+
+function path_get_direction(path, pos) {
+	var _reciprocal = (1 / path_get_length(path)),
 	_pos_1 = pos - _reciprocal,
 	_pos_2 = pos + _reciprocal,
-	_x1 = path_get_x(pth, _pos_1),
-	_y1 = path_get_y(pth, _pos_1),
-	_x2 = path_get_x(pth, _pos_2),
-	_y2 = path_get_y(pth, _pos_2),
+	_x1 = path_get_x(path, _pos_1),
+	_y1 = path_get_y(path, _pos_1),
+	_x2 = path_get_x(path, _pos_2),
+	_y2 = path_get_y(path, _pos_2),
 	_dir = point_direction(_x1, _y1, _x2, _y2);
 	return _dir;
 }
-
-
-/*function path_get_position(path, xx, yy) {
-	// Return a path_position corresponding to the point (x, y) on the given path.
-	// If no path_position corresponds with this point, then return undefined.
-	// This script assumes that the given path is not smooth, but exists of a finite amount of line segments only.
-	var n = path_get_length(path);
-
-	// "px" is the x coordinate of the previous path point
-	// "py" is the y coordinate of the previous path point
-	// "nx" is the x coordinate of the current path point
-	// "ny" is the y coordinate of the current path point
-	// "result" conatins the distance in pixels of the path up to the point (px, py)
-	var px, py,
-	nx = path_get_point_x(path, 0),
-	ny = path_get_point_y(path, 0),
-	result = 0;
-	
-	// If (x, y) corresponds to the start of the path, return 0
-	if xx == nx && yy == ny
-	return 0;
-	
-	// Loop through every path point
-	for(var i = 1; i < n; i++) {
-		px = nx;
-		py = ny;
-		nx = path_get_point_x(path, i);
-		ny = path_get_point_y(path, i);
-		// Calculate the cross product of the vector from (px, py, 0) to (nx, ny, 0)
-		// and from (px, py, 0) to (x, y, 0)
-		// This product is 0 if and only if the two vectors share the same line
-		// If they don't share the same line, then the line through (px, py) ad (nx, ny) can't contain (x, y)
-		if (nx - px) * (yy - py) == (xx - px) * (ny - py) {
-			// If so, calculate the dot product p * d of these two vectors
-			// The point (x, y) is contained by the line segment from (px, py) to (nx, ny)
-			// if and only if 0 <= p <= d
-			var d = point_distance(px, py, xx, yy);
-			var p = (nx - px) * (xx - px) + (ny - py) * (yy - py);
-			if p >= 0 && p <= d * point_distance(px, py, nx, ny)
-			// The line segment contains the point, so add the remaining distance from (px, py) to (x, y)
-			// and normalize the path position to a number between 0 and 1
-			// by dividing result by the total path length
-			return (result + d) / path_get_length(path);
-		}
-		// If the line segment didn't contain the point, update the result and continue the loop
-		result += point_distance(px, py, nx, ny);
-	}
-	
-	// If no line segment containing (x, y) is found, return undefined
-	return undefined;
-}
-*/
 
 #endregion
 
@@ -2412,9 +2556,18 @@ function make_color_shader(color) {
 #endregion
 
 
-#region GRAPHICS PIPELINE
+#region GRAPHICS PIPELINE & DISPLAY
 
 #macro ANTIALIASING_MAX_AVAILABLE max(display_aa & 2, display_aa & 4, display_aa & 8)
+
+function display_get_inches() {
+	return sqrt(sqr(display_get_width()) + sqr(display_get_height())) / display_get_dpi_x();
+}
+
+function display_get_display_count() {
+	// credit: gnysek
+	return array_length(window_get_visible_rects(0, 0, 1, 1)) / 8;
+}
 
 
 #endregion
@@ -2708,4 +2861,33 @@ function shader_set_uniform_mat_array(shader, name, array) {
 
 
 #endregion
+
+
+#region TAGS
+
+function tag_get_instance_ids(tags, include_children) {
+	// original by: Juju Adams
+	var _array = [], _count = 0,
+	_asset_ids = tag_get_asset_ids(tags, asset_object), _object = noone,
+	i = 0, isize = array_length(_asset_ids);
+	repeat(isize) {
+		_object = _asset_ids[i];
+		with(_object) {
+			// skip children of tagged objects
+			if (!include_children && object_index != _object) continue;
+			_array[_count] = id;
+			++_count;
+		}
+		++i;
+	}
+	return _array;
+}
+
+
+
+
+#endregion
+
+
+
 

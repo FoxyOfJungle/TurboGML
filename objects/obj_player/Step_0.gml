@@ -36,9 +36,9 @@ if mouse_check_button_pressed(mb_left) {
 	target_y = _pos.y;
 }
 
-if keyboard_check_pressed(vk_space) {
-	instance_destroy(obj_enemy);
-}
+//if keyboard_check_pressed(vk_space) {
+//	instance_destroy(obj_enemy);
+//}
 
 /*
 var uni_test = shader_get_uniform(__tgm_sh_quad_persp, "u_hsv");

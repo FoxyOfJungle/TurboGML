@@ -1,4 +1,6 @@
 
+
+
 gpu_set_tex_filter(true);
 show_debug_overlay(true);
 
@@ -59,6 +61,14 @@ scale_y = 1;
 
 
 tests = 0;
+
+
+
+
+
+pseudo_action_list = [];
+
+
 
 
 
