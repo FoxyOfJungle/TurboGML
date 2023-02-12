@@ -2052,6 +2052,11 @@ function instance_number_object(object) {
 }
 
 
+function collide_and_move(hspd, vspd, move_spd) {
+	return 0;
+}
+
+
 #endregion
 
 
@@ -2873,7 +2878,6 @@ function tag_get_instance_ids(tags, include_children) {
 	repeat(isize) {
 		_object = _asset_ids[i];
 		with(_object) {
-			// skip children of tagged objects
 			if (!include_children && object_index != _object) continue;
 			_array[_count] = id;
 			++_count;
