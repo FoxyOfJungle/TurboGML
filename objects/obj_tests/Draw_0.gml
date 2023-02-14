@@ -122,10 +122,10 @@ var aa = point_direction_radians_vec2(150, 150, mouse_x, mouse_y);
 
 
 
+//draw_sprite_pos_persp(Sprite7, 0, obj_b1.x, obj_b1.y, obj_b2.x, obj_b2.y, obj_b3.x, obj_b3.y, obj_b4.x, obj_b4.y, 1);
 
 
-
-
+draw_texture_quad(sprite_get_texture(Sprite7, 0), obj_b1.x, obj_b1.y, obj_b2.x, obj_b2.y, obj_b3.x, obj_b3.y, obj_b4.x, obj_b4.y, 100);
 
 
 

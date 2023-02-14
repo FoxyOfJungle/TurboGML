@@ -1,5 +1,5 @@
 
-/*----------------------------------------------------------------------------------
+/*------------------------------------------------------------------------------------------
 	TurboGML. Library by FoxyOfJungle (Mozart Junior). (C) 2022, MIT License.
 	Don't remove this notice, please. Credit is really appreciate! :D
 	
@@ -7,12 +7,12 @@
 	https://twitter.com/foxyofjungle
 	
 	Special Thanks, contributions:
-	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, Juju Adams
+	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, Juju Adams, icuurd12b42
 	(authors' names written in comment inside the functions used)
 	
 	Supporters:
 	RookTKO
-----------------------------------------------------------------------------------*/
+-------------------------------------------------------------------------------------------*/
 
 
 #region MATH & OTHERS
@@ -2277,6 +2277,49 @@ function draw_quad_lines(x1, y1, x2, y2, x3, y3, x4, y4, middle_line=false) {
 }
 
 
+function draw_sprite_pos_persp(sprite, subimg, x1, y1, x2, y2, x3, y3, x4, y4, alpha) {
+	/*p1--p2
+	  |    |
+	  p4--p3*/
+	shader_set(__tgm_sh_quad_persp);
+	var _uvs = sprite_get_uvs(sprite, subimg);
+	shader_set_uniform_f_array(global.__tgm_sh_uni.sprite_pos_uab, [x1, y1, x2, y2]);
+	shader_set_uniform_f_array(global.__tgm_sh_uni.sprite_pos_ucd, [x3, y3, x4, y4]);
+	shader_set_uniform_f_array(global.__tgm_sh_uni.sprite_pos_uvs, _uvs);
+	draw_sprite_pos(sprite, subimg, x1, y1, x2, y2, x3, y3, x4, y4, alpha);
+	shader_reset();
+}
+
+
+function draw_texture_quad(texture_id, x1, y1, x2, y2, x3, y3, x4, y4, precision=50) {
+	/*p1--p2
+	  |    |
+	  p4--p3*/
+	// original by: icuurd12b42
+	var w1xs = (x1-x2) / precision,
+	w1ys = (y1-y2) / precision,
+	w2xs = (x4-x3) / precision,
+	w2ys = (y4-y3) / precision,
+	w1xat = x1,
+	w1yat = y1,
+	w2xat = x4,
+	w2yat = y4,
+	us = 1 / precision,
+	uat = 1;
+	draw_primitive_begin_texture(pr_trianglestrip, texture_id);
+	repeat(precision+1) {
+	    draw_vertex_texture(w1xat, w1yat, uat, 0);
+	    draw_vertex_texture(w2xat, w2yat, uat, 1);
+	    uat -= us;
+	    w1xat -= w1xs;
+	    w1yat -= w1ys;
+	    w2xat -= w2xs;
+	    w2yat -= w2ys;
+	}
+	draw_primitive_end();
+}
+
+
 function draw_cone(x, y, angle, dist, fov) {
 	var _len_x1 = dcos(angle - fov/2) * dist;
 	var _len_y1 = dsin(angle - fov/2) * dist;
@@ -2388,18 +2431,8 @@ function draw_text_shake(x, y, str, str_width, dist=1) {
 }
 
 
-function draw_sprite_pos_persp(sprite, subimg, x1, y1, x2, y2, x3, y3, x4, y4, alpha) {
-	/*p1--p2
-	  |    |
-	  p4--p3*/
-	shader_set(__tgm_sh_quad_persp);
-	var _uvs = sprite_get_uvs(sprite, subimg);
-	shader_set_uniform_f_array(global.__tgm_sh_uni.sprite_pos_uab, [x1, y1, x2, y2]);
-	shader_set_uniform_f_array(global.__tgm_sh_uni.sprite_pos_ucd, [x3, y3, x4, y4]);
-	shader_set_uniform_f_array(global.__tgm_sh_uni.sprite_pos_uvs, _uvs);
-	draw_sprite_pos(sprite, subimg, x1, y1, x2, y2, x3, y3, x4, y4, alpha);
-	shader_reset();
-}
+
+
 
 
 #endregion
