@@ -69,11 +69,16 @@ test = 0;
 
 
 
-data = ds_stack_create();
+//data = ds_stack_create();
+
+//ds_stack_push(data, 15);
+//ds_stack_push(data, 20);
+//ds_stack_push(data, 99);
+//ds_stack_push(data, 200);
+//ds_stack_push(data, 2);
 
 
-
-show_debug_message(ds_debug_print(data));
+//show_debug_message(ds_debug_print(data));
 
 
 

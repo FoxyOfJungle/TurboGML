@@ -1336,8 +1336,19 @@ function ds_debug_print(data_structure) {
 		show_debug_message(_txt);
 	} else
 	
-	
-	
+	// ds_stack
+	if (ds_exists(data_structure, ds_type_stack)) {
+		var _txt = "DS_STACK:\n";
+		var _temp_ds_stack = ds_stack_create();
+		ds_stack_copy(_temp_ds_stack, data_structure);
+		var i = 0, isize = ds_stack_size(data_structure);
+		_txt += "\n>> SIZE: " + string(isize) + "| Top: " + string(ds_stack_top(_temp_ds_stack));
+		repeat(isize) {
+			_txt += "\n" + string(ds_stack_pop(_temp_ds_stack));
+			++i;
+		}
+		show_debug_message(_txt);
+	}
 	
 	show_debug_message(_separator);
 }
