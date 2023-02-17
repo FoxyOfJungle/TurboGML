@@ -12,7 +12,7 @@ if abs(input_v) {
 	y += lengthdir_y(spd*DELTA_TIME, input_dir);
 }
 
-
+/*
 time += 0.1 * DELTA_TIME;
 
 if mouse_check_button_pressed(mb_left) {
@@ -34,7 +34,7 @@ if mouse_check_button_pressed(mb_left) {
 	//var _pos = motion_predict_intersection(x, y, _enemy.x, _enemy.y);
 	target_x = _pos.x;
 	target_y = _pos.y;
-}
+}*/
 
 //if keyboard_check_pressed(vk_space) {
 //	instance_destroy(obj_enemy);

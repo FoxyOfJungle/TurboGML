@@ -34,4 +34,7 @@
     "name": "Objects",
     "path": "folders/Example/Objects.yy",
   },
+  "tags": [
+    "raycast",
+  ],
 }

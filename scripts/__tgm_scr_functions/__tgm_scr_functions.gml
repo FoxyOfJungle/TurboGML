@@ -28,11 +28,19 @@
 #macro EulerNumber 2.7182818280
 
 function fibonacci(n) {
-	var fib_numbers = [0, 1];
+	var _numbers = [0, 1];
 	for(var i = 2; i <= n; i++) {
-		fib_numbers[i] = fib_numbers[i - 1] + fib_numbers[i - 2];
+		_numbers[i] = _numbers[i - 1] + _numbers[i - 2];
 	}
-	return fib_numbers[n];
+	return _numbers[n];
+}
+
+function factorial(n) {
+	var _number = 1;
+	for(var i = 1; i <= n; ++i) {
+		_number *= i;
+	}
+	return _number;
 }
 
 /// @desc Return the equivalent of v on an old range of [x0, x1], on a new range of [y0, y1].
@@ -101,7 +109,7 @@ function in_range(value, a, b) {
 /// @param {Real} a First value.
 /// @param {Real} b Second value.
 /// @returns {Real} 
-function distance(a, b) {
+function distance_1d(a, b) {
 	return abs(a - b);
 }
 
@@ -141,7 +149,6 @@ function angle_get_subimg(angle, frames_amount) {
 	return ((angle + (_angle_seg / 2)) % 360) div _angle_seg;
 }
 
-
 // Based on: https://www.reddit.com/r/gamemaker/comments/b0zelv/need_a_help_about_the_prediction_shot/
 /// @desc This function predicts the angle that must be aimed until the bullet hits exactly on the target.
 /// @param {Real} x1 Origin X position.
@@ -158,7 +165,6 @@ function angle_predict_intersection(x1, y1, x2, y2, target_speed, target_angle, 
 	_beta = sin(degtorad(target_angle - _angle)) * (target_speed/bullet_speed);
 	return (abs(_beta) < 1) ? _angle+radtodeg(arcsin(_beta)) : -1;
 }
-
 
 // failed attempts
 function motion_predict_intersection(x1, y1, x2, y2, target_speed, target_angle, bullet_speed) { // doesn't works as expected!!
@@ -189,7 +195,6 @@ function motion_predict_intersection(x1, y1, x2, y2, target_speed, target_angle,
 //		y1 + lengthdir_y(_dist, _bullet_dir)
 //	);
 //}
-
 
 /// @desc This function returns the direction between two points, in radians (pi).
 /// @param {Real} x1 Origin X position.
@@ -263,7 +268,6 @@ function wave_normalized(spd=1) {
 	return sin(current_time*0.0025*spd) * 0.5 + 0.5;
 }
 
-
 /// @desc Returns a random value depending on its weight.
 /// @param {Array} items Total array of items to be returned. It can be any data type: numbers, strings, arrays, structs, data structures, etc.
 /// @param {Array<Real>} weights Weight of items in order. Higher values have a higher probability of returning the item.
@@ -291,7 +295,6 @@ function choose_weighted(items, weights) {
 	return items[0];
 }
 
-
 function random_pseudo_array(amount) {
 	var _array = [];
 	var i = 0;
@@ -302,7 +305,6 @@ function random_pseudo_array(amount) {
 	array_shuffle(_array);
 	return _array;
 }
-
 
 function random_pseudo_array_ext(amount, func=undefined) {
 	var _func = func;
@@ -877,6 +879,52 @@ function Vector4(x, y=x, z=x, w=x) constructor {
 	self.w = w;
 }
 
+
+function raycast_hit_object_2d(origin_x, origin_y, object, angle, distance, absolute_position=false, precise=false, ray_precision=4) {
+	var _xo = origin_x,
+	_yo = origin_y,
+	_dir = degtorad(angle),
+	_segments = distance / ray_precision,
+	_normalized = distance / _segments,
+	_col;
+	repeat(_segments) {
+		_xo += cos(_dir) * _normalized;
+		_yo -= sin(_dir) * _normalized;
+		_col = collision_point(_xo, _yo, object, precise, true);
+		//draw_circle(_xo, _yo, 3, true);
+		if (_col != noone) return absolute_position ? new Vector2(_xo, _yo) : _col;
+	}
+	return noone;
+}
+
+
+function raycast_hit_tag_object_2d(origin_x, origin_y, tags, include_children, angle, distance, absolute_position=false, precise=false, ray_precision=4) {
+	var _xo = 0, _yo = 0,
+	_dir = degtorad(angle),
+	_segments = distance / ray_precision,
+	_normalized = distance / _segments,
+	// search for objects
+	_asset_ids = tag_get_asset_ids(tags, asset_object), _object = noone,
+	i = 0, isize = array_length(_asset_ids), _col;
+	repeat(isize) {
+		// raycast
+		_xo = origin_x;
+		_yo = origin_y;
+		repeat(_segments) {
+			_xo += cos(_dir) * _normalized;
+			_yo -= sin(_dir) * _normalized;
+			_col = collision_point(_xo, _yo, _asset_ids[i], precise, true);
+			//draw_set_color(make_color_hsv(25 * i, 255, 255));
+			//draw_circle(_xo, _yo, 3, true);
+			//draw_set_color(c_white);
+			if (_col != noone) return absolute_position ? new Vector2(_xo, _yo) : _col;
+		}
+		++i;
+	}
+	return noone;
+}
+
+
 #endregion
 
 
@@ -906,8 +954,6 @@ function camera_get_area_2d(view_mat, proj_mat) {
 	return new Vector4(_cam_x-_cam_w/2, _cam_y-_cam_h/2, _cam_w, _cam_h);
 }
 
-
-
 #endregion
 
 
@@ -932,12 +978,14 @@ function ___fps_average() {
 #macro DEBUG_SPEED_INIT var ___time = get_timer()
 #macro DEBUG_SPEED_GET show_debug_message(string((get_timer()-___time)/1000) + "ms")
 
+
 function game_in_IDE() {
 	//if (debug_mode) return true;
 	if (code_is_compiled()) return false;
 	if (parameter_count() == 3 && parameter_string(1) == "-game") return true;
 	return false;
 }
+
 
 function generate_code(chars, size) {
 	var _len = string_length(chars), _str_final = "", _str_chars = [];
@@ -950,6 +998,7 @@ function generate_code(chars, size) {
 	return string(_str_final);
 }
 
+
 function print() {
 	if (argument_count > 0) {
 		var _log = "", i = 0;
@@ -961,6 +1010,7 @@ function print() {
 		show_debug_message(_log);
 	}
 }
+
 
 function print_format(msg, values_array) {
 	var _final_string = "", _vapos = 0;
@@ -979,6 +1029,7 @@ function print_format(msg, values_array) {
 	show_debug_message(_final_string);
 }
 
+
 function show_once(func=undefined, reset_key=vk_control) {
 	static can_test = true;
 	if (can_test) {
@@ -994,6 +1045,7 @@ function show_once(func=undefined, reset_key=vk_control) {
 	}
 }
 
+
 function sleep(milliseconds=1000) {
 	var _time = current_time + milliseconds;
 	while(current_time < _time) {
@@ -1001,11 +1053,15 @@ function sleep(milliseconds=1000) {
 	}
 }
 
+
 function invoke(callback, args, time, repetitions=1) {
 	var _ts = time_source_create(time_source_game, time, time_source_units_frames, callback, args, repetitions);
 	time_source_start(_ts);
 	return _ts;
 }
+
+
+
 
 #endregion
 
@@ -1082,6 +1138,7 @@ function assert_array_or(condition, values_array) {
 	}
 	return false;
 }
+
 
 function assert_array_and(condition, values_array) {
 	var i = 0, isize = array_length(values_array);
@@ -1174,16 +1231,19 @@ _tm = call_later(2, time_source_units_frames, function() {
 #macro gui_mouse_x_normalized (device_mouse_x_to_gui(0)/display_get_gui_width())
 #macro gui_mouse_y_normalized (device_mouse_y_to_gui(0)/display_get_gui_height())
 
+
 // this is useful for some libraries by Samuel
 function io_clear_both() {
 	keyboard_clear(keyboard_lastkey);
 	mouse_clear(mouse_lastbutton);
 }
 
+
 // return the position of the mouse without it being stuck in the window
 function window_mouse_x() {
     return display_mouse_get_x() - window_get_x();
 }
+
 
 function window_mouse_y() {
     return display_mouse_get_y() - window_get_y();
@@ -1194,9 +1254,99 @@ function window_mouse_y() {
 
 #region DATA
 
+function ds_debug_print(data_structure) {
+	var _separator = string_repeat("-", 32);
+	show_debug_message(_separator);
+	
+	// ds_list
+	if (ds_exists(data_structure, ds_type_list)) {
+		var _txt = "DS_LIST:\n";
+		var i = 0, isize = ds_list_size(data_structure);
+		repeat(isize) {
+			_txt += "\n" + string(data_structure[| i]);
+			++i;
+		}
+		show_debug_message(_txt);
+	} else
+	
+	// ds_map
+	if (ds_exists(data_structure, ds_type_map)) {
+		var _txt = "DS_MAP:\n";
+		var _keys_aray = ds_map_keys_to_array(data_structure);
+		var _values_array = ds_map_values_to_array(data_structure);
+		var isize = array_length(_keys_aray), i = isize-1;
+		_txt += "\n>> SIZE: " + string(isize);
+		repeat(isize) {
+			_txt += "\n" + string(_keys_aray[i] + " : " + string(_values_array[i]));
+			--i;
+		}
+		show_debug_message(_txt);
+	} else
+	
+	// ds_priority
+	if (ds_exists(data_structure, ds_type_priority)) {
+		var _txt = "DS_PRIORITY:\n";
+		var _temp_ds_pri = ds_priority_create();
+		ds_priority_copy(_temp_ds_pri, data_structure);
+		var i = 0, isize = ds_priority_size(_temp_ds_pri);
+		_txt += "\n>> SIZE: " + string(isize) + "| Min priority: " + string(ds_priority_find_min(_temp_ds_pri)) + " | Max priority: " + string(ds_priority_find_max(_temp_ds_pri));
+		repeat(isize) {
+			var _val = ds_priority_find_min(_temp_ds_pri);
+			_txt += "\n" + string(ds_priority_find_priority(_temp_ds_pri, _val)) + " : " + string(_val);
+			ds_priority_delete_min(_temp_ds_pri);
+			++i;
+		}
+		
+		ds_priority_destroy(_temp_ds_pri);
+		show_debug_message(_txt);
+	} else
+	
+	// ds_grid
+	if (ds_exists(data_structure, ds_type_grid)) {
+		var _txt = "DS_GRID:\n";
+		var _ww = ds_grid_width(data_structure);
+		var _hh = ds_grid_height(data_structure);
+		_txt += "\n>> SIZE: " + string(_ww) + "x" + string(_hh);
+		var i = 0, j = 0, _space = "";
+		repeat(_ww) {
+			j = 0;
+			repeat(_hh) {
+				_space = "";
+				if (j % _ww == 0) _space = "\n";
+				_txt += _space + string(ds_grid_get(data_structure, i, j)) + "    ";
+				++j;
+			}
+			++i;
+		}
+		show_debug_message(_txt);
+	}
+	
+	// ds_queue
+	if (ds_exists(data_structure, ds_type_queue)) {
+		var _txt = "DS_QUEUE:\n";
+		var _temp_ds_queue = ds_queue_create();
+		ds_queue_copy(_temp_ds_queue, data_structure);
+		var i = 0, isize = ds_queue_size(_temp_ds_queue);
+		_txt += "\n>> SIZE: " + string(isize) + "| Head: " + string(ds_queue_head(_temp_ds_queue)) + " | Tail: " + string(ds_queue_tail(_temp_ds_queue));
+		repeat(isize) {
+			_txt += "\n" + string(ds_queue_dequeue(_temp_ds_queue));
+			++i;
+		}
+		ds_queue_destroy(_temp_ds_queue);
+		show_debug_message(_txt);
+	} else
+	
+	
+	
+	
+	show_debug_message(_separator);
+}
+
+
 function string_to_hex(str) {
 	return int64(ptr(str));
 }
+
 
 // https://www.sohamkamani.com/uuid-versions-explained/
 // https://www.uuidtools.com/uuid-versions-explained
@@ -1216,6 +1366,7 @@ function uuid_v5_generate(hifen=false) {
 	return _uuid;
 }
 
+
 function uuid_v3_generate() {
 	// non-random, md5
 	var _config_data = os_get_info();
@@ -1224,6 +1375,7 @@ function uuid_v3_generate() {
 	ds_map_destroy(_config_data);
 	return _uuid;
 }
+
 
 // warning: this function is not repeat safe... wip
 function uuid_v4_generate(hifen=false) {
@@ -1452,9 +1604,40 @@ function folder_content_generate(struct_content) {
 #macro SORT_ASCENDING function(a, b) {return a - b}
 #macro SORT_DESCENDING function(a, b) {return b - a}
 
+function array_create_2d(x_size, y_size) {
+	var _grid = array_create(x_size);
+	for (var i = 0; i < x_size; i++) {
+		_grid[i] = array_create(y_size);
+	}
+	return _grid;
+}
+
+
+function array_create_2d_ext(x_size, y_size, func=undefined) {
+	var _grid = array_create(x_size);
+	for (var i = x_size; i >= 0; i--) {
+		_grid[i] = array_create_ext(y_size, func);
+	}
+	return _grid;
+}
+
+
+function array_create_3d(x_size, y_size, z_size) {
+	var _grid = array_create(x_size);
+	for (var i = x_size; i >= 0; i--) {
+		_grid[i] = array_create(y_size);
+		for(var j = y_size; j >= 0; j--) {
+			_grid[i][j] = array_create(z_size);
+		}
+	}
+	return _grid;
+}
+
+
 function array_choose(array) {
 	return array[irandom_range(0, array_length(array)-1)];
 }
+
 
 function array_shuffle(array) {
 	static _f = function() {
@@ -1462,6 +1645,7 @@ function array_shuffle(array) {
 	}
 	array_sort(array, _f);
 }
+
 
 function array_shift(array, reverse) {
 	if (reverse) {
@@ -1475,6 +1659,7 @@ function array_shift(array, reverse) {
 	}
 }
 
+
 function array_shift_index(array, index, way) {
 	var _len = array_length(array)-1;
 	if (index+way < 0 || index > _len-way) exit;
@@ -1483,6 +1668,7 @@ function array_shift_index(array, index, way) {
 	array[index + way] = _current;
 	array[index] = _next;
 }
+
 
 /// @desc Calculates the sum of all numbers contained in the array.
 /// @param {array} array Array to sum numbers.
@@ -1497,9 +1683,11 @@ function array_sum(array) {
 	return _sum;
 }
 
+
 function array_empty(array) {
 	return (array_length(array) == 0);
 }
+
 
 /// @desc Returns the max value from an array
 function array_max(array) {
@@ -1513,6 +1701,7 @@ function array_max(array) {
 	return _val;
 }
 
+
 /// @desc Returns the min value from an array
 function array_min(array) {
 	var _len = array_length(array);
@@ -1525,15 +1714,22 @@ function array_min(array) {
 	return _val;
 }
 
+
 function array_to_struct(array) {
 	var _struct = {};
 	var i = 0, isize = array_length(array);
 	repeat(isize) {
-		variable_struct_set(_struct, i, array[i]);
+		var _val = array[i];
+		if (is_array(_val)) {
+			_struct[$ i] = array_to_struct(_val);
+		} else {
+			_struct[$ i] = _val;
+		}
 		++i;
 	}
 	return _struct;
 }
+
 
 function ds_list_to_array(list) {
 	var _array = [];
@@ -1552,7 +1748,8 @@ function ds_list_to_array(list) {
 	return _array;
 }
 
-function array_contains(array, value) {
+
+function array_contains_value(array, value) {
 	var i = 0, isize = array_length(array);
 	repeat(isize) {
 		if (array[i] == value) return true;
@@ -1560,6 +1757,7 @@ function array_contains(array, value) {
 	}
 	return false;
 }
+
 
 function array_copy_all(from, to) {
 	array_copy(to, 0, from, 0, array_length(from));
@@ -1648,7 +1846,7 @@ function struct_to_ds_map(struct) {
 	var i = 0, isize = array_length(_keys);
 	repeat(isize) {
 		var _key = _keys[i];
-		var _value = variable_struct_get(struct, _key);
+		var _value = struct[$ _key];
 		ds_map_add(_ds_map, _key, _value);
 		++i;
 	}
@@ -1662,11 +1860,11 @@ function ds_map_to_struct(map) {
 	var i = 0, isize = ds_map_size(map);
 	repeat(isize) {
 		if (ds_map_is_map(map, _key)) {
-			variable_struct_set(_struct, _key, ds_map_to_struct(map[? _key]));
+			_struct[$ _key] = ds_map_to_struct(map[? _key]);
 		} else if (ds_map_is_list(map, _key)) {
-			variable_struct_set(_struct, _key, ds_list_to_array(map[? _key]));
+			_struct[$ _key] = ds_list_to_array(map[? _key]);
 		} else {
-			variable_struct_set(_struct, _key, map[? _key]);
+			_struct[$ _key] = map[? _key];
 		}
 		_key = ds_map_find_next(map, _key);
 		++i;
@@ -2052,6 +2250,48 @@ function instance_number_object(object) {
 }
 
 
+function instance_nearest_nth(x, y, object, number) {
+	//if (!instance_exists(object)) return noone;
+	var _px = x,
+	_py = y,
+	_inst = noone,
+	_pri = ds_priority_create(),
+	i = 0;
+	with(object) {
+		if (self == object) continue;
+		ds_priority_add(_pri, id, distance_to_point(_px, _py));
+		++i;
+	}
+	var _numb = min(i, max(1, number));
+	repeat(_numb) {
+		_inst = ds_priority_delete_min(_pri);
+	}
+	ds_priority_destroy(_pri);
+	return _inst;
+}
+
+
+function instance_farthest_nth(x, y, object, number) {
+	//if (!instance_exists(object)) return noone;
+	var _px = x,
+	_py = y,
+	_inst = noone,
+	_pri = ds_priority_create(),
+	i = 0;
+	with(object) {
+		if (self == object) continue;
+		ds_priority_add(_pri, id, distance_to_point(_px, _py));
+		++i;
+	}
+	var _numb = min(i, max(1, number));
+	repeat(_numb) {
+		_inst = ds_priority_delete_max(_pri);
+	}
+	ds_priority_destroy(_pri);
+	return _inst;
+}
+
+
 function collide_and_move(hspd, vspd, move_spd) {
 	return 0;
 }
@@ -2185,7 +2425,7 @@ function distance_to_path(x, y, path) {
 }
 
 
-function path_get_closest_point(xx, yy, path) {
+function path_get_nearest_point(xx, yy, path) {
 	var i = 0, isize = path_get_number(path),
 	_px = 0, _py = 0, _dist = 0,
 	_pri_x = ds_priority_create(), _pri_y = ds_priority_create();
@@ -2207,7 +2447,7 @@ function path_get_closest_point(xx, yy, path) {
 }
 
 
-function path_get_closest_point_position(xx, yy, path) {
+function path_get_nearest_point_position(xx, yy, path) {
 	var i = 0, isize = path_get_number(path),
 	_px = 0, _py = 0, _dist = 0,
 	_pri_x = ds_priority_create(), _pri_y = ds_priority_create();
@@ -2268,12 +2508,18 @@ global.__tgm_sh_uni = {
 };
 
 
-function draw_quad_lines(x1, y1, x2, y2, x3, y3, x4, y4, middle_line=false) {
+function draw_line_quad(x1, y1, x2, y2, x3, y3, x4, y4, middle_line=false) {
 	draw_line(x1, y1, x2, y2);
 	draw_line(x1, y1, x4, y4);
 	draw_line(x4, y4, x3, y3);
 	draw_line(x2, y2, x3, y3);
 	if (middle_line) draw_line(x1, y1, x3, y3);
+}
+
+
+function draw_line_vector(x1, y1, angle, distance) {
+	var _a = degtorad(angle);
+	draw_line(x1, y1, x1+cos(_a)*distance, y1-sin(_a)*distance);
 }
 
 

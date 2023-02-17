@@ -14,10 +14,12 @@ y2 = o_Player.y - y;
 if dot_product(x1, y1, x2, y2) > 0 seen=true else seen=false;
 */
 
-if keyboard_check_pressed(ord("G")) tests -= 1;
-if keyboard_check_pressed(ord("H")) tests += 1;
+if keyboard_check_pressed(ord("J")) test -= 1;
+if keyboard_check_pressed(ord("K")) test += 1;
 
 
+
+/*
 if keyboard_check_pressed(vk_space) {
 	// generate pseudo-random action list
 	if array_empty(pseudo_action_list) {
@@ -36,6 +38,8 @@ if keyboard_check_pressed(vk_space) {
 	show_debug_message(_value);
 	
 }
+*/
+
 
 
 //if mouse_check_button_pressed(mb_right) {

@@ -1,13 +1,48 @@
 
-
+/*
 draw_path(Path1, 0, 0, true);
-
-var _pos = path_get_closest_point_position(mouse_x, mouse_y, Path1);
-
-//var _xx = path_get_x(Path1, _pos);
-//var _yy = path_get_y(Path1, _pos);
-
+var _pos = path_get_nearest_point_position(mouse_x, mouse_y, Path1);
 draw_circle(_pos.x, _pos.y, 4, true);
+
+
+_pos = path_get_nearest_position(mouse_x, mouse_y, Path1);
+draw_circle(path_get_x(Path1, _pos), path_get_y(Path1, _pos), 4, true);
+*/
+
+// raycasting
+/*
+draw_set_color(c_yellow);
+var _point = raycast_hit_object_2d(mouse_x, mouse_y, all, angle, dist, true, true, 1);
+//var _point = raycast_hit_tag_object_2d(mouse_x, mouse_y, "raycast", true, angle, dist, true, 1);
+
+if (_point != noone) {
+	draw_circle(_point.x, _point.y, 5, true);
+}
+
+draw_set_color(c_white);
+draw_line_vector(mouse_x, mouse_y, angle, dist);
+*/
+
+
+/*
+for (var xx = 0; xx < array_length(array); ++xx) {
+	for (var yy = 0; yy < array_length(array[xx]); ++yy) {
+		for (var zz = 0; zz < array_length(array[xx][yy]); ++zz) {
+			var _x = 32 + xx*32 + zz*300;
+			var _y = 32 + yy*32;
+			draw_text(_x, _y, array[xx][yy][zz]);
+		}
+	}
+}*/
+
+
+/*for (var xx = 0; xx < array_length(array); ++xx) {
+	for (var yy = 0; yy < array_length(array[xx]); ++yy) {
+		var _x = 32 + xx*32;
+		var _y = 32 + yy*32;
+		draw_text(_x, _y, array[xx][yy]);
+	}
+}*/
 
 
 
@@ -125,7 +160,7 @@ var aa = point_direction_radians_vec2(150, 150, mouse_x, mouse_y);
 //draw_sprite_pos_persp(Sprite7, 0, obj_b1.x, obj_b1.y, obj_b2.x, obj_b2.y, obj_b3.x, obj_b3.y, obj_b4.x, obj_b4.y, 1);
 
 
-draw_texture_quad(sprite_get_texture(Sprite7, 0), obj_b1.x, obj_b1.y, obj_b2.x, obj_b2.y, obj_b3.x, obj_b3.y, obj_b4.x, obj_b4.y, 100);
+//draw_texture_quad(sprite_get_texture(Sprite7, 0), obj_b1.x, obj_b1.y, obj_b2.x, obj_b2.y, obj_b3.x, obj_b3.y, obj_b4.x, obj_b4.y, 100);
 
 
 
