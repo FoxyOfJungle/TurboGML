@@ -6,6 +6,7 @@
 	https://foxyofjungle.itch.io/
 	https://twitter.com/foxyofjungle
 	
+	..............................
 	Special Thanks, contributions:
 	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, Juju Adams, icuurd12b42
 	(authors' names written in comment inside the functions used)
@@ -13,13 +14,13 @@
 	Supporters:
 	RookTKO
 -------------------------------------------------------------------------------------------*/
+// Feather ignore all
 
-
-#region MATH & OTHERS
+#region MATH and OTHERS
 
 // pi = The ratio of the circumference of a circle to its diameter.
 // Tau = The ratio of the circumference of a circle to its radius, equal to 2π.
-// Phi = Golden Ratio
+// Phi = Golden Ratio.
 
 #macro Tau (2 * pi)
 #macro HalfPi (pi / 2)
@@ -27,21 +28,6 @@
 #macro GoldenAngle 2.3999632297
 #macro EulerNumber 2.7182818280
 
-function fibonacci(n) {
-	var _numbers = [0, 1];
-	for(var i = 2; i <= n; i++) {
-		_numbers[i] = _numbers[i - 1] + _numbers[i - 2];
-	}
-	return _numbers[n];
-}
-
-function factorial(n) {
-	var _number = 1;
-	for(var i = 1; i <= n; ++i) {
-		_number *= i;
-	}
-	return _number;
-}
 
 /// @desc Return the equivalent of v on an old range of [x0, x1], on a new range of [y0, y1].
 function relerp(in_min, in_max, value, out_min, out_max) {
@@ -65,6 +51,38 @@ function linearstep(minv, maxv, value) {
 function smoothstep(minv, maxv, value) {
 	var t = clamp((value - minv) / (maxv - minv), 0, 1);
 	return t * t * (3 - 2 * t);
+}
+
+/// @desc 0 is returned if value < edge, and 1 is returned otherwise.
+/// @param {Real} edge The location of the edge of the step function.
+/// @param {Real} value The value to be used to generate the step function.
+/// @returns {real} Description
+function step(edge, value) {
+	return (value < edge) ? 0 : 1;
+}
+
+/// @desc Returns the cosine, but with a normalized range of 0 to 1
+/// @param {real} radians_angle Description
+/// @returns {real} Description
+function cos01(radians_angle) {
+	gml_pragma("forceinline");
+	return cos(radians_angle) * 0.5 + 0.5;
+}
+
+/// @desc Returns the sine, but with a normalized range of 0 to 1
+/// @param {real} radians_angle Description
+/// @returns {real} Description
+function sin01(radians_angle) {
+	gml_pragma("forceinline");
+	return sin(radians_angle) * 0.5 + 0.5;
+}
+
+/// @desc Returns the tangent, but with a normalized range of 0 to 1
+/// @param {real} radians_angle Description
+/// @returns {real} Description
+function tan01(radians_angle) {
+	gml_pragma("forceinline");
+	return sin(radians_angle) * 0.5 + 0.5;
 }
 
 /// @desc Calculates the distance traveled by an object in free fall under the influence of friction
@@ -238,15 +256,15 @@ function is_fractional(number) {
 	return (frac(number) > 0);
 }
 
-function is_number_even(number) {
+function is_even_number(number) {
 	return (number % 2 == 0);
 }
 
-function is_number_odd(number) {
+function is_odd_number(number) {
 	return (number % 2 == 1);
 }
 
-function is_number_prime(number) {
+function is_prime_number(number) {
 	if (number < 2) return false;
 	for(var i = 2; i < number; i++) {
 		if (number % i == 0) {
@@ -262,6 +280,36 @@ function pow2_next(val) {
 
 function pow2_previous(val) {
 	return 1 << floor(log2(val));
+}
+
+function fibonacci(n) {
+	var _numbers = [0, 1];
+	for(var i = 2; i <= n; i++) {
+		_numbers[i] = _numbers[i - 1] + _numbers[i - 2];
+	}
+	return _numbers[n];
+}
+
+function factorial(n) {
+	var _number = 1;
+	for(var i = 1; i <= n; ++i) {
+		_number *= i;
+	}
+	return _number;
+}
+
+/// @desc Greatest common divisor.
+function gcd(a, b) {
+	if (b == 0) {
+		return a;
+	} else {
+		return gcd(b, a % b);
+	}
+}
+
+function fraction_reduce(a, b) {
+	var _gcd = gcd(a, b);
+	return new Vector2(a/_gcd, b/_gcd);
 }
 
 function wave_normalized(spd=1) {
@@ -328,7 +376,7 @@ function random_pseudo_array_ext(amount, func=undefined) {
 #endregion
 
 
-#region VECTORS
+#region VECTORS & RAYCASTING
 
 // Shorthand for writing Vector2(0, 1).
 #macro Vector2_Up Vector2(0, 1)
@@ -880,78 +928,79 @@ function Vector4(x, y=x, z=x, w=x) constructor {
 }
 
 
-function raycast_hit_object_2d(origin_x, origin_y, object, angle, distance, absolute_position=false, precise=false, ray_precision=4) {
-	var _xo = origin_x,
-	_yo = origin_y,
-	_dir = degtorad(angle),
-	_segments = distance / ray_precision,
-	_normalized = distance / _segments,
-	_col;
-	repeat(_segments) {
-		_xo += cos(_dir) * _normalized;
-		_yo -= sin(_dir) * _normalized;
-		_col = collision_point(_xo, _yo, object, precise, true);
-		//draw_circle(_xo, _yo, 3, true);
-		if (_col != noone) return absolute_position ? new Vector2(_xo, _yo) : _col;
+function raycast_hit_point_2d(origin_x, origin_y, object, angle, distance, precise=true, notme=true) {
+	// original by: YellowAfterLife, https://yal.cc/gamemaker-collision-line-point/
+	// edited by FoxyPfJungle
+	var _dir = degtorad(angle),
+	_x1 = origin_x,
+	_y1 = origin_y,
+	_x2 = origin_x + cos(_dir)*distance,
+	_y2 = origin_y - sin(_dir)*distance,
+	
+	_col = collision_line(_x1, _y1, _x2, _y2, object, precise, notme),
+	_col2 = noone,
+	
+	_xo = _x1,
+	_yo = _y1;
+	
+	if (_col != noone) {
+		var _p0 = 0,
+		_p1 = 1,
+		_np = 0,
+		_px = 0,
+		_py = 0,
+		_nx = 0,
+		_ny = 0,
+		_len = ceil(log2(point_distance(_x1, _y1, _x2, _y2))) + 1;
+		repeat(_len) {
+			_np = _p0 + (_p1 - _p0) * 0.5;
+			_nx = _x1 + (_x2 - _x1) * _np;
+			_ny = _y1 + (_y2 - _y1) * _np;
+			_px = _x1 + (_x2 - _x1) * _p0;
+			_py = _y1 + (_y2 - _y1) * _p0;
+			_col2 = collision_line(_px, _py, _nx, _ny, object, precise, notme);
+			if (_col2 != noone) {
+				_col = _col2;
+				_xo = _nx;
+				_yo = _ny;
+				_p1 = _np;
+			} else _p0 = _np;
+		}
 	}
-	return noone;
+	return new Vector3(_xo, _yo, _col);
 }
 
+// old (unused)
+//function raycast_hit_point_2d(origin_x, origin_y, object, angle, distance, precise=false, ray_precision=4) {
+//	var _xo = origin_x,
+//	_yo = origin_y,
+//	_dir = degtorad(angle),
+//	_segments = distance / ray_precision,
+//	_normalized = distance / _segments,
+//	_col;
+//	repeat(_segments) {
+//		_xo += cos(_dir) * _normalized;
+//		_yo -= sin(_dir) * _normalized;
+//		_col = collision_point(_xo, _yo, object, precise, true);
+//		//draw_circle(_xo, _yo, 3, true);
+//		if (_col != noone) return new Vector3(_xo, _yo, _col);
+//	}
+//	return noone;
+//}
 
-function raycast_hit_tag_object_2d(origin_x, origin_y, tags, include_children, angle, distance, absolute_position=false, precise=false, ray_precision=4) {
-	var _xo = 0, _yo = 0,
-	_dir = degtorad(angle),
-	_segments = distance / ray_precision,
-	_normalized = distance / _segments,
-	// search for objects
-	_asset_ids = tag_get_asset_ids(tags, asset_object), _object = noone,
-	i = 0, isize = array_length(_asset_ids), _col;
+
+function raycast_tag_hit_point_2d(origin_x, origin_y, tags, include_children, angle, distance, precise=true, notme=true) {
+	// original by: YellowAfterLife, https://yal.cc/gamemaker-collision-line-point/ | edited by FoxyPfJungle
+	// search for tag objects
+	var _object_ids_array = tag_get_asset_ids(tags, asset_object),
+	i = 0, isize = array_length(_object_ids_array), _col;
 	repeat(isize) {
 		// raycast
-		_xo = origin_x;
-		_yo = origin_y;
-		repeat(_segments) {
-			_xo += cos(_dir) * _normalized;
-			_yo -= sin(_dir) * _normalized;
-			_col = collision_point(_xo, _yo, _asset_ids[i], precise, true);
-			//draw_set_color(make_color_hsv(25 * i, 255, 255));
-			//draw_circle(_xo, _yo, 3, true);
-			//draw_set_color(c_white);
-			if (_col != noone) return absolute_position ? new Vector2(_xo, _yo) : _col;
-		}
+		_col = raycast_hit_point_2d(origin_x, origin_y, _object_ids_array[i], angle, distance, precise, notme);
+		if (_col.z != noone) return _col;
 		++i;
 	}
-	return noone;
-}
-
-
-#endregion
-
-
-#region CAMERA
-
-function camera_get_fov(proj_mat) {
-	return radtodeg(arctan(1.0/proj_mat[5]) * 2.0);
-}
-
-function camera_get_aspect(proj_mat) {
-	return proj_mat[5] / proj_mat[0];
-}
-
-function camera_get_far_plane(proj_mat) {
-	return -proj_mat[14] / (proj_mat[10]-1);
-}
-
-function camera_get_near_plane(proj_mat) {
-	return -2 * proj_mat[14] / (proj_mat[10]+1);
-}
-
-function camera_get_area_2d(view_mat, proj_mat) {
-	var _cam_x = -view_mat[12];
-	var _cam_y = -view_mat[13];
-	var _cam_w = round(abs(2/proj_mat[0]));
-	var _cam_h = round(abs(2/proj_mat[5]));
-	return new Vector4(_cam_x-_cam_w/2, _cam_y-_cam_h/2, _cam_w, _cam_h);
+	return new Vector3(origin_x, origin_y, noone);
 }
 
 #endregion
@@ -960,6 +1009,7 @@ function camera_get_area_2d(view_mat, proj_mat) {
 #region GENERAL
 
 #macro fps_average ___fps_average()
+/// @ignore
 function ___fps_average() {
 	static frames = 0;
 	static total_fps = 1;
@@ -1066,192 +1116,6 @@ function invoke(callback, args, time, repetitions=1) {
 #endregion
 
 
-#region PROCEDURAL GENERATION	
-
-function pattern_read_sprite(sprite, wspace=1, hspace=1) {
-	var _width = sprite_get_width(sprite),
-	_height = sprite_get_height(sprite),
-	
-	_surf = surface_create(_width, _height);
-	surface_set_target(_surf);
-	draw_clear_alpha(c_black, 0);
-	draw_sprite(sprite, 0, 0, 0);
-	surface_reset_target();
-	
-	var _buff = buffer_create(_width * _height * 4, buffer_fixed, 1);
-	buffer_get_surface(_buff, _surf, 0);
-	
-	// data structure with info
-	var data = {
-		blocks : [],
-		width : 0,
-		height : 0,
-	};
-	
-	// read every sprite pixel
-	var _r, _g, _b, _a, _pixel, _col;
-	var i = 0, j = 0, _total = 0;
-	repeat(_width) {
-		j = 0;
-		repeat(_height) {
-			_pixel = buffer_peek(_buff, 4 * (i + j * _width), buffer_u32); // get abgr
-			_r = _pixel & $ff;
-			_g = (_pixel >> 8) & $ff;
-			_b = (_pixel >> 16) & $ff;
-			_a = (_pixel >> 24) & $ff;
-			
-			_col = make_color_rgb(_r, _g, _b);
-			
-			// add pixel position data to array
-			var _json = {
-				x : i * wspace,
-				y : j * hspace,
-				p : (_col == c_white ? 1 : 0),
-			}
-			data.blocks[_total] = _json;
-			_total++;
-			++j;
-		}
-		++i;
-	}
-	data.width = i;
-	data.height = j;
-	
-	surface_free(_surf);
-	buffer_delete(_buff);
-	return data;
-}
-
-
-
-
-#endregion
-
-
-#region ASSERT
-
-function assert_array_or(condition, values_array) {
-	var i = 0, isize = array_length(values_array);
-	repeat(isize) {
-		if (condition == values_array[i]) return true;
-		++i;
-	}
-	return false;
-}
-
-
-function assert_array_and(condition, values_array) {
-	var i = 0, isize = array_length(values_array);
-	repeat(isize) {
-		if (condition != values_array[i]) return false;
-		++i;
-	}
-	return true;
-}
-
-#endregion
-
-
-#region DELTA TIME & MOUSE
-
-// PLEASE NOTE: THIS IS A BASIC IMPLEMENTATION OF DELTA TIMING
-// USE "IOTA" BY JUJU, FOR ROBUST DELTA TIMING
-
-// Delta Time
-// base frame rate
-#macro FRAME_RATE 60
-
-// delta time, used for multiplying things
-#macro DELTA_TIME global.__delta_time_multiplier
-
-// delta time scale, used for slow motion
-#macro DELTA_TIME_SCALE global.__delta_time_scale
-
-// delta update smoothness, is the interpolated speed used to smooth out sudden FPS changes (1 = default)
-#macro DELTA_UPDATE_LERP 1
-
-
-// internal
-global.__delta_speed = 0;
-global.__delta_time_multiplier_base = 1;
-global.__delta_time_multiplier = 1;
-global.__delta_time_scale = 1;
-//global.__frame_count
-
-// Delta Mouse
-global.__mouse_x_delta = 0;
-global.__mouse_y_delta = 0;
-global.__mouse_x_previous = 0;
-global.__mouse_y_previous = 0;
-global.__gui_mouse_x_delta = 0;
-global.__gui_mouse_y_delta = 0;
-global.__gui_mouse_x_previous = 0;
-global.__gui_mouse_y_previous = 0;
-#macro mouse_x_delta global.__mouse_x_delta
-#macro mouse_y_delta global.__mouse_y_delta
-#macro gui_mouse_x_delta global.__gui_mouse_x_delta
-#macro gui_mouse_y_delta global.__gui_mouse_y_delta
-
-var _tm;
-_tm = call_later(1, time_source_units_frames, function() {
-	// delta time
-	global.__delta_speed = 1/FRAME_RATE;
-	global.__delta_time_multiplier_base = (delta_time/1000000)/global.__delta_speed;
-	global.__delta_time_multiplier = lerp(global.__delta_time_multiplier, global.__delta_time_multiplier_base, 1) * global.__delta_time_scale;
-	
-	// delta mouse
-	global.__mouse_x_delta = mouse_x - global.__mouse_x_previous;
-	global.__mouse_y_delta = mouse_y - global.__mouse_y_previous;
-	global.__gui_mouse_x_delta = mouse_x - global.__gui_mouse_x_previous;
-	global.__gui_mouse_y_delta = mouse_y - global.__gui_mouse_y_previous;
-}, true);
-
-_tm = call_later(2, time_source_units_frames, function() {
-	var _tm = call_later(1, time_source_units_frames, function() {
-		// delta mouse
-		global.__mouse_x_previous = mouse_x;
-		global.__mouse_y_previous = mouse_y;
-		global.__gui_mouse_x_previous = device_mouse_x_to_gui(0);
-		global.__gui_mouse_y_previous = device_mouse_y_to_gui(0);
-		
-		// frame count
-		//global.__frame_count += game_get_speed(gamespeed_fps);
-	}, true);
-}, false);
-
-
-
-#endregion
-
-
-#region WINDOW & INPUT
-
-#macro gui_mouse_x device_mouse_x_to_gui(0)
-#macro gui_mouse_y device_mouse_y_to_gui(0)
-#macro gui_mouse_x_normalized (device_mouse_x_to_gui(0)/display_get_gui_width())
-#macro gui_mouse_y_normalized (device_mouse_y_to_gui(0)/display_get_gui_height())
-
-
-// this is useful for some libraries by Samuel
-function io_clear_both() {
-	keyboard_clear(keyboard_lastkey);
-	mouse_clear(mouse_lastbutton);
-}
-
-
-// return the position of the mouse without it being stuck in the window
-function window_mouse_x() {
-    return display_mouse_get_x() - window_get_x();
-}
-
-
-function window_mouse_y() {
-    return display_mouse_get_y() - window_get_y();
-}
-
-#endregion
-
-
 #region DATA
 
 function ds_debug_print(data_structure) {
@@ -1347,6 +1211,7 @@ function ds_debug_print(data_structure) {
 			_txt += "\n" + string(ds_stack_pop(_temp_ds_stack));
 			++i;
 		}
+		ds_stack_destroy(_temp_ds_stack);
 		show_debug_message(_txt);
 	}
 	
@@ -1404,221 +1269,15 @@ function uuid_v4_generate(hifen=false) {
 #endregion
 
 
-#region FILE SYSTEM
-
-function filename_dir_name(file) {
-	//var _dir_name = filename_name(filename_dir(file));
-	var _dir = filename_dir(file), _dir_name = "";
-	var isize = string_length(_dir), i = isize;
-	repeat(isize) {
-		var _char = string_char_at(_dir, i);
-		if (_char == "/") {
-			_dir_name = string_copy(_dir, i+1, string_length(_dir)-i);
-			break;
-		}
-		--i;
-	}
-	return _dir_name;
-}
-
-
-function filename_name_noext(path) {
-	return filename_name(filename_change_ext(path, ""));
-	//var _name = filename_name(path);
-	//var _size = string_length(_name);
-	//for (var i = 1; i <= _size; ++i) {
-	//	var _char = string_char_at(_name, i);
-	//	if (_char == ".") {
-	//		var _pos = string_pos(".", _name);
-	//		var _word = string_copy(_name, _pos+1, string_length(_name)-_pos);
-	//		_name = string_delete(_name, _pos, string_length(_word)+1);
-	//	}
-	//}
-	//return _name;
-}
-
-
-function file_write_string(file_path, str) {
-	var _buff = buffer_create(1, buffer_grow, 1);
-	buffer_write(_buff, buffer_string, str);
-	buffer_save(_buff, file_path);
-	buffer_delete(_buff);
-}
-
-
-function file_write_text(file_path, str) {
-	var _buff = buffer_create(1, buffer_grow, 1);
-	buffer_write(_buff, buffer_text, str);
-	buffer_save(_buff, file_path);
-	buffer_delete(_buff);
-}
-
-
-function file_read_string(file_path) {
-	if (!file_exists(file_path)) return undefined;
-	var _buffer = buffer_load(file_path);
-	var _result = buffer_read(_buffer, buffer_string);
-	buffer_delete(_buffer);
-	return _result;
-}
-
-
-function file_read_text(file_path) {
-	if (!file_exists(file_path)) return undefined;
-	var _buffer = buffer_load(file_path);
-	var _result = buffer_read(_buffer, buffer_text);
-	buffer_delete(_buffer);
-	return _result;
-}
-
-
-function bytes_get_size(bytes) {
-	var _sizes = ["B", "KB", "MB", "GB", "TB", "PB"]; // you can add more
-	if (bytes == 0) return "0 B";
-	var i = floor(log2(bytes) / log2(1024));
-	return string(round(bytes / power(1024, i))) + " " + _sizes[i];
-}
-
-
-function file_get_size(file) {
-	var _buff = buffer_load(file);
-	if (_buff <= 0) return 0;
-	var _size = buffer_get_size(_buff);
-	buffer_delete(_buff);
-	return _size;
-}
-
-
-// based on https://yal.cc/gamemaker-recursive-folder-copying/
-/// @ignore
-function __directory_recursive_search(contents, source, extension, search_folders, search_files, search_subdir, full_info, get_size) {
-	// scan contents (folders and files)
-	var _contents = [];
-	var _file = file_find_first(source + "/" + extension, fa_directory | fa_archive | fa_readonly);
-	var _files_count = 0;
-	while(_file != "") {
-		if (_file == ".") continue;
-		if (_file == "..") continue;
-		array_push(_contents, _file);
-		_file = file_find_next();
-		_files_count++;
-	}
-	file_find_close();
-	
-	// process found contents:
-	var i = 0;
-	repeat(_files_count) {
-		var _fname = _contents[i];
-		var _path = source + "/" + _fname; // the path of the content (folder or file)
-		var _dir_name = filename_dir_name(_path);
-		
-		var _progress = (i/_files_count); // ready-only
-		show_debug_message("Scanning: [" + string(_progress*100) + "%] " + _dir_name + " | " + string(_fname));
-		
-		if (directory_exists(_path)) {
-			// recursively search directories
-			if (search_subdir) __directory_recursive_search(contents, _path, extension, search_folders, search_files, search_subdir, full_info, get_size);
-			if (search_folders) {
-				array_push(contents, full_info ? {
-					name : _fname,
-					type : 0,
-					ext : "",
-					path : _path,
-					root_folder : _dir_name,
-					size : -1,
-				} : _fname);
-			}
-		} else {
-			if (search_files) {
-				array_push(contents, full_info ? {
-					name : filename_name_noext(_fname),
-					type : 1,
-					ext : filename_ext(_fname),
-					path : _path,
-					root_folder : _dir_name,
-					size : get_size ? bytes_get_size(file_get_size(_path)) : -1,
-				} : _fname);
-			}
-		}
-		++i;
-	}
-	
-	return _contents;
-}
-
-function DirectoryScanner(path, extension="*.*", search_folders=true, search_files=true, search_subdir=true, full_info=true, get_size=false) constructor {
-	__contents = [];
-	__loaded = false;
-	__path_exists = false;
-	
-	if (directory_exists(path)) {
-		__directory_recursive_search(__contents, path, string(extension), search_folders, search_files, search_subdir, full_info, get_size);
-		__loaded = true;
-		__path_exists = true;
-	} else {
-		show_debug_message("Directory Scanner: Error, can't find directory to scan.");
-	}
-	
-	static GetContents = function() {
-		return __path_exists ? __contents : undefined;
-	}
-	
-	static GetFilesAmount = function() {
-		return array_length(__contents);
-	}
-	
-	static IsLoaded = function() {
-		return __loaded;
-	}
-	
-}
-
-
-/// @ignore
-/*function __folder_recursive_create(folder, struct_content) {	
-	// arquivos
-	if (is_array(struct_content)) {
-		var i = 0, isize = array_length(struct_content);
-		repeat(isize) {
-			var _item = struct_content[i];
-			var _name = _item.name;
-			var _type = _item.type;
-			var _root_folder = _item.root_folder;
-			print("ARRAY", _name);
-			
-			// folder
-			if (_type == 0) {
-				folder[$ _name] = [];
-			}
-			
-			++i;
-		}
-		
-	} else
-	
-	if (is_struct(struct_content)) {
-		
-	}
-}
-
-function folder_content_generate(struct_content) {
-	var _folder = {};
-	__folder_recursive_create(_folder, struct_content);
-	return _folder;
-}*/
-
-#endregion
-
-
 #region ARRAYS
 
 #macro SORT_ASCENDING function(a, b) {return a - b}
 #macro SORT_DESCENDING function(a, b) {return b - a}
 
-function array_create_2d(x_size, y_size) {
-	var _grid = array_create(x_size);
+function array_create_2d(x_size, y_size, value=0) {
+	var _grid = array_create(x_size, value);
 	for (var i = 0; i < x_size; i++) {
-		_grid[i] = array_create(y_size);
+		_grid[i] = array_create(y_size, value);
 	}
 	return _grid;
 }
@@ -1633,12 +1292,12 @@ function array_create_2d_ext(x_size, y_size, func=undefined) {
 }
 
 
-function array_create_3d(x_size, y_size, z_size) {
-	var _grid = array_create(x_size);
+function array_create_3d(x_size, y_size, z_size, value=0) {
+	var _grid = array_create(x_size, value);
 	for (var i = x_size; i >= 0; i--) {
-		_grid[i] = array_create(y_size);
+		_grid[i] = array_create(y_size, value);
 		for(var j = y_size; j >= 0; j--) {
-			_grid[i][j] = array_create(z_size);
+			_grid[i][j] = array_create(z_size, value);
 		}
 	}
 	return _grid;
@@ -1780,6 +1439,9 @@ function array_copy_all(from, to) {
 
 #region STRUCTS
 
+/// @desc Recursively copy a struct.
+/// @param {Struct} struct The struct id.
+/// @returns {Struct}
 function struct_copy(struct) {
 	if (is_array(struct)) {
 		var _array = [];
@@ -1838,13 +1500,13 @@ function struct_pop(struct, name) {
 
 
 function struct_from_instance_variables(inst_id) {
-	var _struct = {};
-	var _keys = variable_instance_get_names(inst_id);
-	var i = 0, isize = array_length(_keys);
+	var _struct = {},
+	_keys = variable_instance_get_names(inst_id),
+	i = 0, isize = array_length(_keys);
 	repeat(isize) {
 		var _key = _keys[i];
 		var _value = variable_instance_get(inst_id, _key);
-		variable_struct_set(_struct, _key, _value);
+		_struct[$ _key] = _value;
 		++i;
 	}
 	return _struct;
@@ -1852,9 +1514,9 @@ function struct_from_instance_variables(inst_id) {
 
 
 function struct_to_ds_map(struct) {
-	var _ds_map = ds_map_create();
-	var _keys = variable_struct_get_names(struct);
-	var i = 0, isize = array_length(_keys);
+	var _ds_map = ds_map_create(),
+	_keys = variable_struct_get_names(struct),
+	i = 0, isize = array_length(_keys);
 	repeat(isize) {
 		var _key = _keys[i];
 		var _value = struct[$ _key];
@@ -1866,9 +1528,9 @@ function struct_to_ds_map(struct) {
 
 
 function ds_map_to_struct(map) {
-    var _struct = {};
-    var _key = ds_map_find_first(map);
-	var i = 0, isize = ds_map_size(map);
+    var _struct = {},
+    _key = ds_map_find_first(map),
+	i = 0, isize = ds_map_size(map);
 	repeat(isize) {
 		if (ds_map_is_map(map, _key)) {
 			_struct[$ _key] = ds_map_to_struct(map[? _key]);
@@ -1887,7 +1549,7 @@ function ds_map_to_struct(map) {
 // alternative: https://yal.cc/gamemaker-beautifying-json/
 function json_beautify(json_string, indent_size=4, newline_char="\n", map_spacing=1) {
 	// credits: 2017/12/08 @jujuadams; with thanks to yal.cc
-	// if you use this, shoot me a tweet!
+	// doesn't works with functions/methods
 	
 	var _in_string = false,
 	_string_escape = false,
@@ -2034,8 +1696,8 @@ function string_limit(str, width) {
 
 function string_limit_nonmono(str, width) {
 	if (string_width(str) < width) return str;
-	var _str = "", _char = "";
-	var i = 1, isize = string_length(str), _ww = 0;
+	var _str = "", _char = "",
+	i = 1, isize = string_length(str), _ww = 0;
 	repeat(isize) {
 		_char = string_char_at(str, i);
 		_ww += string_width(_char);
@@ -2047,8 +1709,8 @@ function string_limit_nonmono(str, width) {
 
 
 function string_split_each_char(str) {
-	var _array = [];
-	var i = 1, _size = string_length(str);
+	var _array = [],
+	i = 1, _size = string_length(str);
 	repeat(_size) {
 		array_push(_array, string_char_at(str, i));
 		++i;
@@ -2077,9 +1739,9 @@ function string_random_letter_case(str, first_is_upper=true, sequence=1) {
 
 
 function string_first_letter_upper_case(str) {
-	var _string = string_lower(str);
-	var _str_final = "";
-	var i = 1, isize = string_length(str);
+	var _string = string_lower(str),
+	_str_final = "",
+	i = 1, isize = string_length(str);
 	repeat(isize) {
 		var _char = string_char_at(_string, i);
 		_str_final += (i == 1) ? string_upper(_char) : _char;
@@ -2090,9 +1752,9 @@ function string_first_letter_upper_case(str) {
 
 
 function string_word_first_letter_upper_case(str) {
-	var _string = string_lower(str);
-	var _str_final = "";
-	var i = 1, isize = string_length(str);
+	var _string = string_lower(str),
+	_str_final = "",
+	i = 1, isize = string_length(str);
 	repeat(isize) {
 		var _char = string_char_at(_string, i);
 		var _pchar = string_char_at(_string, i-1);
@@ -2104,12 +1766,12 @@ function string_word_first_letter_upper_case(str) {
 
 
 function string_case_reverse(str) {
-	var _str_final = "";
-	var i = 1, isize = string_length(str);
+	var _str_final = "",
+	i = 1, isize = string_length(str);
 	repeat(isize) {
-		var _char = string_char_at(str, i);
-		var _char_upper = string_upper(_char);
-		var _char_lower = string_lower(_char);
+		var _char = string_char_at(str, i),
+		_char_upper = string_upper(_char),
+		_char_lower = string_lower(_char);
 		_str_final += (_char == _char_upper) ? _char_lower : _char_upper;
 		++i;
 	}
@@ -2118,8 +1780,8 @@ function string_case_reverse(str) {
 
 
 function string_reverse(str) {
-	var _str_final = "";
-	var isize = string_length(str), i = isize;
+	var _str_final = "",
+	isize = string_length(str), i = isize;
 	repeat(isize) {
 		_str_final += string_char_at(str, i);
 		--i;
@@ -2233,7 +1895,7 @@ function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz, normalized=fa
 #endregion
 
 
-#region INSTANCES & OBJECTS
+#region INSTANCES and OBJECTS
 
 // get the top instance of any layer/depth
 function instance_top_position(px, py, object) {
@@ -2303,10 +1965,87 @@ function instance_farthest_nth(x, y, object, number) {
 }
 
 
-function collide_and_move(hspd, vspd, move_spd) {
-	return 0;
+function move_and_collide_simple(hspd, vspd, object) {
+	var vx = sign(hspd),
+	vy = sign(vspd),
+	_col = noone,
+	_hor_colliding = false,
+	_ver_colliding = false,
+	_collision_id = noone;
+	
+	_col = instance_place(x+hspd, y, object);
+	if (_col != noone) {
+		repeat(abs(hspd) + 1) {
+			if (place_meeting(x + vx, y, object)) break;
+			x += vx;
+		}
+		hspd = 0;
+		_hor_colliding = true;
+		_collision_id = _col;
+	}
+	x += hspd;
+	
+	_col = instance_place(x, y+vspd, object);
+	if (_col != noone) {
+		repeat(abs(vspd) + 1) {
+			if (place_meeting(x, y + vy, object)) break;
+			y += vy;
+		}
+		vspd = 0;
+		_ver_colliding = true;
+		_collision_id = _col;
+	}
+	y += vspd;
+	
+	return new Vector3(_hor_colliding, _ver_colliding, _collision_id);
 }
 
+
+function move_and_collide_simple_tag(hspd, vspd, tags) {
+	var _pri = ds_priority_create();
+	// search for tag objects
+	var _object_ids_array = tag_get_asset_ids(tags, asset_object),
+	i = 0, isize = array_length(_object_ids_array);
+	repeat(isize) {
+		var _object = _object_ids_array[i];
+		ds_priority_add(_pri, _object, distance_to_object(_object));
+		++i;
+	}
+	var _obj = ds_priority_find_min(_pri);
+	ds_priority_destroy(_pri);
+	return move_and_collide_simple(hspd, vspd, _obj);
+}
+
+
+
+#endregion
+
+
+#region CAMERA
+
+function camera_get_fov(proj_mat) {
+	return radtodeg(arctan(1.0/proj_mat[5]) * 2.0);
+}
+
+function camera_get_aspect(proj_mat) {
+	return proj_mat[5] / proj_mat[0];
+}
+
+function camera_get_far_plane(proj_mat) {
+	return -proj_mat[14] / (proj_mat[10]-1);
+}
+
+function camera_get_near_plane(proj_mat) {
+	return -2 * proj_mat[14] / (proj_mat[10]+1);
+}
+
+function camera_get_area_2d(view_mat, proj_mat) {
+	var _cam_x = -view_mat[12];
+	var _cam_y = -view_mat[13];
+	var _cam_w = round(abs(2/proj_mat[0]));
+	var _cam_h = round(abs(2/proj_mat[5]));
+	return new Vector4(_cam_x-_cam_w/2, _cam_y-_cam_h/2, _cam_w, _cam_h);
+}
 
 #endregion
 
@@ -2352,21 +2091,17 @@ function layer_instance_count(layer_id) {
 
 #region PATHS
 
-function distance_to_path(x, y, path) {
+function distance_to_path(xx, yy, path) {
 	// calculates the shortest distance to the given path
-	var x0, y0;
-	x0 = x;
-	y0 = y;
-
-	var i, points, segments, length, pos, pmin, pmax, x1, y1, x2, y2, dx, dy, t, ix, iy, dist, min_dist;
+	var x0 = xx, y0 = yy, i, points, segments, length, pos, pmin, pmax, x1, y1, x2, y2, dx, dy, t, ix, iy, dist, min_dist;
 
 	if (path_get_kind(path) == 0) {
-		// Straight path
-		// Get the number of control points and line segments on the path
+		// straight path
+		// get the number of control points and line segments on the path
 		segments = points;
 		if (!path_get_closed(path)) segments -= 1;
 
-		// First, find the nearest control point.
+		// first, find the nearest control point.
 		min_dist = infinity;
 		for(i = 0; i < points; i++) {
 			x1 = path_get_point_x(path, i);
@@ -2375,17 +2110,17 @@ function distance_to_path(x, y, path) {
 			if (dist < min_dist) min_dist = dist;
 		}
     
-		// Second, calculate the distance to each line segment and find the nearest one.
+		// second, calculate the distance to each line segment and find the nearest one.
 		x1 = path_get_point_x(path, 0);
 		y1 = path_get_point_y(path, 0);
 		for(i = 0; i < segments; i++) {
-			x2 = path_get_point_x(path, (i+1) mod points);
-			y2 = path_get_point_y(path, (i+1) mod points);
+			x2 = path_get_point_x(path, (i+1) % points);
+			y2 = path_get_point_y(path, (i+1) % points);
 
 			dx = x2 - x1;
 			dy = y2 - y1;
 			if (dx != 0 || dy != 0) {
-				// See if there is an intersection between the line segment
+				// see if there is an intersection between the line segment
 				// and the perpendicular line to it.
 				t = -(dx * (x1 - x0) + dy * (y1 - y0)) / (sqr(dx) + sqr(dy));
 				if (t >= 0 && t < 1) {
@@ -2401,8 +2136,8 @@ function distance_to_path(x, y, path) {
 			y1 = y2;
 		}
 	} else {
-		// Smooth path
-		// First, split the path into a few segments and find the nearest one.
+		// smooth path
+		// first, split the path into a few segments and find the nearest one.
 		length = path_get_length(path);
 		segments = max(4, length / 32); // Hope this is enough
 		min_dist = infinity;
@@ -2418,8 +2153,8 @@ function distance_to_path(x, y, path) {
 			}
 		}
 		
-		// Now, accurately find the nearest point on the segment.
-		// At this point, pmin has the position of the provisional nearest point,
+		// now, accurately find the nearest point on the segment.
+		// at this point, pmin has the position of the provisional nearest point,
 		// and the following two lines are to get two end points adjacent to it.
 		pmax = min(pmin + 1/segments, 1);
 		pos = max(0, pmin - 1/segments);
@@ -2578,10 +2313,10 @@ function draw_texture_quad(texture_id, x1, y1, x2, y2, x3, y3, x4, y4, precision
 
 
 function draw_cone(x, y, angle, dist, fov) {
-	var _len_x1 = dcos(angle - fov/2) * dist;
-	var _len_y1 = dsin(angle - fov/2) * dist;
-	var _len_x2 = dcos(angle + fov/2) * dist;
-	var _len_y2 = dsin(angle + fov/2) * dist;
+	var _len_x1 = dcos(angle - fov/2) * dist,
+		_len_y1 = dsin(angle - fov/2) * dist,
+		_len_x2 = dcos(angle + fov/2) * dist,
+		_len_y2 = dsin(angle + fov/2) * dist;
 	draw_line(x, y, x+_len_x1, y-_len_y1);
 	draw_line(x, y, x+_len_x2, y-_len_y2);
 	draw_line(x+_len_x1, y-_len_y1, x+_len_x2, y-_len_y2);
@@ -2602,6 +2337,11 @@ function draw_sprite_centered(sprite, subimg, x, y) {
 // useful when applying a shader to a sprite that is offset at 0, 0, but still wants to draw centered and scaled.
 function draw_sprite_centered_ext(sprite, subimg, x, y, xscale, yscale, rot, col, alpha) {
 	draw_sprite_ext(sprite, subimg, x-(sprite_get_width(sprite)/2)*xscale, y-(sprite_get_height(sprite)/2)*yscale, xscale, yscale, rot, col, alpha);
+}
+
+
+function draw_surface_centered_ext(surface_id, x, y, xscale, yscale, rot, col, alpha) {
+	draw_surface_ext(surface_id, x-(surface_get_width(surface_id)/2)*xscale, y-(surface_get_height(surface_id)/2)*yscale, xscale, yscale, rot, col, alpha);
 }
 
 
@@ -2698,6 +2438,7 @@ function draw_text_shake(x, y, str, str_width, dist=1) {
 #region BLENDING
 
 function gpu_set_blendmode_test(index, debug_info=false) {
+	// Feather disable GM1044
 	// final_pixel_colour =  (Rs,Gs,Bs,As) * source_blend_factor + (Rd,Gd,Bd,Ad) * destination_blend_factor
 	// s = source | d = destination
 	// there is 14641 possible extended blendmode combinations
@@ -2746,15 +2487,15 @@ function gpu_set_blendmode_test(index, debug_info=false) {
 		}
 		return val;
 	}
-	var _type = "";
-	var _current = 0;
-	var _max = 5;
+	var _type = "",
+	_current = 0,
+	_max = 5,
 	
 	// default blendmode
-	var _bm1 = bm_src_alpha;
-	var _bm2 = bm_inv_src_alpha;
-	var _bm3 = bm_src_alpha;
-	var _bm4 = bm_one;
+	_bm1 = bm_src_alpha,
+	_bm2 = bm_inv_src_alpha,
+	_bm3 = bm_src_alpha,
+	_bm4 = bm_one;
 	
 	// no blendmode
 	if (index < 0) {
@@ -2848,20 +2589,536 @@ function make_color_shader(color) {
 	return [color_get_red(color)/255, color_get_green(color)/255, color_get_blue(color)/255];
 }
 
+function make_color_rgba_shader(color, alpha) {
+	return [color_get_red(color)/255, color_get_green(color)/255, color_get_blue(color)/255, alpha];
+}
+
 #endregion
 
 
-#region GRAPHICS PIPELINE & DISPLAY
+#region GRAPHICS PIPELINE, TEXTURE GROUPS, SURFACES and DISPLAY
 
 #macro ANTIALIASING_MAX_AVAILABLE max(display_aa & 2, display_aa & 4, display_aa & 8)
 
+
 function display_get_inches() {
-	return sqrt(sqr(display_get_width()) + sqr(display_get_height())) / display_get_dpi_x();
+	return sqrt(sqr(display_get_width()) + sqr(display_get_height())) / mean(display_get_dpi_x(), display_get_dpi_y());
 }
+
 
 function display_get_display_count() {
 	// credit: gnysek
 	return array_length(window_get_visible_rects(0, 0, 1, 1)) / 8;
+}
+
+
+function display_get_aspect_ratio() {
+	return display_get_width() / display_get_height();
+}
+
+
+function aspect_ratio_gcd(width, height) {
+	var _gcd = gcd(width, height);
+    var _w_aspect = width / _gcd;
+    var _h_aspect = height / _gcd; 
+    return string(_w_aspect) + " / " + string(_h_aspect);
+}
+
+
+function aspect_ratio_maintain(resolution_x, resolution_y, size_x, size_y) {
+	var _aspect_ratio = resolution_x / resolution_y;
+	return (resolution_x > resolution_y) ? new Vector2(size_x * _aspect_ratio, size_y) : new Vector2(size_x, size_y / _aspect_ratio);
+}
+
+//function aspect_ratio_maintain(width, height, base_width, base_height) {
+//	var aspect = base_width / base_height;
+//	var _ww = 0, _hh = 0;
+//	if (width > height) {
+//		// landscape
+//		_hh = min(base_height, height);
+//		_ww = _hh * aspect;
+//	} else {
+//		// portrait
+//		_ww = min(base_width, width);
+//		_hh = _ww / aspect;
+//	}
+//	return new Vector2(_ww, _hh);
+//}
+
+
+/// @desc Saves a HDR surface to a image file.
+/// @param {Id.Surface} surface_id The surface id.
+/// @param {string} fname The name of the saved image file.
+function surface_save_hdr(surface_id, fname) {
+	var _surf = surface_create(surface_get_width(surface_id), surface_get_height(surface_id), surface_rgba8unorm);
+	surface_copy(_surf, 0, 0, surface_id);
+	surface_save(_surf, fname);
+	surface_free(_surf);
+}
+
+/// @desc This function copies one surface to another, applying a shader to it.
+/// @param {Id.Surface} source Description
+/// @param {Id.Surface} dest Description
+/// @param {Function} pass_func The shader function.
+/// @param {Struct} pass_json_data The shader parameters.
+/// @param {Real} alpha Surface clear alpha.
+function surface_blit(source, dest, pass_func=undefined, pass_json_data=undefined, alpha=0) {
+	gml_pragma("forceinline");
+	surface_set_target(dest);
+	if (alpha > -1) draw_clear_alpha(c_black, alpha);
+	if (pass_func != undefined) pass_func(pass_json_data);
+	draw_surface_stretched(source, 0, 0, surface_get_width(dest), surface_get_height(dest));
+	shader_reset();
+	surface_reset_target();
+}
+
+
+function texturegroup_unload_except(group, groups_array) {
+	var i = 0, isize = array_length(groups_array);
+	repeat(isize) {
+		var _group = groups_array[i];
+		if (_group != group) continue;
+		texturegroup_unload(_group);
+		++i;
+	}
+}
+
+
+function texturegroup_debug_draw_sprites(group, scale) {
+	var _tex_array = texturegroup_get_sprites(group);
+	
+	var i = 0, isize = array_length(_tex_array), yy = 20;
+	repeat(isize) {
+		var _reciprocal = i / isize;
+		var _spr = _tex_array[i];
+		var _ww = sprite_get_width(_spr) * scale;
+		var _hh = sprite_get_height(_spr) * scale;
+		draw_sprite_stretched(_spr, 0, 20, yy, _ww, _hh);
+		yy += _hh + 10;
+		++i;
+	}
+}
+
+
+#endregion
+
+
+#region PROCEDURAL GENERATION
+
+function pattern_read_sprite(sprite, wspace=1, hspace=1) {
+	var _width = sprite_get_width(sprite),
+	_height = sprite_get_height(sprite),
+	
+	_surf = surface_create(_width, _height);
+	surface_set_target(_surf);
+	draw_clear_alpha(c_black, 0);
+	draw_sprite(sprite, 0, 0, 0);
+	surface_reset_target();
+	
+	var _buff = buffer_create(_width * _height * 4, buffer_fixed, 1);
+	buffer_get_surface(_buff, _surf, 0);
+	
+	// data structure with info
+	var data = {
+		blocks : [],
+		width : 0,
+		height : 0,
+	};
+	
+	// read every sprite pixel
+	var _r, _g, _b, _a, _pixel, _col;
+	var i = 0, j = 0, _total = 0;
+	repeat(_width) {
+		j = 0;
+		repeat(_height) {
+			_pixel = buffer_peek(_buff, 4 * (i + j * _width), buffer_u32); // get rgba
+			_r = _pixel & $ff;
+			_g = (_pixel >> 8) & $ff;
+			_b = (_pixel >> 16) & $ff;
+			_a = (_pixel >> 24) & $ff;
+			
+			_col = make_color_rgb(_r, _g, _b);
+			
+			// add pixel position data to array
+			var _json = {
+				x : i * wspace,
+				y : j * hspace,
+				p : (_col == c_white ? 1 : 0),
+			}
+			data.blocks[_total] = _json;
+			_total++;
+			++j;
+		}
+		++i;
+	}
+	data.width = i;
+	data.height = j;
+	
+	surface_free(_surf);
+	buffer_delete(_buff);
+	return data;
+}
+
+
+
+
+#endregion
+
+
+#region DELTA TIME and MOUSE
+
+#macro __DELTA_ENABLE true
+
+// PLEASE NOTE: THIS IS A BASIC IMPLEMENTATION OF DELTA TIMING
+// USE "IOTA" BY JUJU, FOR ROBUST DELTA TIMING
+
+// Delta Time
+// base frame rate
+#macro FRAME_RATE 60
+
+// delta time, used for multiplying things
+#macro DELTA_TIME global.__delta_time_multiplier
+
+// delta time scale, used for slow motion
+#macro DELTA_TIME_SCALE global.__delta_time_scale
+
+// delta update smoothness, is the interpolated speed used to smooth out sudden FPS changes (1 = default)
+#macro DELTA_UPDATE_LERP 1
+
+
+// internal
+global.__delta_speed = 0;
+global.__delta_time_multiplier_base = 1;
+global.__delta_time_multiplier = 1;
+global.__delta_time_scale = 1;
+//global.__frame_count
+
+// Delta Mouse
+global.__mouse_x_delta = 0;
+global.__mouse_y_delta = 0;
+global.__mouse_x_previous = 0;
+global.__mouse_y_previous = 0;
+global.__gui_mouse_x_delta = 0;
+global.__gui_mouse_y_delta = 0;
+global.__gui_mouse_x_previous = 0;
+global.__gui_mouse_y_previous = 0;
+#macro mouse_x_delta global.__mouse_x_delta
+#macro mouse_y_delta global.__mouse_y_delta
+#macro gui_mouse_x_delta global.__gui_mouse_x_delta
+#macro gui_mouse_y_delta global.__gui_mouse_y_delta
+
+if (__DELTA_ENABLE) {
+	var _tm;
+	_tm = call_later(1, time_source_units_frames, function() {
+		// delta time
+		global.__delta_speed = 1/FRAME_RATE;
+		global.__delta_time_multiplier_base = (delta_time/1000000)/global.__delta_speed;
+		global.__delta_time_multiplier = lerp(global.__delta_time_multiplier, global.__delta_time_multiplier_base, 1) * global.__delta_time_scale;
+	
+		// delta mouse
+		global.__mouse_x_delta = mouse_x - global.__mouse_x_previous;
+		global.__mouse_y_delta = mouse_y - global.__mouse_y_previous;
+		global.__gui_mouse_x_delta = mouse_x - global.__gui_mouse_x_previous;
+		global.__gui_mouse_y_delta = mouse_y - global.__gui_mouse_y_previous;
+	}, true);
+
+	_tm = call_later(2, time_source_units_frames, function() {
+		var _tm = call_later(1, time_source_units_frames, function() {
+			// delta mouse
+			global.__mouse_x_previous = mouse_x;
+			global.__mouse_y_previous = mouse_y;
+			global.__gui_mouse_x_previous = device_mouse_x_to_gui(0);
+			global.__gui_mouse_y_previous = device_mouse_y_to_gui(0);
+		
+			// frame count
+			//global.__frame_count += game_get_speed(gamespeed_fps);
+		}, true);
+	}, false);
+}
+
+
+#endregion
+
+
+#region WINDOW and INPUT
+
+#macro gui_mouse_x device_mouse_x_to_gui(0)
+#macro gui_mouse_y device_mouse_y_to_gui(0)
+#macro gui_mouse_x_normalized (device_mouse_x_to_gui(0)/display_get_gui_width())
+#macro gui_mouse_y_normalized (device_mouse_y_to_gui(0)/display_get_gui_height())
+
+
+// this is useful for some libraries by Samuel
+function io_clear_both() {
+	keyboard_clear(keyboard_lastkey);
+	mouse_clear(mouse_lastbutton);
+}
+
+
+// return the position of the mouse without it being stuck in the window
+function window_mouse_x() {
+    return display_mouse_get_x() - window_get_x();
+}
+
+
+function window_mouse_y() {
+    return display_mouse_get_y() - window_get_y();
+}
+
+function mouse_check_doubleclick_pressed(button) {
+	static _time = 500; //ms
+	static _once = false;
+	static _delta = 0;
+	var _pressed = false;
+	if mouse_check_button_pressed(button) {
+		if (!_once) {
+			_delta = current_time;
+			_once = true;
+		} else {
+			if (current_time - _delta < _time) {
+				_pressed = true;
+			}
+			_once = false;
+			_delta = 0;
+		}
+	}
+	return _pressed;
+}
+
+#endregion
+
+
+#region FILE SYSTEM
+
+enum DIRSCAN_DATA_TYPE {
+	FULL_PATH,
+	NAME_ONLY,
+	FULL_INFO,
+}
+
+function DirectoryScanner(path, extension="*.*", search_files=true, search_folders=true, search_subdir=true, data_type=DIRSCAN_DATA_TYPE.NAME_ONLY, get_size=false) constructor {
+	__contents = [];
+	__loaded = false;
+	__path_exists = false;
+	
+	if (directory_exists(path)) {
+		__directory_recursive_search(__contents, path, string(extension), search_files, search_folders, search_subdir, data_type, get_size);
+		__loaded = true;
+		__path_exists = true;
+	} else {
+		show_debug_message("Directory Scanner: Error, can't find directory to scan.");
+	}
+	
+	static GetContents = function() {
+		return __path_exists ? __contents : undefined;
+	}
+	
+	static GetFilesAmount = function() {
+		return array_length(__contents);
+	}
+	
+	static IsLoaded = function() {
+		return __loaded;
+	}
+	
+}
+
+// based on https://yal.cc/gamemaker-recursive-folder-copying/
+/// @ignore
+function __directory_recursive_search(contents, source, extension, search_files, search_folders, search_subdir, data_type, get_size) {
+	// Feather disable GM1044
+	// scan contents (folders and files)
+	var _contents = [];
+	var _file = file_find_first(source + "/" + extension, fa_directory | fa_archive | fa_readonly);
+	var _files_count = 0;
+	while(_file != "") {
+		if (_file == ".") continue;
+		if (_file == "..") continue;
+		array_push(_contents, _file);
+		_file = file_find_next();
+		_files_count++;
+	}
+	file_find_close();
+	
+	// process found contents:
+	var i = 0;
+	repeat(_files_count) {
+		var _fname = _contents[i];
+		var _path = source + "/" + _fname; // the path of the content (folder or file)
+		var _dir_name = filename_dir_name(_path);
+		var _data = -1;
+		
+		var _progress = (i/_files_count); // ready-only
+		show_debug_message("Scanning: [" + string(_progress*100) + "%] " + _dir_name + " | " + string(_fname));
+		
+		if (directory_exists(_path)) {
+			// recursively search directories
+			if (search_subdir) __directory_recursive_search(contents, _path, extension, search_files, search_folders, search_subdir, data_type, get_size);
+			if (search_folders) {
+				switch(data_type) {
+					case DIRSCAN_DATA_TYPE.FULL_INFO:
+						_data = {
+							name : _fname,
+							type : 0,
+							ext : "",
+							path : _path,
+							root_folder : _dir_name,
+							size : -1,
+						};
+						break;
+					case DIRSCAN_DATA_TYPE.NAME_ONLY:
+						_data = _fname;
+						break;
+					case DIRSCAN_DATA_TYPE.FULL_PATH:
+						_data = _path;
+						break;
+				}
+			}
+		} else {
+			if (search_files) {
+				switch(data_type) {
+					case DIRSCAN_DATA_TYPE.FULL_INFO:
+						_data = {
+							name : filename_name_noext(_fname),
+							type : 1,
+							ext : filename_ext(_fname),
+							path : _path,
+							root_folder : _dir_name,
+							size : get_size ? bytes_get_size(file_get_size(_path)) : -1,
+						};
+						break;
+					case DIRSCAN_DATA_TYPE.NAME_ONLY:
+						_data = _fname;
+						break;
+					case DIRSCAN_DATA_TYPE.FULL_PATH:
+						_data = _path;
+						break;
+				}
+			}
+		}
+		
+		array_push(contents, _data);
+		++i;
+	}
+	
+	return _contents;
+}
+
+
+/// @ignore
+/*function __folder_recursive_create(folder, struct_content) {	
+	// arquivos
+	if (is_array(struct_content)) {
+		var i = 0, isize = array_length(struct_content);
+		repeat(isize) {
+			var _item = struct_content[i];
+			var _name = _item.name;
+			var _type = _item.type;
+			var _root_folder = _item.root_folder;
+			print("ARRAY", _name);
+			
+			// folder
+			if (_type == 0) {
+				folder[$ _name] = [];
+			}
+			
+			++i;
+		}
+		
+	} else
+	
+	if (is_struct(struct_content)) {
+		
+	}
+}
+
+function folder_content_generate(struct_content) {
+	var _folder = {};
+	__folder_recursive_create(_folder, struct_content);
+	return _folder;
+}*/
+
+
+function filename_dir_name(file) {
+	//var _dir_name = filename_name(filename_dir(file));
+	var _dir = filename_dir(file), _dir_name = "";
+	var isize = string_length(_dir), i = isize;
+	repeat(isize) {
+		var _char = string_char_at(_dir, i);
+		if (_char == "/") {
+			_dir_name = string_copy(_dir, i+1, string_length(_dir)-i);
+			break;
+		}
+		--i;
+	}
+	return _dir_name;
+}
+
+
+function filename_name_noext(path) {
+	return filename_name(filename_change_ext(path, ""));
+	//var _name = filename_name(path);
+	//var _size = string_length(_name);
+	//for (var i = 1; i <= _size; ++i) {
+	//	var _char = string_char_at(_name, i);
+	//	if (_char == ".") {
+	//		var _pos = string_pos(".", _name);
+	//		var _word = string_copy(_name, _pos+1, string_length(_name)-_pos);
+	//		_name = string_delete(_name, _pos, string_length(_word)+1);
+	//	}
+	//}
+	//return _name;
+}
+
+
+function file_write_string(file_path, str) {
+	var _buff = buffer_create(1, buffer_grow, 1);
+	buffer_write(_buff, buffer_string, str);
+	buffer_save(_buff, file_path);
+	buffer_delete(_buff);
+}
+
+
+function file_write_text(file_path, str) {
+	var _buff = buffer_create(1, buffer_grow, 1);
+	buffer_write(_buff, buffer_text, str);
+	buffer_save(_buff, file_path);
+	buffer_delete(_buff);
+}
+
+
+function file_read_string(file_path) {
+	if (!file_exists(file_path)) return undefined;
+	var _buffer = buffer_load(file_path);
+	var _result = buffer_read(_buffer, buffer_string);
+	buffer_delete(_buffer);
+	return _result;
+}
+
+
+function file_read_text(file_path) {
+	if (!file_exists(file_path)) return undefined;
+	var _buffer = buffer_load(file_path);
+	var _result = buffer_read(_buffer, buffer_text);
+	buffer_delete(_buffer);
+	return _result;
+}
+
+
+function bytes_get_size(bytes) {
+	var _sizes = ["B", "KB", "MB", "GB", "TB", "PB"]; // you can add more
+	if (bytes == 0) return "0 B";
+	var i = floor(log2(bytes) / log2(1024));
+	return string(round(bytes / power(1024, i))) + " " + _sizes[i];
+}
+
+
+function file_get_size(file) {
+	var _buff = buffer_load(file);
+	if (_buff <= 0) return 0;
+	var _size = buffer_get_size(_buff);
+	buffer_delete(_buff);
+	return _size;
 }
 
 
@@ -2873,13 +3130,13 @@ function display_get_display_count() {
 #macro gui_w display_get_gui_width()
 #macro gui_h display_get_gui_height()
 
-function draw_button_test(x, y, text, callback=undefined) {
+function draw_debug_button(x, y, text, callback=undefined) {
 	var _old_font = draw_get_font(),
 	old_halign = draw_get_halign(),
 	old_valign = draw_get_valign(),
 	old_color = draw_get_color(),
-	var _pressed = false, _color_bg = c_dkgray, _color_text = c_white;
-	var _ww = string_width(text)+8, _hh = string_height(text)+8;
+	_pressed = false, _color_bg = c_dkgray, _color_text = c_white,
+	_ww = string_width(text)+8, _hh = string_height(text)+8;
 	if point_in_rectangle(device_mouse_x_to_gui(0), device_mouse_y_to_gui(0), x, y, x+_ww, y+_hh) {
 		_color_bg = c_white;
 		_color_text = c_dkgray;
@@ -2904,6 +3161,21 @@ function draw_button_test(x, y, text, callback=undefined) {
 	draw_set_valign(old_valign);
 	draw_set_color(old_color);
 	return _pressed;
+}
+
+function draw_debug_slider(x, y, width, title, default_value, min_value, max_value, callback=undefined) {
+	var height = 16;
+	var _value = default_value;
+	if point_in_rectangle(gui_mouse_x, gui_mouse_y, x-16, y-height, x+width+16, y+height) {
+		if mouse_check_button(mb_left) {
+			_value = median(0, 1, (device_mouse_x_to_gui(0) - x) / width);
+		}
+	}
+	var _output = lerp(min_value, max_value, _value);
+	if (callback != undefined)  callback(_output);
+	draw_text(x, y, string(_output) + " | " + title);
+	draw_line(x, y, x+width, y);
+	draw_circle(x+width*_value, y, 5, true);
 }
 
 #endregion
@@ -3177,11 +3449,29 @@ function tag_get_instance_ids(tags, include_children) {
 	return _array;
 }
 
-
-
-
 #endregion
 
 
+#region ASSERT
 
+function assert_array_or(condition, values_array) {
+	var i = 0, isize = array_length(values_array);
+	repeat(isize) {
+		if (condition == values_array[i]) return true;
+		++i;
+	}
+	return false;
+}
+
+
+function assert_array_and(condition, values_array) {
+	var i = 0, isize = array_length(values_array);
+	repeat(isize) {
+		if (condition != values_array[i]) return false;
+		++i;
+	}
+	return true;
+}
+
+#endregion
 

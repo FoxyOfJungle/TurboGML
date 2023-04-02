@@ -4,13 +4,35 @@
 input_h = keyboard_check(vk_right) - keyboard_check(vk_left);
 input_v = keyboard_check(vk_down) - keyboard_check(vk_up);
 input_dir = point_direction(0, 0, input_h, input_v);
+facing_dir = point_direction(x, y, mouse_x, mouse_y);
 
-if abs(input_h) {
-	x += lengthdir_x(spd*DELTA_TIME, input_dir);
+
+if (abs(input_v)) {
+	move_speed -= move_speed_acceleration * input_v;
+} else {
+	move_speed = approach(move_speed, 0, move_speed_friction);
 }
-if abs(input_v) {
-	y += lengthdir_y(spd*DELTA_TIME, input_dir);
-}
+hsp = lengthdir_x(move_speed, facing_dir);
+vsp = lengthdir_y(move_speed, facing_dir);
+
+
+move_speed = clamp(move_speed, -backward_speed, forward_speed);
+
+
+x += hsp;
+y += vsp;
+image_angle = facing_dir;
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 time += 0.1 * DELTA_TIME;

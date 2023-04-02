@@ -1,4 +1,14 @@
 
+
+
+draw_debug_button(40, 40, "TEST");
+
+draw_debug_slider(40, 100, 200, "Test", 0.5, -5, 5);
+
+
+
+
+
 /*
 draw_path(Path1, 0, 0, true);
 var _pos = path_get_nearest_point_position(mouse_x, mouse_y, Path1);

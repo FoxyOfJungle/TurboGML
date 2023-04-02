@@ -30,6 +30,7 @@ test = 0;
 
 
 
+
 //data = ds_map_create();
 //data[? "test"] = 10;
 //data[? "aaaa"] = "apple";
@@ -123,8 +124,9 @@ show_debug_message(array);
 
 
 
-//var files = new DirectoryScanner("C:/$SysReset", "*.*", true, true, true, false, false);
-//show_debug_message(files.GetFilesAmount());
+//var files = new DirectoryScanner("F:/TestFolder", "*.*", true, true, true, DIRSCAN_DATA_TYPE.FULL_INFO, false);
+//show_debug_message( json_beautify(json_stringify(files.GetContents())) );
+
 //clipboard_set_text(string(files.GetContents()));
 
 
@@ -152,32 +154,11 @@ show_debug_message(aa);*/
 scale_x = 1;
 scale_y = 1;
 
-
-
-
-
 tests = 0;
 
 
 
-
-
 pseudo_action_list = [];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

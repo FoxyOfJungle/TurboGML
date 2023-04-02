@@ -1,4 +1,6 @@
 
+draw_text(10, 10, DELTA_TIME_SCALE);
+
 /*
 
 tex_id = shader_get_sampler_index(sh_test, "u_tex");
