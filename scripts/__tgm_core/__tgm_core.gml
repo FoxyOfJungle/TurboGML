@@ -1710,7 +1710,7 @@ function screen_to_world_dimension(view_mat, proj_mat, xx, yy) {
 
 
 /// @desc Transforms a 3D coordinate to a 2D coordinate. Returns a Vector2 with x and y.
-/// Returns [-1, -1] if the 3D point is behind the camera
+/// Returns a Vector2 of { -1, -1 } if the 3D point is behind the camera
 /// Works for both orthographic and perspective projections.
 function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz, normalized=false) {
 	// credits: TheSnidr
