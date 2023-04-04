@@ -31,11 +31,11 @@ show_debug_message(array);
 
 
 
-//var files = new DirectoryScanner("F:/TestFolder", "*.*", true, true, true, DIRSCAN_DATA_TYPE.FULL_INFO, false);
-//show_debug_message( json_beautify(json_stringify(files.GetContents())) );
+/*var files = new DirectoryScanner("F:/TestFolder", "*.*", true, true, true, DIRSCAN_DATA_TYPE.FULL_INFO, false);
+show_debug_message( json_stringify(files.GetContents(), true) );
 
-//clipboard_set_text(string(files.GetContents()));
-
+clipboard_set_text(string(files.GetContents()));
+*/
 
 
 
@@ -65,7 +65,7 @@ show_debug_message(aa);*/
 
 
 
-var _list = ds_list_create();
+/*var _list = ds_list_create();
 ds_list_add(_list, 4);
 ds_list_add(_list, 8);
 ds_list_add(_list, "Test");
@@ -93,7 +93,7 @@ var _queue = ds_queue_create();
 ds_queue_enqueue(_queue, 32, 64, 82, 100);
 
 
-show_debug_message(ds_debug_print(_queue, ds_type_queue));
+show_debug_message(ds_debug_print(_queue, ds_type_queue));*/
 
 
 
