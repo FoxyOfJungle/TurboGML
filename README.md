@@ -10,7 +10,7 @@
 * Download the .yymps file on the right side of the page under "Releases".
 * Inside GameMaker, use "Tools > Import Local Package", then import TurboGML files into your project.
 
-⚠ ## Important:
+## Important ⚠:
 Making this library took me a long time, so please click on the STAR icon, this way you:
 * Shows gratitude;
 * Support my work;
