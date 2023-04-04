@@ -1226,6 +1226,7 @@ function uuid_v3_generate() {
 // warning: this function is not repeat safe... wip
 function uuid_v4_generate(hifen=false) {
 	// randomness
+	// by YellowAfterLife
 	var _uuid = "";
 	for (var i = 0; i < 32; i++) {
 		if (hifen) {
