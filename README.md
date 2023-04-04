@@ -16,7 +16,7 @@ Making this library took me a long time, so please click on the STAR icon, this 
 * Support my work;
 * Help other people find the repository.
 
-![Star](Icon.png)
+![Star](https://user-images.githubusercontent.com/52144406/229738087-5aae0d44-cf98-4b1a-bc6b-a1d14ce69557.png)
 
 ----
 
