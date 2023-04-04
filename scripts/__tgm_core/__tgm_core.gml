@@ -1,22 +1,49 @@
 
 /*------------------------------------------------------------------------------------------
-	TurboGML. Library by FoxyOfJungle (Mozart Junior). (C) 2022, MIT License.
-	Don't remove this notice, please. Credit is really appreciate! :D
+	TurboGML. A complete library with must-have functionality.
+	- Library by FoxyOfJungle (Mozart Junior). (C) 2023, MIT License.
+	
+	It would mean a lot to me to have my name in your project/game credits! :D
+	Don't remove this notice, please :)
 	
 	https://foxyofjungle.itch.io/
 	https://twitter.com/foxyofjungle
 	
 	..............................
 	Special Thanks, contributions:
-	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, Juju Adams, icuurd12b42
+	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, icuurd12b42
 	(authors' names written in comment inside the functions used)
 	
 	Supporters:
 	RookTKO
 -------------------------------------------------------------------------------------------*/
+
+/*
+	MIT License
+	
+	Copyright (c) 2022 Mozart Junior (FoxyOfJungle)
+	
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+	
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+	
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+*/
 // Feather ignore all
 
-#region MATH and OTHERS
+#region MATH and RELATED
 
 // pi = The ratio of the circumference of a circle to its diameter.
 // Tau = The ratio of the circumference of a circle to its radius, equal to 2π.
@@ -184,7 +211,7 @@ function angle_predict_intersection(x1, y1, x2, y2, target_speed, target_angle, 
 	return (abs(_beta) < 1) ? _angle+radtodeg(arcsin(_beta)) : -1;
 }
 
-// failed attempts
+// failed attempts [help is appreciated :')]
 function motion_predict_intersection(x1, y1, x2, y2, target_speed, target_angle, bullet_speed) { // doesn't works as expected!!
 	var _bullet_dir = point_direction(x1, y1, x2, y2);
 	var alpha = target_speed / bullet_speed;
@@ -315,63 +342,6 @@ function fraction_reduce(a, b) {
 function wave_normalized(spd=1) {
 	return sin(current_time*0.0025*spd) * 0.5 + 0.5;
 }
-
-/// @desc Returns a random value depending on its weight.
-/// @param {Array} items Total array of items to be returned. It can be any data type: numbers, strings, arrays, structs, data structures, etc.
-/// @param {Array<Real>} weights Weight of items in order. Higher values have a higher probability of returning the item.
-/// You can use any range of numbers, either 0 to 1 or 0 to 9999 or inf.
-/// It is possible to use equal weights, having the same probability of being returned.
-function choose_weighted(items, weights) {
-	var isize = array_length(items);
-	var wsize = array_length(weights);
-	if (isize != wsize) show_error("Both arrays must be the same size.", true);
-	// sum weights
-	var _weights_sum = 0;
-	var i = 0;
-	repeat(wsize) {
-		_weights_sum += abs(weights[i]);
-		++i;
-	}
-	// randomize
-	var _val = random(_weights_sum);
-	i = 0;
-	repeat(isize) {
-		_val -= abs(weights[i]);
-		if (_val < 0) return items[i];
-		++i;
-	}
-	return items[0];
-}
-
-function random_pseudo_array(amount) {
-	var _array = [];
-	var i = 0;
-	repeat(amount) {
-		_array[i] = i;
-		++i;
-	}
-	array_shuffle(_array);
-	return _array;
-}
-
-function random_pseudo_array_ext(amount, func=undefined) {
-	var _func = func;
-	if (is_undefined(_func)) {
-		_func = function(_val) {
-			return _val;
-		}
-	}
-	var _array = [], _val;
-	var i = 0;
-	repeat(amount) {
-		_val = _func(i);
-		if (!is_undefined(_val)) _array[i] = _val;
-		++i;
-	}
-	array_shuffle(_array);
-	return _array;
-}
-
 
 #endregion
 
@@ -1546,133 +1516,6 @@ function ds_map_to_struct(map) {
 }
 
 
-// alternative: https://yal.cc/gamemaker-beautifying-json/
-function json_beautify(json_string, indent_size=4, newline_char="\n", map_spacing=1) {
-	// credits: 2017/12/08 @jujuadams; with thanks to yal.cc
-	// doesn't works with functions/methods
-	
-	var _in_string = false,
-	_string_escape = false,
-	_string_delimiter = undefined,
-	
-	_in_number_string = false,
-	_number_string = "",
-	_number_string_dot = 0,
-	_number_string_last_sig = 0,
-	
-	_output = "",
-	_indent = 0,
-	
-	_index = 0,
-	_len = string_length(json_string);
-	repeat(_len) {
-		_index++;
-		
-		var _char = string_char_at(json_string, _index),
-		_ord = ord(_char),
-		_do_main = true;
-		
-		if (_in_string) {   
-			if ((_ord == _string_delimiter) && !_string_escape) {
-				_in_string = false;
-			} else if (_ord == 92) && (!_string_escape) {
-				_string_escape = true;
-			} else {
-				_string_escape = false;
-			}
-			_output += _char;
-			_do_main = false;
-		} else if ( _in_number_string ) {
-			if (_ord < 45) || (_ord == 47) || (_ord > 57) {
-				_in_number_string = false;
-				if (_number_string_dot >= _number_string_last_sig) _number_string_last_sig = _number_string_dot-1;
-				_output += string_copy(_number_string, 1, _number_string_last_sig);
-			} else {
-				_do_main = false;
-				_number_string += _char;
-				if (_ord == 46) {
-					_number_string_dot = string_length( _number_string );
-					_number_string_last_sig = _number_string_dot;
-				} else if (_number_string_dot == 0) || (_ord != 48) {
-					_number_string_last_sig++;
-				}
-			}
-		}
-		
-		if (_do_main) switch(_ord) {
-			case 58: // :
-				if (map_spacing) {
-					_output += ":";
-					repeat(map_spacing) _output += " ";
-				} else {
-					_output += ":";
-				}
-				break;
-				
-			case 34: // "
-			case 39: // '
-				_string_delimiter = _ord;
-				_in_string = true;
-				_output += _char;
-				break;
-				
-			case 44: // ,
-				_output += _char;
-				_output += newline_char;
-				repeat(_indent) _output += " ";
-				break;
-				
-			case  91: // [
-			case 123: // {
-				_output += _char;
-				_indent += indent_size;
-				_output += newline_char;
-				repeat(_indent) _output += " ";
-				break;
-				
-			case  93: // ]
-			case 125: // }
-				_indent -= indent_size;
-				_output += newline_char;
-				repeat(_indent) _output += " ";
-				_output += _char;
-				break;
-				
-			case  9: //remove whitespace
-			case 10:
-			case 11:
-			case 12:
-			case 13:
-			case 32:
-				break;
-				
-			case  45: // -
-			case  46: // .
-			case  48: // 0
-			case  49: // 1
-			case  50: // 2
-			case  51: // 3
-			case  52: // 4
-			case  53: // 5
-			case  54: // 6
-			case  55: // 7
-			case  56: // 8
-			case  57: // 9
-				_number_string = _char;
-				_in_number_string = true;
-				_number_string_dot = 0;
-				_number_string_last_sig = 1;
-				break;
-			
-			default:
-				//_output += _char;
-				break;
-		}
-	}
-	return _output;
-}
-
-
 #endregion
 
 
@@ -2247,13 +2090,6 @@ function path_get_direction(path, pos) {
 
 #region DRAWING
 
-global.__tgm_sh_uni = {
-	sprite_pos_uab : shader_get_uniform(__tgm_sh_quad_persp, "uAB"),
-	sprite_pos_ucd : shader_get_uniform(__tgm_sh_quad_persp, "uCD"),
-	sprite_pos_uvs : shader_get_uniform(__tgm_sh_quad_persp, "uUVS"),
-};
-
-
 function draw_line_quad(x1, y1, x2, y2, x3, y3, x4, y4, middle_line=false) {
 	draw_line(x1, y1, x2, y2);
 	draw_line(x1, y1, x4, y4);
@@ -2266,20 +2102,6 @@ function draw_line_quad(x1, y1, x2, y2, x3, y3, x4, y4, middle_line=false) {
 function draw_line_vector(x1, y1, angle, distance) {
 	var _a = degtorad(angle);
 	draw_line(x1, y1, x1+cos(_a)*distance, y1-sin(_a)*distance);
-}
-
-
-function draw_sprite_pos_persp(sprite, subimg, x1, y1, x2, y2, x3, y3, x4, y4, alpha) {
-	/*p1--p2
-	  |    |
-	  p4--p3*/
-	shader_set(__tgm_sh_quad_persp);
-	var _uvs = sprite_get_uvs(sprite, subimg);
-	shader_set_uniform_f_array(global.__tgm_sh_uni.sprite_pos_uab, [x1, y1, x2, y2]);
-	shader_set_uniform_f_array(global.__tgm_sh_uni.sprite_pos_ucd, [x3, y3, x4, y4]);
-	shader_set_uniform_f_array(global.__tgm_sh_uni.sprite_pos_uvs, _uvs);
-	draw_sprite_pos(sprite, subimg, x1, y1, x2, y2, x3, y3, x4, y4, alpha);
-	shader_reset();
 }
 
 
@@ -2630,6 +2452,8 @@ function aspect_ratio_maintain(resolution_x, resolution_y, size_x, size_y) {
 	return (resolution_x > resolution_y) ? new Vector2(size_x * _aspect_ratio, size_y) : new Vector2(size_x, size_y / _aspect_ratio);
 }
 
+
+// WIP...
 //function aspect_ratio_maintain(width, height, base_width, base_height) {
 //	var aspect = base_width / base_height;
 //	var _ww = 0, _hh = 0;
@@ -2760,6 +2584,63 @@ function pattern_read_sprite(sprite, wspace=1, hspace=1) {
 }
 
 
+/// @desc Returns a random value depending on its weight.
+/// @param {Array} items Total array of items to be returned. It can be any data type: numbers, strings, arrays, structs, data structures, etc.
+/// @param {Array<Real>} weights Weight of items in order. Higher values have a higher probability of returning the item.
+/// You can use any range of numbers, either 0 to 1 or 0 to 9999 or inf.
+/// It is possible to use equal weights, having the same probability of being returned.
+function choose_weighted(items, weights) {
+	var isize = array_length(items);
+	var wsize = array_length(weights);
+	if (isize != wsize) show_error("Both arrays must be the same size.", true);
+	// sum weights
+	var _weights_sum = 0;
+	var i = 0;
+	repeat(wsize) {
+		_weights_sum += abs(weights[i]);
+		++i;
+	}
+	// randomize
+	var _val = random(_weights_sum);
+	i = 0;
+	repeat(isize) {
+		_val -= abs(weights[i]);
+		if (_val < 0) return items[i];
+		++i;
+	}
+	return items[0];
+}
+
+
+function random_pseudo_array(amount) {
+	var _array = [];
+	var i = 0;
+	repeat(amount) {
+		_array[i] = i;
+		++i;
+	}
+	array_shuffle(_array);
+	return _array;
+}
+
+
+function random_pseudo_array_ext(amount, func=undefined) {
+	var _func = func;
+	if (is_undefined(_func)) {
+		_func = function(_val) {
+			return _val;
+		}
+	}
+	var _array = [], _val;
+	var i = 0;
+	repeat(amount) {
+		_val = _func(i);
+		if (!is_undefined(_val)) _array[i] = _val;
+		++i;
+	}
+	array_shuffle(_array);
+	return _array;
+}
 
 
 #endregion
@@ -3433,7 +3314,6 @@ function shader_set_uniform_mat_array(shader, name, array) {
 #region TAGS
 
 function tag_get_instance_ids(tags, include_children) {
-	// original by: Juju Adams
 	var _array = [], _count = 0,
 	_asset_ids = tag_get_asset_ids(tags, asset_object), _object = noone,
 	i = 0, isize = array_length(_asset_ids);

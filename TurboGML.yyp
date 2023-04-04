@@ -17,7 +17,6 @@
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Sprites","folderPath":"folders/Example/Sprites.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"KazanGames","folderPath":"folders/KazanGames.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"TurboGML","folderPath":"folders/KazanGames/TurboGML.yy",},
-    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Shaders","folderPath":"folders/KazanGames/TurboGML/Shaders.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Paths","folderPath":"folders/Example/Paths.yy",},
   ],
   "IncludedFiles": [
@@ -32,7 +31,6 @@
   },
   "resources": [
     {"id":{"name":"obj_b4","path":"objects/obj_b4/obj_b4.yy",},},
-    {"id":{"name":"__tgm_sh_quad_persp","path":"shaders/__tgm_sh_quad_persp/__tgm_sh_quad_persp.yy",},},
     {"id":{"name":"obj_b1","path":"objects/obj_b1/obj_b1.yy",},},
     {"id":{"name":"obj_tests","path":"objects/obj_tests/obj_tests.yy",},},
     {"id":{"name":"spr_player","path":"sprites/spr_player/spr_player.yy",},},
@@ -51,7 +49,7 @@
     {"id":{"name":"obj_b2","path":"objects/obj_b2/obj_b2.yy",},},
     {"id":{"name":"spr_solid","path":"sprites/spr_solid/spr_solid.yy",},},
     {"id":{"name":"Sprite6","path":"sprites/Sprite6/Sprite6.yy",},},
-    {"id":{"name":"__tgm_scr_functions","path":"scripts/__tgm_scr_functions/__tgm_scr_functions.yy",},},
+    {"id":{"name":"__tgm_core","path":"scripts/__tgm_core/__tgm_core.yy",},},
     {"id":{"name":"obj_testt","path":"objects/obj_testt/obj_testt.yy",},},
     {"id":{"name":"Sprite4","path":"sprites/Sprite4/Sprite4.yy",},},
     {"id":{"name":"obj_player_2","path":"objects/obj_player_2/obj_player_2.yy",},},
