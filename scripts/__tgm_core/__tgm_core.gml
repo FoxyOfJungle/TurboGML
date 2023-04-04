@@ -11,7 +11,7 @@
 	
 	..............................
 	Special Thanks, contributions:
-	YellowAfterLife, Cecil, TheSnidr, Xot, TheSnidr, Shaun Spalding, gnysek, icuurd12b42
+	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, icuurd12b42
 	(authors' names written in comment inside the functions used)
 	
 	Supporters:

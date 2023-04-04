@@ -89,7 +89,11 @@ ds_grid_add(_grid, 0, 0, 8);
 ds_grid_add(_grid, 3, 2, 5);
 
 
-show_debug_message(ds_debug_print(1, ds_type_map));
+var _queue = ds_queue_create();
+ds_queue_enqueue(_queue, 32, 64, 82, 100);
+
+
+show_debug_message(ds_debug_print(_queue, ds_type_queue));
 
 
 
