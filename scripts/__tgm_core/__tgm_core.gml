@@ -1088,103 +1088,107 @@ function invoke(callback, args, time, repetitions=1) {
 
 #region DATA
 
-function ds_debug_print(data_structure) {
+function ds_debug_print(data_structure, type) {
 	var _separator = string_repeat("-", 32);
 	show_debug_message(_separator);
 	
-	// ds_list
-	if (ds_exists(data_structure, ds_type_list)) {
-		var _txt = "DS_LIST:\n";
-		var i = 0, isize = ds_list_size(data_structure);
-		repeat(isize) {
-			_txt += "\n" + string(data_structure[| i]);
-			++i;
-		}
-		show_debug_message(_txt);
-	} else
+	if (!is_real(data_structure) || !ds_exists(data_structure, type)) {
+		show_debug_message("Data structure does not exist.");
+		exit;
+	}
 	
-	// ds_map
-	if (ds_exists(data_structure, ds_type_map)) {
-		var _txt = "DS_MAP:\n";
-		var _keys_aray = ds_map_keys_to_array(data_structure);
-		var _values_array = ds_map_values_to_array(data_structure);
-		var isize = array_length(_keys_aray), i = isize-1;
-		_txt += "\n>> SIZE: " + string(isize);
-		repeat(isize) {
-			_txt += "\n" + string(_keys_aray[i] + " : " + string(_values_array[i]));
-			--i;
-		}
-		show_debug_message(_txt);
-	} else
-	
-	// ds_priority
-	if (ds_exists(data_structure, ds_type_priority)) {
-		var _txt = "DS_PRIORITY:\n";
-		var _temp_ds_pri = ds_priority_create();
-		ds_priority_copy(_temp_ds_pri, data_structure);
-		var i = 0, isize = ds_priority_size(_temp_ds_pri);
-		_txt += "\n>> SIZE: " + string(isize) + "| Min priority: " + string(ds_priority_find_min(_temp_ds_pri)) + " | Max priority: " + string(ds_priority_find_max(_temp_ds_pri));
-		repeat(isize) {
-			var _val = ds_priority_find_min(_temp_ds_pri);
-			_txt += "\n" + string(ds_priority_find_priority(_temp_ds_pri, _val)) + " : " + string(_val);
-			ds_priority_delete_min(_temp_ds_pri);
-			++i;
-		}
-		
-		ds_priority_destroy(_temp_ds_pri);
-		show_debug_message(_txt);
-	} else
-	
-	// ds_grid
-	if (ds_exists(data_structure, ds_type_grid)) {
-		var _txt = "DS_GRID:\n";
-		var _ww = ds_grid_width(data_structure);
-		var _hh = ds_grid_height(data_structure);
-		_txt += "\n>> SIZE: " + string(_ww) + "x" + string(_hh);
-		var i = 0, j = 0, _space = "";
-		repeat(_ww) {
-			j = 0;
-			repeat(_hh) {
-				_space = "";
-				if (j % _ww == 0) _space = "\n";
-				_txt += _space + string(ds_grid_get(data_structure, i, j)) + "    ";
-				++j;
+	switch(type) {
+		case ds_type_list:
+			var _txt = "DS_LIST:\n";
+			var i = 0, isize = ds_list_size(data_structure);
+			repeat(isize) {
+				_txt += "\n" + string(data_structure[| i]);
+				++i;
 			}
-			++i;
-		}
-		show_debug_message(_txt);
+			show_debug_message(_txt);
+			break;
+		
+		case ds_type_map:
+			var _txt = "DS_MAP:\n";
+			var _keys_aray = ds_map_keys_to_array(data_structure);
+			var _values_array = ds_map_values_to_array(data_structure);
+			var isize = array_length(_keys_aray), i = isize-1;
+			_txt += "\n>> SIZE: " + string(isize);
+			repeat(isize) {
+				_txt += "\n" + string(_keys_aray[i] + " : " + string(_values_array[i]));
+				--i;
+			}
+			show_debug_message(_txt);
+			break;
+			
+		case ds_type_priority:
+			var _txt = "DS_PRIORITY:\n";
+			var _temp_ds_pri = ds_priority_create();
+			ds_priority_copy(_temp_ds_pri, data_structure);
+			var i = 0, isize = ds_priority_size(_temp_ds_pri);
+			_txt += "\n>> SIZE: " + string(isize) + "| Min priority: " + string(ds_priority_find_min(_temp_ds_pri)) + " | Max priority: " + string(ds_priority_find_max(_temp_ds_pri));
+			repeat(isize) {
+				var _val = ds_priority_find_min(_temp_ds_pri);
+				_txt += "\n" + string(ds_priority_find_priority(_temp_ds_pri, _val)) + " : " + string(_val);
+				ds_priority_delete_min(_temp_ds_pri);
+				++i;
+			}
+			
+			ds_priority_destroy(_temp_ds_pri);
+			show_debug_message(_txt);
+			break;
+			
+		case ds_type_grid:
+			var _txt = "DS_GRID:\n";
+			var _ww = ds_grid_width(data_structure);
+			var _hh = ds_grid_height(data_structure);
+			_txt += "\n>> SIZE: " + string(_ww) + "x" + string(_hh);
+			var i = 0, j = 0, _space = "";
+			repeat(_ww) {
+				j = 0;
+				repeat(_hh) {
+					_space = "";
+					if (j % _ww == 0) _space = "\n";
+					_txt += _space + string(ds_grid_get(data_structure, i, j)) + "\t";
+					++j;
+				}
+				++i;
+			}
+			show_debug_message(_txt);
+			break;
+			
+		case ds_type_queue:
+			var _txt = "DS_QUEUE:\n";
+			var _temp_ds_queue = ds_queue_create();
+			ds_queue_copy(_temp_ds_queue, data_structure);
+			var i = 0, isize = ds_queue_size(_temp_ds_queue);
+			_txt += "\n>> SIZE: " + string(isize) + "| Head: " + string(ds_queue_head(_temp_ds_queue)) + " | Tail: " + string(ds_queue_tail(_temp_ds_queue));
+			repeat(isize) {
+				_txt += "\n" + string(ds_queue_dequeue(_temp_ds_queue));
+				++i;
+			}
+			ds_queue_destroy(_temp_ds_queue);
+			show_debug_message(_txt);
+			break;
+			
+		case ds_type_stack:
+			var _txt = "DS_STACK:\n";
+			var _temp_ds_stack = ds_stack_create();
+			ds_stack_copy(_temp_ds_stack, data_structure);
+			var i = 0, isize = ds_stack_size(data_structure);
+			_txt += "\n>> SIZE: " + string(isize) + "| Top: " + string(ds_stack_top(_temp_ds_stack));
+			repeat(isize) {
+				_txt += "\n" + string(ds_stack_pop(_temp_ds_stack));
+				++i;
+			}
+			ds_stack_destroy(_temp_ds_stack);
+			show_debug_message(_txt);
+			break;
+		
+		default:
+			show_debug_message("Select the type of data structure to debug.");
+			break;
 	}
-	
-	// ds_queue
-	if (ds_exists(data_structure, ds_type_queue)) {
-		var _txt = "DS_QUEUE:\n";
-		var _temp_ds_queue = ds_queue_create();
-		ds_queue_copy(_temp_ds_queue, data_structure);
-		var i = 0, isize = ds_queue_size(_temp_ds_queue);
-		_txt += "\n>> SIZE: " + string(isize) + "| Head: " + string(ds_queue_head(_temp_ds_queue)) + " | Tail: " + string(ds_queue_tail(_temp_ds_queue));
-		repeat(isize) {
-			_txt += "\n" + string(ds_queue_dequeue(_temp_ds_queue));
-			++i;
-		}
-		ds_queue_destroy(_temp_ds_queue);
-		show_debug_message(_txt);
-	} else
-	
-	// ds_stack
-	if (ds_exists(data_structure, ds_type_stack)) {
-		var _txt = "DS_STACK:\n";
-		var _temp_ds_stack = ds_stack_create();
-		ds_stack_copy(_temp_ds_stack, data_structure);
-		var i = 0, isize = ds_stack_size(data_structure);
-		_txt += "\n>> SIZE: " + string(isize) + "| Top: " + string(ds_stack_top(_temp_ds_stack));
-		repeat(isize) {
-			_txt += "\n" + string(ds_stack_pop(_temp_ds_stack));
-			++i;
-		}
-		ds_stack_destroy(_temp_ds_stack);
-		show_debug_message(_txt);
-	}
-	
 	show_debug_message(_separator);
 }
 

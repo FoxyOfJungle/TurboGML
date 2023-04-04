@@ -65,3 +65,48 @@ show_debug_message(aa);*/
 
 
 
+var _list = ds_list_create();
+ds_list_add(_list, 4);
+ds_list_add(_list, 8);
+ds_list_add(_list, "Test");
+
+var _list2 = ds_list_create();
+ds_list_add(_list2, [120, 320, 64]);
+ds_list_add(_list2, [32, 64]);
+
+
+var _map1 = ds_map_create();
+_map1[? "Test"] = 32;
+_map1[? "Test3"] = 64;
+
+var _map2 = ds_map_create();
+_map2[? "Test"] = 1000;
+_map2[? "Test3"] = 2000;
+
+
+var _grid = ds_grid_create(4, 4);
+ds_grid_add(_grid, 0, 0, 8);
+ds_grid_add(_grid, 3, 2, 5);
+
+
+show_debug_message(ds_debug_print(1, ds_type_map));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
