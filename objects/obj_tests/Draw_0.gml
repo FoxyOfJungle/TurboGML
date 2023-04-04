@@ -1,6 +1,4 @@
 
-
-
 draw_debug_button(40, 40, "TEST");
 
 draw_debug_slider(40, 100, 200, "Test", 0.5, -5, 5);
@@ -73,7 +71,7 @@ var _x2 = mouse_x;
 var _y2 = mouse_y;
 draw_line(_x1, _y1, _x2, _y2);
 var _rot = point_direction(_x1, _y1, _x2, _y2);
-draw_sprite(spr_penguin, angle_get_subimg(_rot, 15), 200, 200);
+draw_sprite(spr_player, angle_get_subimg(_rot, 15), 200, 200);
 
 // smooth rot
 angle_slow = lerp(angle_slow, angle_towards(angle, _rot, 5), 0.2);
@@ -81,13 +79,13 @@ angle -= angle_slow;
 
 
 
-draw_sprite_ext(spr_penguin, 0, 300, 200, 1, 1, angle, c_white, 1);
+draw_sprite_ext(spr_player, 0, 300, 200, 1, 1, angle, c_white, 1);
 
 
 
 
 angle3 = lerp_angle(angle3, _rot, 0.2);
-draw_sprite_ext(spr_penguin, 0, 350, 200, 1, 1, angle3, c_white, 1);
+draw_sprite_ext(spr_player, 0, 350, 200, 1, 1, angle3, c_white, 1);
 
 
 draw_text(10, 80, distance(30, 50));

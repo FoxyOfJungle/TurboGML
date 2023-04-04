@@ -10,8 +10,8 @@
   "managed": true,
   "overriddenProperties": [],
   "parent": {
-    "name": "TurboGML",
-    "path": "TurboGML.yyp",
+    "name": "Objects",
+    "path": "folders/Example/Objects.yy",
   },
   "parentObjectId": null,
   "persistent": false,

@@ -5,8 +5,8 @@
   "closed": false,
   "kind": 1,
   "parent": {
-    "name": "TurboGML",
-    "path": "TurboGML.yyp",
+    "name": "Paths",
+    "path": "folders/Example/Paths.yy",
   },
   "points": [
     {"speed":100.0,"x":19.0,"y":14.0,},
