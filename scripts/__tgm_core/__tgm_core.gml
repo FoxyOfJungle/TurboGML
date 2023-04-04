@@ -1680,38 +1680,32 @@ function gui_to_room_dimension_ext(x1, y1, camera, angle, gui_width, gui_height,
 
 
 /// @desc Transforms a 2D coordinate (in window space) to a 3D vector.
-/// Returns an array of the following format:
-/// [dx, dy, dz, ox, oy, oz]
-/// where [dx, dy, dz] is the direction vector and [ox, oy, oz] is the origin of the ray.
+/// Returns a Vector3 containing a vector representing the mouse's vector cast into a 3D scene.
 /// Works for both orthographic and perspective projections.
 function screen_to_world_dimension(view_mat, proj_mat, xx, yy) {
 	// credits: TheSnidr
-	var _mx = 2 * (xx / window_get_width() - 0.5) / proj_mat[0];
-	var _my = 2 * (yy / window_get_height() - 0.5) / proj_mat[5];
-	var _cam_x = - (view_mat[12] * view_mat[0] + view_mat[13] * view_mat[1] + view_mat[14] * view_mat[2]);
-	var _cam_y = - (view_mat[12] * view_mat[4] + view_mat[13] * view_mat[5] + view_mat[14] * view_mat[6]);
-	var _cam_z = - (view_mat[12] * view_mat[8] + view_mat[13] * view_mat[9] + view_mat[14] * view_mat[10]);
-	var _matrix = undefined; // [dx, dy, dz, ox, oy, oz]
-	if (proj_mat[15] == 0) {
-	// perspective projection
-	_matrix = [view_mat[2]  + _mx * view_mat[0] + _my * view_mat[1],
-			view_mat[6]  + _mx * view_mat[4] + _my * view_mat[5],
-			view_mat[10] + _mx * view_mat[8] + _my * view_mat[9],
-			_cam_x,
-			_cam_y,
-			_cam_z];
-	} else {
-	// orthographic projection
-	_matrix = [view_mat[2],
-			view_mat[6],
-			view_mat[10],
-			_cam_x + _mx * view_mat[0] + _my * view_mat[1],
-			_cam_y + _mx * view_mat[4] + _my * view_mat[5],
-			_cam_z + _mx * view_mat[8] + _my * view_mat[9]];
-	}
-	var _xx = _matrix[0] * _matrix[5] / -_matrix[2] + _matrix[3];
-	var _yy = _matrix[1] * _matrix[5] / -_matrix[2] + _matrix[4];
-	return new Vector2(_xx, _yy);
+    var mx = 2 * (xx / window_get_width() - .5) / proj_mat[0];
+    var my = 2 * (yy / window_get_height() - .5) / proj_mat[5];
+    var camX = - (view_mat[12] * view_mat[0] + view_mat[13] * view_mat[1] + view_mat[14] * view_mat[2]);
+    var camY = - (view_mat[12] * view_mat[4] + view_mat[13] * view_mat[5] + view_mat[14] * view_mat[6]);
+    var camZ = - (view_mat[12] * view_mat[8] + view_mat[13] * view_mat[9] + view_mat[14] * view_mat[10]);
+    
+    if (proj_mat[15] == 0)
+    {    //This is a perspective projection
+        return new Vector3(
+            view_mat[2]  + mx * view_mat[0] + my * view_mat[1],
+            view_mat[6]  + mx * view_mat[4] + my * view_mat[5],
+            view_mat[10] + mx * view_mat[8] + my * view_mat[9]
+        );
+    }
+    else
+    {    //This is an ortho projection
+        return new Vector3(
+            view_mat[2],
+            view_mat[6],
+            view_mat[10]
+        );
+    }
 }
 
 
