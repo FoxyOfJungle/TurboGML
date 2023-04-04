@@ -171,5 +171,17 @@ var aa = point_direction_radians_vec2(150, 150, mouse_x, mouse_y);
 //draw_texture_quad(sprite_get_texture(Sprite7, 0), obj_b1.x, obj_b1.y, obj_b2.x, obj_b2.y, obj_b3.x, obj_b3.y, obj_b4.x, obj_b4.y, 100);
 
 
+//var x1 = 50;
+//var y1 = 50;
+//var x2 = mouse_x;
+//var y2 = mouse_y;
+//var ww = x2 - x1;
+//var hh = y2 - y1;
+
+//draw_rectangle(x1, y1, x2, y2, true);
+//var size = aspect_ratio_maintain(ww, hh, 480, 270);
+
+//draw_sprite_stretched(Sprite9, 0, x1, y1, size.x, size.y);
+
 
 

@@ -1,19 +1,19 @@
 
-//
-forward_speed = 3;
-backward_speed = 1.5;
+move_speed_base = 5;
+move_speed = move_speed_base;
+move_speed_acceleration = 0.9;
+move_speed_friction = 0.5;
 
-move_speed = 0;
-move_speed_acceleration = 0.8;
-move_speed_friction = 0.4;
+fall_speed = 10;
 
 
 input_h = 0;
 input_v = 0;
-
-
 input_dir = 0;
-facing_dir = 0;
+
 hsp = 0;
 vsp = 0;
+grav = 0.4;
 
+col_x = 0;
+col_y = 0;

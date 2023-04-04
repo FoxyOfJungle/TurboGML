@@ -19,6 +19,8 @@ pseudo_action_list = [];
 
 
 
+//show_message(aspect_ratio_gcd(1280, 1280));
+
 /*
 array = array_create_3d(8, 8, 2);
 
