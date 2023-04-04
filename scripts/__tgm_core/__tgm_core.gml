@@ -11,7 +11,7 @@
 	
 	..............................
 	Special Thanks, contributions:
-	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, icuurd12b42
+	YellowAfterLife, Cecil, TheSnidr, Xot, TheSnidr, Shaun Spalding, gnysek, icuurd12b42
 	(authors' names written in comment inside the functions used)
 	
 	Supporters:
@@ -1564,7 +1564,7 @@ function string_split_each_char(str) {
 
 
 function string_random_letter_case(str, first_is_upper=true, sequence=1) {
-	var _str_final = "", _f1 = -1, _f2 = -1;
+	var _str_final = "", _f1 = undefined, _f2 = undefined;
 	if (first_is_upper) {
 		_f1 = string_lower;
 		_f2 = string_upper;
@@ -2250,11 +2250,6 @@ function draw_text_shake(x, y, str, str_width, dist=1) {
 	}
 }
 
-
-
-
-
-
 #endregion
 
 
@@ -2264,7 +2259,7 @@ function gpu_set_blendmode_test(index, debug_info=false) {
 	// Feather disable GM1044
 	// final_pixel_colour =  (Rs,Gs,Bs,As) * source_blend_factor + (Rd,Gd,Bd,Ad) * destination_blend_factor
 	// s = source | d = destination
-	// there is 14641 possible extended blendmode combinations
+	// there are 14641 possible extended blendmode combinations
 	/*
 	[0] bm_normal
 	[1] bm_add
