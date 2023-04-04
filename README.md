@@ -16,6 +16,8 @@ Making this library took me a long time, so please click on the STAR icon, this 
 * Support my work;
 * Help other people find the repository.
 
+----
+
 ### Content:
 
 * Math functions (remap, linearstep, smoothstep, step, cos/sin/tan01, approach, angle_towards, is_even/odd/prime_number, fibonacci, gcd, fraction_reduce, etc)
