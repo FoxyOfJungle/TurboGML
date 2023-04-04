@@ -16,6 +16,8 @@ Making this library took me a long time, so please click on the STAR icon, this 
 * Support my work;
 * Help other people find the repository.
 
+![Star](./Icon.png)
+
 ----
 
 ### Content:
