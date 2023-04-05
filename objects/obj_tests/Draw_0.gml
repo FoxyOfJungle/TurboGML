@@ -5,6 +5,13 @@ draw_debug_slider(40, 100, 200, "Test", 0.5, -5, 5);
 
 
 
+//draw_set_color(c_white);
+//var sc = gui_mouse_x_normalized * 30;
+//draw_text_transformed_shadow(100, 100, "TESTTT", sc, sc, 0, c_black, 0.6);
+
+//draw_text_outline(300, 300, "TESTTTT", c_black, 1, gui_mouse_y_normalized*5, floor(gui_mouse_x_normalized*64));
+//draw_text_outline_gradient(300, 300, "TESTTTT", c_red, c_yellow, c_lime, c_purple, 1, gui_mouse_y_normalized*5, floor(gui_mouse_x_normalized*64));
+
 
 
 /*
