@@ -2182,7 +2182,6 @@ function draw_sprite_pos_ext(sprite, subimg, x, y, width, height, xoffset, yoffs
 }
 
 
-
 function draw_text_shadow(x, y, str, shadow_color=c_black, shadow_alpha=1, shadow_dist_x=1, shadow_dist_y=1) {
 	var _old_col = draw_get_color();
 	var _old_alpha = draw_get_alpha();
@@ -2229,7 +2228,6 @@ function draw_text_transformed_shadow(x, y, str, xscale, yscale, angle, shadow_c
 	draw_set_alpha(_old_alpha);
 	draw_text_transformed(x, y, str, xscale, yscale, angle);
 }
-
 
 
 function draw_text_wave(x, y, str, str_width, wave_amplitude=3, wave_speed=0.01) {
