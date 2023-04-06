@@ -93,7 +93,7 @@ function step(edge, value) {
 /// @returns {real} Description
 function cos01(radians_angle) {
 	gml_pragma("forceinline");
-	return cos(radians_angle) * 0.5 + 0.5;
+	return (cos(radians_angle) * 0.5 + 0.5);
 }
 
 /// @desc Returns the sine, but with a normalized range of 0 to 1
@@ -101,7 +101,7 @@ function cos01(radians_angle) {
 /// @returns {real} Description
 function sin01(radians_angle) {
 	gml_pragma("forceinline");
-	return sin(radians_angle) * 0.5 + 0.5;
+	return (sin(radians_angle) * 0.5 + 0.5);
 }
 
 /// @desc Returns the tangent, but with a normalized range of 0 to 1
@@ -109,7 +109,7 @@ function sin01(radians_angle) {
 /// @returns {real} Description
 function tan01(radians_angle) {
 	gml_pragma("forceinline");
-	return sin(radians_angle) * 0.5 + 0.5;
+	return (sin(radians_angle) * 0.5 + 0.5);
 }
 
 /// @desc Calculates the distance traveled by an object in free fall under the influence of friction
