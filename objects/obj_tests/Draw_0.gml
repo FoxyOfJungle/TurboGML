@@ -4,6 +4,34 @@ draw_debug_button(40, 40, "TEST");
 draw_debug_slider(40, 100, 200, "Test", 0.5, -5, 5);
 
 
+/*var _a = smoothstep(0, 255, gui_mouse_x_normalized*255); // returns 0 - 1
+var _b = linearstep(0, 255, gui_mouse_x_normalized*255); // returns 0 - 1
+var _c = lerp(0, 255, gui_mouse_x_normalized); // returns 0 - 255
+var _d = step(0.5, gui_mouse_x_normalized); // returns 0 or 1
+var _e = relerp(0, 1, gui_mouse_x_normalized, 0, room_width); // returns 0 - 255
+
+draw_text(10, 200, _a);
+draw_text(10, 220, _b);
+draw_text(10, 240, _c);
+draw_text(10, 260, _d);
+draw_text(10, 280, _e);
+
+draw_circle(room_width*_a, 200+10, 8, true);
+draw_circle(room_width*_b, 220+10, 8, true);
+draw_circle(room_width*(_c/255), 240+10, 8, true);
+draw_circle(room_width*_d, 260+10, 8, true);
+draw_circle(_e, 280+10, 8, true);*/
+
+
+/*var _xx = 400;
+var _yy = 180;
+var _size = 256;
+for (var i = 0; i < _size; i+=GoldenAngle) {
+	var dist = relerp(0, _size, i, 4, 200*gui_mouse_x_normalized);
+	draw_circle(_xx+(cos(i)*dist), _yy-(sin(i)*dist), relerp(0, _size, i, 3, 6), true);
+}*/
+
+
 
 //draw_set_color(c_white);
 //var sc = gui_mouse_x_normalized * 30;
@@ -108,19 +136,12 @@ draw_text(10, 120, string_zeros(125, 10));
 */
 
 /*
-draw_text(400, 20, gui_mouse_x_delta);
-draw_text(400, 40, gui_mouse_y_delta);
-draw_text(400, 60, DELTA_TIME);
-
 
 angle4 += 0.1;
 draw_cone(room_width/2, room_height/2, angle4, 100, 45);
 var _dist = point_in_arc(mouse_x, mouse_y, room_width/2, room_height/2, angle4, 100, 45); //point_in_cone(mouse_x, mouse_y, room_width/2, room_height/2, angle4, 100, 35);
 draw_text(10, 150, _dist);
 draw_text(10, 200, point_direction_normalized(room_width/2, room_height/2, mouse_x, mouse_y));
-
-
-draw_sprite_pos_persp(Sprite7, 0, obj_b1.x, obj_b1.y, obj_b2.x, obj_b2.y, obj_b3.x, obj_b3.y, obj_b4.x, obj_b4.y, 1);
 
 
 

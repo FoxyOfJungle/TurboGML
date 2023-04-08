@@ -1,5 +1,5 @@
 
-/*------------------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------
 	TurboGML. A complete library with must-have functionality.
 	- Library by FoxyOfJungle (Mozart Junior). (C) 2023, MIT License.
 	
@@ -11,12 +11,12 @@
 	
 	..............................
 	Special Thanks, contributions:
-	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, icuurd12b42
+	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, icuurd12b42, DragoniteSpam.
 	(authors' names written in comment inside the functions used)
 	
 	Supporters:
 	RookTKO
--------------------------------------------------------------------------------------------*/
+---------------------------------------------------------------------------------------------*/
 
 /*
 	MIT License
@@ -74,7 +74,7 @@ function linearstep(minv, maxv, value) {
 /// @param {Real} minv The value of the lower edge of the Hermite function.
 /// @param {Real} maxv The value of the upper edge of the Hermite function.
 /// @param {Real} value The source value for interpolation.
-/// @returns {Real} Description
+/// @returns {Real}
 function smoothstep(minv, maxv, value) {
 	var t = clamp((value - minv) / (maxv - minv), 0, 1);
 	return t * t * (3 - 2 * t);
@@ -83,33 +83,33 @@ function smoothstep(minv, maxv, value) {
 /// @desc 0 is returned if value < edge, and 1 is returned otherwise.
 /// @param {Real} edge The location of the edge of the step function.
 /// @param {Real} value The value to be used to generate the step function.
-/// @returns {real} Description
+/// @returns {real}
 function step(edge, value) {
 	return (value < edge) ? 0 : 1;
 }
 
 /// @desc Returns the cosine, but with a normalized range of 0 to 1
-/// @param {real} radians_angle Description
-/// @returns {real} Description
+/// @param {real} radians_angle Angle in radians.
+/// @returns {real}
 function cos01(radians_angle) {
 	gml_pragma("forceinline");
 	return (cos(radians_angle) * 0.5 + 0.5);
 }
 
 /// @desc Returns the sine, but with a normalized range of 0 to 1
-/// @param {real} radians_angle Description
-/// @returns {real} Description
+/// @param {real} radians_angle Angle in radians.
+/// @returns {real}
 function sin01(radians_angle) {
 	gml_pragma("forceinline");
 	return (sin(radians_angle) * 0.5 + 0.5);
 }
 
 /// @desc Returns the tangent, but with a normalized range of 0 to 1
-/// @param {real} radians_angle Description
-/// @returns {real} Description
+/// @param {real} radians_angle Angle in radians.
+/// @returns {real}
 function tan01(radians_angle) {
 	gml_pragma("forceinline");
-	return (sin(radians_angle) * 0.5 + 0.5);
+	return (tan(radians_angle) * 0.5 + 0.5);
 }
 
 /// @desc Calculates the distance traveled by an object in free fall under the influence of friction
@@ -275,6 +275,10 @@ function point_in_arc(px, py, x, y, angle, dist, fov) {
 	return (point_distance(px, py, x, y) < dist && abs(angle_difference(angle, point_direction(x, y, px, py))) < fov/2);
 }
 
+/// @desc This function prevents it from returning 0, returning another value instead, if this happen.
+/// @param {Real} value The value.
+/// @param {Real} zero_value Value to return.
+/// @returns {real} 
 function non_zero(value, zero_value=1) {
 	return value != 0 ? value : zero_value;
 }
@@ -301,12 +305,18 @@ function is_prime_number(number) {
 	return true;
 }
 
-function pow2_next(val) {
-	return 1 << ceil(log2(val));
+/// @desc Returns the next power of two number, based on the value.
+/// @param {real} value The value to check.
+/// @returns {real}
+function pow2_next(value) {
+	return 1 << ceil(log2(value));
 }
 
-function pow2_previous(val) {
-	return 1 << floor(log2(val));
+/// @desc Returns the previous power of two number, based on the value.
+/// @param {real} value The value to check.
+/// @returns {real}
+function pow2_previous(value) {
+	return 1 << floor(log2(value));
 }
 
 function fibonacci(n) {
@@ -1679,10 +1689,7 @@ function gui_to_room_dimension_ext(x1, y1, camera, angle, gui_width, gui_height,
 }
 
 
-/// @desc Transforms a 2D coordinate (in window space) to a 3D vector.
-/// Returns an array of the following format:
-/// [dx, dy, dz, ox, oy, oz]
-/// where [dx, dy, dz] is the direction vector and [ox, oy, oz] is the origin of the ray.
+/// @desc Transforms a 2D coordinate (in window space) to a 3D vector (x, y, z). Z is the camera's near plane.
 /// Works for both orthographic and perspective projections.
 function screen_to_world_dimension(view_mat, proj_mat, xx, yy) {
 	// credits: TheSnidr
@@ -1711,15 +1718,51 @@ function screen_to_world_dimension(view_mat, proj_mat, xx, yy) {
 	}
 	var _xx = _matrix[0] * _matrix[5] / -_matrix[2] + _matrix[3];
 	var _yy = _matrix[1] * _matrix[5] / -_matrix[2] + _matrix[4];
-	return new Vector2(_xx, _yy);
+	return new Vector3(_xx, _yy, camera_get_near_plane(proj_mat));
 }
 
 
-/// @desc Transforms a 3D coordinate to a 2D coordinate. Returns a Vector2 with x and y.
-/// Returns [-1, -1] if the 3D point is behind the camera
+/// Returns a ray whose origin is the camera position (ray origin) Vector3(x, y, z). It also returns the direction of the vector Vector3(x, y, z).
+///
+/// Works for both orthographic and perspective projections.
+function screen_to_ray(view_mat, proj_mat, xx, yy) {
+	// credits: TheSnidr / DragoniteSpam / FoxyOfJungle
+	var _mx = 2 * (xx / window_get_width() - 0.5) / proj_mat[0];
+	var _my = 2 * (yy / window_get_height() - 0.5) / proj_mat[5];
+	var _cam_x = - (view_mat[12] * view_mat[0] + view_mat[13] * view_mat[1] + view_mat[14] * view_mat[2]);
+	var _cam_y = - (view_mat[12] * view_mat[4] + view_mat[13] * view_mat[5] + view_mat[14] * view_mat[6]);
+	var _cam_z = - (view_mat[12] * view_mat[8] + view_mat[13] * view_mat[9] + view_mat[14] * view_mat[10]);
+	var _matrix = undefined; // [dx, dy, dz, ox, oy, oz]
+	if (proj_mat[15] == 0) {
+	// perspective projection
+	_matrix = [view_mat[2]  + _mx * view_mat[0] + _my * view_mat[1],
+			view_mat[6]  + _mx * view_mat[4] + _my * view_mat[5],
+			view_mat[10] + _mx * view_mat[8] + _my * view_mat[9],
+			_cam_x,
+			_cam_y,
+			_cam_z];
+	} else {
+	// orthographic projection
+	_matrix = [view_mat[2],
+			view_mat[6],
+			view_mat[10],
+			_cam_x + _mx * view_mat[0] + _my * view_mat[1],
+			_cam_y + _mx * view_mat[4] + _my * view_mat[5],
+			_cam_z + _mx * view_mat[8] + _my * view_mat[9]];
+	}
+	return {
+		origin : new Vector3(_matrix[3], _matrix[4], _matrix[5]),
+		direction : new Vector3(_matrix[0], _matrix[1], _matrix[2]),
+	}
+}
+
+
+/// @desc Transforms a 3D coordinate to a 2D coordinate. Returns a Vector2(x, y).
+/// Returns Vector2(-1, -1) if the 3D point is behind the camera.
+///
 /// Works for both orthographic and perspective projections.
 function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz, normalized=false) {
-	// credits: TheSnidr
+	// credits: TheSnidr / FoxyOfJungle
 	var _w = view_mat[2] * xx + view_mat[6] * yy + view_mat[10] * zz + view_mat[14];
 	if (_w <= 0) return new Vector2(-1, -1);
 	var _cx, _cy;
@@ -1734,9 +1777,9 @@ function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz, normalized=fa
 	}
 	
 	if (normalized) {
-		return new Vector2((0.5+0.5*_cx), (0.5+0.5*_cy));
+		return new Vector2((_cx*0.5+0.5), (0.5+0.5*_cy));
 	} else {
-		return new Vector2((0.5+0.5*_cx) * window_get_width(), (0.5+0.5*_cy) * window_get_height());
+		return new Vector2((_cx*0.5+0.5) * window_get_width(), (_cy*0.5+0.5) * window_get_height());
 	}
 }
 
@@ -3172,12 +3215,13 @@ function audio_create_stream_wav(file_audio) {
 
 #region 3D
 
+// vertex format
 vertex_format_begin();
 vertex_format_add_position_3d();
 vertex_format_add_normal();
 vertex_format_add_texcoord();
-vertex_format_add_colour();
-global.vbf_default_format = vertex_format_end();
+vertex_format_add_color();
+global.__vbf_3d_format = vertex_format_end();
 
 /// @func vertex_add_point(vbuff, xx, yy, zz, nx, ny, nz, u, v, color, alpha)
 function vertex_add_point(vbuff, xx, yy, zz, nx, ny, nz, u, v, color, alpha) {
@@ -3192,7 +3236,7 @@ function vertex_add_point(vbuff, xx, yy, zz, nx, ny, nz, u, v, color, alpha) {
 function model_build_plane(x1, y1, z1, x2, y2, z2, hrepeat, vrepeat, color=c_white, alpha=1) {
 	var _vbuff = vertex_create_buffer();
 	
-	vertex_begin(_vbuff, global.vf_default);
+	vertex_begin(_vbuff, global.__vbf_3d_format);
 	vertex_add_point(_vbuff, x1, y1, z1, 0, 0, 1, 0, 0, color, alpha);
 	vertex_add_point(_vbuff, x2, y1, z1, 0, 0, 1, hrepeat, 0, color, alpha);
 	vertex_add_point(_vbuff, x1, y2, z2, 0, 0, 1, 0, vrepeat, color, alpha);
@@ -3210,7 +3254,7 @@ function model_build_plane(x1, y1, z1, x2, y2, z2, hrepeat, vrepeat, color=c_whi
 function model_build_cube(x1, y1, z1, x2, y2, z2, hrepeat, vrepeat, color=c_white, alpha=1) {
 	var _vbuff = vertex_create_buffer();
 	
-	vertex_begin(_vbuff, global.vf_default);
+	vertex_begin(_vbuff, global.__vbf_3d_format);
 	
 	// top
 	vertex_add_point(_vbuff, x1, y1, z2, 0, 0, 1, 0, 0, color, alpha);
@@ -3313,6 +3357,28 @@ function model_build_cube(x1, y1, z1, x2, y2, z2, hrepeat, vrepeat, color=c_whit
 //	}
 //	return _vbuff;
 //}
+
+//global.__vbf_debug = vertex_create_buffer();
+
+//vertex_format_begin();
+//vertex_format_add_position_3d();
+//vertex_format_add_color();
+//global.vbf_default_format = vertex_format_end();
+
+
+//function draw_line_3d(x1, y1, z1, x2, y2, z2) {
+//	var _vbf_line = global.__vbf_debug;
+//	vertex_begin(_vbf_line, global.vbf_default_format);
+	
+//	vertex_position_3d(_vbf_line, x1, y1, z1);
+//	vertex_color(_vbf_line, c_white, 1);
+	
+//	vertex_position_3d(_vbf_line, x2, y2, z2);
+//	vertex_color(_vbf_line, c_white, 1);
+	
+//	vertex_end(_vbf_line);
+//}
+
 
 #endregion
 

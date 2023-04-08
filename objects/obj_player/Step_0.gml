@@ -1,4 +1,4 @@
-//
+
 input_h = keyboard_check(vk_right) - keyboard_check(vk_left);
 input_v = keyboard_check(vk_down) - keyboard_check(vk_up);
 input_dir = point_direction(0, 0, input_h, input_v);
