@@ -1,4 +1,9 @@
 
+var _numbber = floor(gui_mouse_x_normalized*100);
+draw_text(10, 80, _numbber);
+draw_text(10, 100, is_odd_number(_numbber));
+
+
 draw_debug_button(40, 40, "TEST");
 
 draw_debug_slider(40, 100, 200, "Test", 0.5, -5, 5);

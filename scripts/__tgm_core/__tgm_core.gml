@@ -11,7 +11,8 @@
 	
 	..............................
 	Special Thanks, contributions:
-	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, icuurd12b42, DragoniteSpam.
+	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, icuurd12b42, DragoniteSpam,
+	Grisgram.
 	(authors' names written in comment inside the functions used)
 	
 	Supporters:
@@ -288,11 +289,13 @@ function is_fractional(number) {
 }
 
 function is_even_number(number) {
-	return (number % 2 == 0);
+	return (number & 1 == 0);
+	//return (number % 2 == 0);
 }
 
 function is_odd_number(number) {
-	return (number % 2 == 1);
+	return (number & 1 == 1);
+	//return (number % 2 == 1);
 }
 
 function is_prime_number(number) {

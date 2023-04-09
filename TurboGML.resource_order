@@ -1,5 +1,6 @@
 {
   "FolderOrderSettings": [
+    {"name":"Example","order":3,"path":"folders/Example.yy",},
     {"name":"Paths","order":1,"path":"folders/Example/Paths.yy",},
   ],
   "ResourceOrderSettings": [
