@@ -9,6 +9,30 @@ if keyboard_check_pressed(ord("K")) test += 1;
 
 
 
+/*if keyboard_check_pressed(ord("V")) {
+	audio = audio_load_wav("Musiccc.wav");
+	show_debug_message(audio);
+	audio_play_sound(audio.audio, 100, false);
+}
+
+if keyboard_check_pressed(ord("B")) {
+	audio = audio_load_wav("explosion3.wav");
+	show_debug_message(audio);
+	audio_play_sound(audio.audio, 100, false);
+}
+
+if keyboard_check_pressed(ord("N")) {
+	audio = audio_load_raw("music_u8_pcm_44100.raw", 44100, 8, 2);
+	show_debug_message(audio);
+	audio_play_sound(audio.audio, 100, false);
+}
+
+if keyboard_check_pressed(ord("M")) {
+	audio_stream_destroy(audio);
+}*/
+
+
+
 /*var x1, y1, x2, y2;
 x1 = lengthdir_x(1, image_angle);
 y1 = lengthdir_y(1, image_angle);
