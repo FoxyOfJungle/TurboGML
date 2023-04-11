@@ -25,6 +25,7 @@ Making this library took me a long time, so please click on the STAR icon, this 
 
 * Math functions (remap, linearstep, smoothstep, step, cos/sin/tan01, approach, angle_towards, is_even/odd/prime_number, fibonacci, gcd, fraction_reduce, etc)
 * Vectors (Vector2, Vector3, Vector4)
+* Raycasting (raycast_hit_point_2d, screen_to_ray...)
 * General (print, fps_average, sleep, invoke...)
 * Data (ds_debug_print, uuid3, uuid4, uuid5...)
 * Arrays (array_create_2d, array_create_3d, array_choose, array_sum, array_max, array_min, array_empty, array_copy_all...)
