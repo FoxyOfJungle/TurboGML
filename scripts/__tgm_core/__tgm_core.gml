@@ -113,6 +113,12 @@ function tan01(radians_angle) {
 	return (tan(radians_angle) * 0.5 + 0.5);
 }
 
+/// @desc Returns the reciprocal of the square root of "val".
+/// @param {Real} Value
+function inverse_sqrt(val) {
+	return 1 / sqrt(abs(val));
+}
+
 /// @desc Calculates the distance traveled by an object in free fall under the influence of friction
 /// @param {Real} dist The distance an object falls
 /// @param {Real} fric Coefficient of friction acting on the object.
@@ -2214,8 +2220,23 @@ function draw_sprite_centered_ext(sprite, subimg, x, y, xscale, yscale, rot, col
 }
 
 
+function draw_surface_centered(surface_id, x, y) {
+	draw_surface(surface_id, x-(surface_get_width(surface_id)/2), y-(surface_get_height(surface_id)/2));
+}
+
+
 function draw_surface_centered_ext(surface_id, x, y, xscale, yscale, rot, col, alpha) {
-	draw_surface_ext(surface_id, x-(surface_get_width(surface_id)/2)*xscale, y-(surface_get_height(surface_id)/2)*yscale, xscale, yscale, rot, col, alpha);
+	//draw_surface_ext(surface_id, x-(surface_get_width(surface_id)/2)*xscale, y-(surface_get_height(surface_id)/2)*yscale, xscale, yscale, rot, col, alpha);
+	var _col = draw_get_color(),
+	_alpha = draw_get_alpha(),
+	_mat = matrix_get(matrix_world);
+	matrix_set(matrix_world, matrix_build(x, y, 0, 0, 0, rot, xscale, yscale, 1));
+	draw_set_color(col);
+	draw_set_alpha(alpha);
+	draw_surface(surface_id, -surface_get_width(surface_id)/2, -surface_get_height(surface_id)/2);
+	draw_set_color(_col);
+	draw_set_alpha(_alpha);
+	matrix_set(matrix_world, _mat);
 }
 
 

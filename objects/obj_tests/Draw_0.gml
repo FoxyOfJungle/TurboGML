@@ -1,15 +1,21 @@
 
-var _numbber = floor(gui_mouse_x_normalized*100);
+//var _val = floor(gui_mouse_x_normalized*1000);
+//draw_text(10, 50, _val);
+//draw_text(10, 80, inverse_sqrt(_val));
+
+
+
+/*var _numbber = floor(gui_mouse_x_normalized*100);
 draw_text(10, 80, _numbber);
 draw_text(10, 100, is_odd_number(_numbber));
 
 
 draw_debug_button(40, 40, "TEST");
 
-draw_debug_slider(40, 100, 200, "Test", 0.5, -5, 5);
+draw_debug_slider(40, 100, 200, "Test", 0.5, -5, 5);*/
 
 
-/*var _a = smoothstep(0, 255, gui_mouse_x_normalized*255); // returns 0 - 1
+var _a = smoothstep(0, 255, gui_mouse_x_normalized*255); // returns 0 - 1
 var _b = linearstep(0, 255, gui_mouse_x_normalized*255); // returns 0 - 1
 var _c = lerp(0, 255, gui_mouse_x_normalized); // returns 0 - 255
 var _d = step(0.5, gui_mouse_x_normalized); // returns 0 or 1
@@ -25,7 +31,7 @@ draw_circle(room_width*_a, 200+10, 8, true);
 draw_circle(room_width*_b, 220+10, 8, true);
 draw_circle(room_width*(_c/255), 240+10, 8, true);
 draw_circle(room_width*_d, 260+10, 8, true);
-draw_circle(_e, 280+10, 8, true);*/
+draw_circle(_e, 280+10, 8, true);
 
 
 /*var _xx = 400;
