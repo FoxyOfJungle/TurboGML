@@ -2262,6 +2262,18 @@ function draw_text_shadow(x, y, str, shadow_color=c_black, shadow_alpha=1, shado
 }
 
 
+function draw_text_ext_shadow(x, y, str, sep, width, shadow_color=c_black, shadow_alpha=1, shadow_dist_x=1, shadow_dist_y=1) {
+	var _old_col = draw_get_color();
+	var _old_alpha = draw_get_alpha();
+	draw_set_color(shadow_color);
+	draw_set_alpha(shadow_alpha);
+	draw_text_ext(x+shadow_dist_x, y+shadow_dist_y, str, sep, width);
+	draw_set_color(_old_col);
+	draw_set_alpha(_old_alpha);
+	draw_text_ext(x, y, str, sep, width);
+}
+
+
 function draw_text_outline(x, y, str, outline_color=c_black, outline_alpha=1, outline_size=1, fidelity=4) {
 	var _old_col = draw_get_color();
 	var _old_alpha = draw_get_alpha();
@@ -2639,6 +2651,41 @@ function texturegroup_debug_draw_sprites(group, scale) {
 	}
 }
 
+
+#endregion
+
+
+#region PARTICLES
+
+function particle_create(x, y, layer_id, particle_asset) {
+	var _part = part_system_create_layer(layer_id, false, particle_asset);
+	part_system_position(_part, x, y);
+	return _part;
+}
+
+function particle_type_create(x, y, part_system, particle_asset, amount) {
+	part_particles_create(part_system, x, y, particle_get_info(particle_asset).emitters[0].parttype.ind, amount);
+}
+
+function particle_move(part_system, x, y) {
+	part_system_position(part_system, x, y);
+}
+
+function particle_set_emission_enabled(part_system, particle_asset, enabled, emitter_index=0) {
+	var _part_info = particle_get_info(particle_asset),
+	_emitter = _part_info.emitters[emitter_index];
+    part_emitter_stream(part_system, _emitter, _emitter.parttype.ind, enabled ? _emitter.number : 0);
+}
+
+function particle_set_emission(part_system, particle_asset, amount, emitter_index=0) {
+	var _part_info = particle_get_info(particle_asset),
+	_emitter = _part_info.emitters[emitter_index];
+	part_emitter_stream(part_system, _emitter, _emitter.parttype.ind, amount);
+}
+
+function particle_pause(part_system, pause) {
+	part_system_automatic_update(part_system, !pause);
+}
 
 #endregion
 

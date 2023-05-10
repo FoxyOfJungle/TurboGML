@@ -18,6 +18,10 @@ tests = 0;
 pseudo_action_list = [];
 
 
+array = array_create_ext(3, function(index) {return index;});
+
+show_debug_message(array);
+
 
 //show_message(aspect_ratio_gcd(1280, 1280));
 
