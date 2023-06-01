@@ -18,6 +18,7 @@
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Sprites","folderPath":"folders/Example/Sprites.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"KazanGames","folderPath":"folders/KazanGames.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"TurboGML","folderPath":"folders/KazanGames/TurboGML.yy",},
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Particles","folderPath":"folders/Example/Particles.yy",},
   ],
   "IncludedFiles": [
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"explosion3.wav","CopyToMask":-1,"filePath":"datafiles",},
@@ -48,6 +49,7 @@
     {"id":{"name":"obj_b2","path":"objects/obj_b2/obj_b2.yy",},},
     {"id":{"name":"spr_solid","path":"sprites/spr_solid/spr_solid.yy",},},
     {"id":{"name":"Sprite6","path":"sprites/Sprite6/Sprite6.yy",},},
+    {"id":{"name":"ParticleSystem1","path":"particles/ParticleSystem1/ParticleSystem1.yy",},},
     {"id":{"name":"__tgm_core","path":"scripts/__tgm_core/__tgm_core.yy",},},
     {"id":{"name":"obj_testt","path":"objects/obj_testt/obj_testt.yy",},},
     {"id":{"name":"Sprite4","path":"sprites/Sprite4/Sprite4.yy",},},

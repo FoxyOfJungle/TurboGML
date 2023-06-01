@@ -12,7 +12,7 @@
 	..............................
 	Special Thanks, contributions:
 	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, icuurd12b42, DragoniteSpam,
-	Grisgram, There is no Red color, JuJu Adams.
+	Grisgram, Red, JuJu Adams.
 	(authors' names written in comment inside the functions used)
 	
 	Supporters:
@@ -1027,10 +1027,7 @@ function ___fps_average() {
 
 
 function game_in_IDE() {
-	//if (debug_mode) return true;
-	if (code_is_compiled()) return false;
-	if (parameter_count() == 3 && parameter_string(1) == "-game") return true;
-	return false;
+	return (GM_build_type == "run");
 }
 
 
@@ -1061,7 +1058,7 @@ function print() {
 
 #macro trace  __trace(_GMFILE_ + "/" + _GMFUNCTION_ + ":" + string(_GMLINE_) + ": ")
 function __trace(_location) {
-	// credits: "There is no Red color", "JuJu Adams"
+	// credits: "Red", "JuJu Adams"
 	static __struct = {};
 	__struct.__location = _location;
 	return method(__struct, function(_str) {
@@ -2697,8 +2694,10 @@ function particle_create(x, y, layer_id, particle_asset) {
 	return _part;
 }
 
-function particle_type_create(x, y, part_system, particle_asset, amount) {
-	part_particles_create(part_system, x, y, particle_get_info(particle_asset).emitters[0].parttype.ind, amount);
+/// @desc Used to get the particle type from a particle system created via IDE.
+/// So you can use part_particles_create() to create the particles from it.
+function particle_get_type(particle_asset, emitter_index=0) {
+	return particle_get_info(particle_asset).emitters[emitter_index].parttype.ind;
 }
 
 function particle_move(part_system, x, y) {

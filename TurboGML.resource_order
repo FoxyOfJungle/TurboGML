@@ -2,6 +2,7 @@
   "FolderOrderSettings": [
     {"name":"Example","order":3,"path":"folders/Example.yy",},
     {"name":"Paths","order":1,"path":"folders/Example/Paths.yy",},
+    {"name":"Particles","order":2,"path":"folders/Example/Particles.yy",},
   ],
   "ResourceOrderSettings": [
     {"name":"obj_b4","order":9,"path":"objects/obj_b4/obj_b4.yy",},

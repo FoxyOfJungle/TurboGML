@@ -1,4 +1,12 @@
 
+
+if (mouse_check_button(mb_left)) {
+	var _part = particle_get_type(ParticleSystem1);
+	part_type_direction(_part, 260, 290, 0, 0);
+	part_particles_create(part_sys, mouse_x, mouse_y, _part, 1);
+}
+
+
 if keyboard_check_pressed(vk_escape) game_end();
 
 //if keyboard_check(ord("U")) DELTA_TIME_SCALE -= 0.02;
