@@ -255,7 +255,8 @@ function motion_predict_intersection(x1, y1, x2, y2, target_speed, target_angle,
 /// @param {Real} y2 Target Y position.
 /// @returns {real} 
 function point_direction_radians(x1, y1, x2, y2) {
-	return arctan2(y2-y1, x2-x1);
+	return degtorad(point_direction(x1, y1, x2, y2));
+	//(arctan2(y2-y1, x2-x1) + pi*2) % pi*2;
 }
 
 /// @desc This function returns the normalized direction between two points. Expected results: -1 to 1, both horizontal and vertical
@@ -266,8 +267,8 @@ function point_direction_radians(x1, y1, x2, y2) {
 /// @returns {Struct} 
 function point_direction_normalized(x1, y1, x2, y2) {
 	//var dir = degtorad(-point_direction(x1, y1, x2, y2));
-	var dir = arctan2(y2-y1, x2-x1);
-	return new Vector2(cos(dir), sin(dir));
+	var len = point_distance(x1, y1, x2, y2);
+	return new Vector2((x2 - x1)/len, (y2 - y1)/len);
 }
 
 function point_in_cone(px, py, x, y, angle, dist, fov) {
@@ -299,7 +300,7 @@ function non_zero(value, zero_value=1) {
 }
 
 function is_fractional(number) {
-	return (frac(number) > 0);
+	return (abs(frac(number)) > 0);
 }
 
 function is_even_number(number) {
