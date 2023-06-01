@@ -15,23 +15,23 @@ draw_debug_button(40, 40, "TEST");
 draw_debug_slider(40, 100, 200, "Test", 0.5, -5, 5);*/
 
 
-var _a = smoothstep(0, 255, gui_mouse_x_normalized*255); // returns 0 - 1
-var _b = linearstep(0, 255, gui_mouse_x_normalized*255); // returns 0 - 1
-var _c = lerp(0, 255, gui_mouse_x_normalized); // returns 0 - 255
-var _d = step(0.5, gui_mouse_x_normalized); // returns 0 or 1
-var _e = relerp(0, 1, gui_mouse_x_normalized, 0, room_width); // returns 0 - 255
+//var _a = smoothstep(0, 255, gui_mouse_x_normalized*255); // returns 0 - 1
+//var _b = linearstep(0, 255, gui_mouse_x_normalized*255); // returns 0 - 1
+//var _c = lerp(0, 255, gui_mouse_x_normalized); // returns 0 - 255
+//var _d = step(0.5, gui_mouse_x_normalized); // returns 0 or 1
+//var _e = relerp(0, 1, gui_mouse_x_normalized, 0, room_width); // returns 0 - 255
 
-draw_text(10, 200, _a);
-draw_text(10, 220, _b);
-draw_text(10, 240, _c);
-draw_text(10, 260, _d);
-draw_text(10, 280, _e);
+//draw_text(10, 200, _a);
+//draw_text(10, 220, _b);
+//draw_text(10, 240, _c);
+//draw_text(10, 260, _d);
+//draw_text(10, 280, _e);
 
-draw_circle(room_width*_a, 200+10, 8, true);
-draw_circle(room_width*_b, 220+10, 8, true);
-draw_circle(room_width*(_c/255), 240+10, 8, true);
-draw_circle(room_width*_d, 260+10, 8, true);
-draw_circle(_e, 280+10, 8, true);
+//draw_circle(room_width*_a, 200+10, 8, true);
+//draw_circle(room_width*_b, 220+10, 8, true);
+//draw_circle(room_width*(_c/255), 240+10, 8, true);
+//draw_circle(room_width*_d, 260+10, 8, true);
+//draw_circle(_e, 280+10, 8, true);
 
 
 /*var _xx = 400;

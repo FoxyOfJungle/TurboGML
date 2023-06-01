@@ -18,9 +18,7 @@ tests = 0;
 pseudo_action_list = [];
 
 
-array = array_create_ext(3, function(index) {return index;});
-
-show_debug_message(array);
+trace("Hello World!");
 
 
 //show_message(aspect_ratio_gcd(1280, 1280));
@@ -43,8 +41,8 @@ clipboard_set_text(string(files.GetContents()));
 
 
 
-//audio = audio_create_stream_wav("music_s16_pcm_48000.wav");
-//audio_play_sound(audio, 0, false);
+//sound_struct = audio_load_wav("explosion3.wav");
+//audio_play_sound(sound_struct.audio, 0, false);
 
 
 
@@ -60,12 +58,6 @@ array = [
 var aa = struct_get_variable(struct, "array", 2);
 show_debug_message(aa);*/
 
-
-//days = undefined;
-//day = 10;
-//day = days ?? day;
-
-//show_debug_message(day);
 
 
 
@@ -98,21 +90,6 @@ ds_queue_enqueue(_queue, 32, 64, 82, 100);
 
 
 show_debug_message(ds_debug_print(_queue, ds_type_queue));*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
