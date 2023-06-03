@@ -13,12 +13,12 @@
   "Folders": [
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Example","folderPath":"folders/Example.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Objects","folderPath":"folders/Example/Objects.yy",},
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Particles","folderPath":"folders/Example/Particles.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Paths","folderPath":"folders/Example/Paths.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Rooms","folderPath":"folders/Example/Rooms.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Sprites","folderPath":"folders/Example/Sprites.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"KazanGames","folderPath":"folders/KazanGames.yy",},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"TurboGML","folderPath":"folders/KazanGames/TurboGML.yy",},
-    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Particles","folderPath":"folders/Example/Particles.yy",},
   ],
   "IncludedFiles": [
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"explosion3.wav","CopyToMask":-1,"filePath":"datafiles",},

@@ -3203,7 +3203,7 @@ function file_get_size(file) {
 #endregion
 
 
-#region UI
+#region DEBUG UI
 
 #macro gui_w display_get_gui_width()
 #macro gui_h display_get_gui_height()
@@ -3572,48 +3572,6 @@ function model_build_cube(x1, y1, z1, x2, y2, z2, hrepeat, vrepeat, color=c_whit
 	
 //	vertex_end(_vbf_line);
 //}
-
-
-#endregion
-
-
-#region SHADERS [WIP]
-
-// Wrappers for test purposes
-
-/*function make_color_shader(color) {
-	return [color_get_red(color)/255, color_get_green(color)/255, color_get_blue(color)/255];
-}
-
-function shader_set_uniform_float(shader, name) {
-	if (argument_count > 2) {
-		var i = 0;
-		repeat(argument_count) {
-			shader_set_uniform_f(shader_get_uniform(shader, name), argument[3+i]);
-			i++;
-		}
-	}
-}
-
-function shader_set_uniform_float_array(shader, name, array) {
-	shader_set_uniform_f_array(shader_get_uniform(shader, name), array);
-}
-
-function shader_set_uniform_int(shader, name, value) {
-	shader_set_uniform_i(shader_get_uniform(shader, name), value);
-}
-
-function shader_set_uniform_int_array(shader, name, array) {
-	shader_set_uniform_i_array(shader_get_uniform(shader, name), array);
-}
-
-function shader_set_uniform_mat(shader, name) {
-	shader_set_uniform_matrix(shader_get_uniform(shader, name));
-}
-
-function shader_set_uniform_mat_array(shader, name, array) {
-	shader_set_uniform_matrix_array(shader_get_uniform(shader, name), array);
-}*/
 
 
 #endregion
