@@ -10,6 +10,7 @@
     {"name":"spr_player","order":7,"path":"sprites/spr_player/spr_player.yy",},
     {"name":"obj_bullet","order":3,"path":"objects/obj_bullet/obj_bullet.yy",},
     {"name":"obj_player_2_test","order":11,"path":"objects/obj_player_2_test/obj_player_2_test.yy",},
+    {"name":"GM_Fire_spr_Fire","order":1,"path":"sprites/GM_Fire_spr_Fire/GM_Fire_spr_Fire.yy",},
     {"name":"obj_b3","order":8,"path":"objects/obj_b3/obj_b3.yy",},
     {"name":"obj_solid","order":12,"path":"objects/obj_solid/obj_solid.yy",},
     {"name":"Sprite5","order":2,"path":"sprites/Sprite5/Sprite5.yy",},

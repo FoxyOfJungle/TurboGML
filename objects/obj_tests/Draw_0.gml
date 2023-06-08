@@ -1,4 +1,10 @@
 
+
+
+draw_circle_width(mouse_x, mouse_y, 32, 64, 32, floor(gui_mouse_x_normalized*12));
+
+
+
 //var _val = floor(gui_mouse_x_normalized*1000);
 //draw_text(10, 50, _val);
 //draw_text(10, 80, inverse_sqrt(_val));

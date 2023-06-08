@@ -1,9 +1,4 @@
 
-part_sys = part_system_create_layer("Assets_1", false);
-
-
-
-
 gpu_set_tex_filter(true);
 show_debug_overlay(true);
 

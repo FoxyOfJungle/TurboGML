@@ -2180,6 +2180,21 @@ function draw_line_vector(x1, y1, angle, distance) {
 }
 
 
+function draw_circle_width(x, y, inner, outer, segments, i_start=0) {
+	draw_primitive_begin(pr_trianglestrip);
+	var i = i_start, dir, dx, dy;
+	repeat(segments + 1) {
+		dir = (i / segments) * Tau;
+		dx = cos(dir);
+		dy = sin(dir);
+		draw_vertex(x + dx*inner, y - dy*inner);
+		draw_vertex(x + dx*outer, y - dy*outer);
+		i++;
+	}
+	draw_primitive_end();
+}
+
+
 function draw_texture_quad(texture_id, x1, y1, x2, y2, x3, y3, x4, y4, precision=50) {
 	/*p1--p2
 	  |    |
@@ -2683,43 +2698,6 @@ function texturegroup_debug_draw_sprites(group, scale) {
 	}
 }
 
-
-#endregion
-
-
-#region PARTICLES
-
-function particle_create(x, y, layer_id, particle_asset) {
-	var _part = part_system_create_layer(layer_id, false, particle_asset);
-	part_system_position(_part, x, y);
-	return _part;
-}
-
-/// @desc Used to get the particle type from a particle system created via IDE.
-/// So you can use part_particles_create() to create the particles from it.
-function particle_get_type(particle_asset, emitter_index=0) {
-	return particle_get_info(particle_asset).emitters[emitter_index].parttype.ind;
-}
-
-function particle_move(part_system, x, y) {
-	part_system_position(part_system, x, y);
-}
-
-function particle_set_emission_enabled(part_system, particle_asset, enabled, emitter_index=0) {
-	var _part_info = particle_get_info(particle_asset),
-	_emitter = _part_info.emitters[emitter_index];
-    part_emitter_stream(part_system, _emitter, _emitter.parttype.ind, enabled ? _emitter.number : 0);
-}
-
-function particle_set_emission(part_system, particle_asset, amount, emitter_index=0) {
-	var _part_info = particle_get_info(particle_asset),
-	_emitter = _part_info.emitters[emitter_index];
-	part_emitter_stream(part_system, _emitter, _emitter.parttype.ind, amount);
-}
-
-function particle_pause(part_system, pause) {
-	part_system_automatic_update(part_system, !pause);
-}
 
 #endregion
 

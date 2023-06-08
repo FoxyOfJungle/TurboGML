@@ -36,6 +36,7 @@
     {"id":{"name":"spr_player","path":"sprites/spr_player/spr_player.yy",},},
     {"id":{"name":"obj_bullet","path":"objects/obj_bullet/obj_bullet.yy",},},
     {"id":{"name":"obj_player_2_test","path":"objects/obj_player_2_test/obj_player_2_test.yy",},},
+    {"id":{"name":"GM_Fire_spr_Fire","path":"sprites/GM_Fire_spr_Fire/GM_Fire_spr_Fire.yy",},},
     {"id":{"name":"obj_b3","path":"objects/obj_b3/obj_b3.yy",},},
     {"id":{"name":"obj_solid","path":"objects/obj_solid/obj_solid.yy",},},
     {"id":{"name":"Path1","path":"paths/Path1/Path1.yy",},},
