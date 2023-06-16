@@ -13,8 +13,8 @@
 ## Important: ⚠
 
 The purpose of this library is to have functions that are very likely to be useful in your game (from my own experience), so it was made thinking about being used in its entirety, rather than in parts.
-So I recommend just importing the .yymps file, where it will contain a script with all the functions (you may also just copy the script from that folder - this was done this way to make it easier).
-
+So I recommend just importing the .yymps file, where it will contain a script with all the functions (you may also just copy the script from that folder - this was done this way to make it easier).  
+The code is divided into regions even though it is in a single script.
 
 Making this library took me a long time, so please click on the STAR icon, this way you:
 * Shows gratitude;
