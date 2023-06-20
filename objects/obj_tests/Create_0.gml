@@ -1,4 +1,4 @@
-
+surf = -1;
 gpu_set_tex_filter(true);
 show_debug_overlay(true);
 

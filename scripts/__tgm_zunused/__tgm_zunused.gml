@@ -94,3 +94,23 @@
 //	}
 //	array_sort(array, _f);
 //}
+
+//function draw_surface_centered_ext(surface_id, x, y, xscale, yscale, rot, col, alpha) {
+//	//draw_surface_ext(surface_id, x-(surface_get_width(surface_id)/2)*xscale, y-(surface_get_height(surface_id)/2)*yscale, xscale, yscale, rot, col, alpha);
+//	var _col = draw_get_color(),
+//	_alpha = draw_get_alpha();
+	
+//	var _mat = matrix_build(x, y, 0, 0, 0, rot, xscale, yscale, 1);
+	
+//	matrix_stack_push(_mat);
+//	matrix_set(matrix_world, matrix_stack_top());
+	
+//	draw_set_color(col);
+//	draw_set_alpha(alpha);
+//	draw_surface(surface_id, -surface_get_width(surface_id)/2, -surface_get_height(surface_id)/2);
+//	draw_set_color(_col);
+//	draw_set_alpha(_alpha);
+	
+//	matrix_stack_pop();
+//	matrix_set(matrix_world, matrix_stack_top());
+//}

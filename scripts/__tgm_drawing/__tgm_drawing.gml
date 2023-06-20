@@ -75,28 +75,62 @@ function draw_cone(x, y, angle, dist, fov) {
 
 #region 2D GRAPHICS (Nine Slices, Sprites, Surfaces)
 
+/// @desc Draws a sprite with nineslice turned on, but with custom size and the pivot point is considered.
+/// @param {asset.gmsprite} sprite The sprite to draw.
+/// @param {real} subimg The sprite frame.
+/// @param {real} x The x position to draw.
+/// @param {real} y The y position to draw.
+/// @param {real} width The width. The nine slice will be stretched to this exact amount.
+/// @param {real} height The height. The nine slice will be stretched to this exact amount.
+/// @param {real} xscale Relative nineslice xscale.
+/// @param {real} yscale Relative nineslice yscale.
+/// @param {real} rot Sprite angle.
+/// @param {real} col Blend color.
+/// @param {real} alpha Sprite alpha.
 function draw_nineslice_stretched_ext(sprite, subimg, x, y, width, height, xscale, yscale, rot, col, alpha) {
 	draw_sprite_ext(sprite, subimg, x, y, (width/sprite_get_width(sprite))*xscale, (height/sprite_get_height(sprite))*yscale, rot, col, alpha);
 }
 
-
-// useful when applying a shader to a sprite that is offset at 0, 0, but still wants to draw centered.
+/// @desc Useful when applying a shader to a sprite that is offset at 0, 0, but still wants to draw centered.
+/// @param {asset.gmsprite} sprite The sprite to draw.
+/// @param {real} subimg The sprite frame.
+/// @param {real} x The x position to draw.
+/// @param {real} y The y position to draw.
 function draw_sprite_centered(sprite, subimg, x, y) {
 	draw_sprite(sprite, subimg, x-sprite_get_width(sprite)/2, y-sprite_get_height(sprite)/2);
 }
 
-
-// useful when applying a shader to a sprite that is offset at 0, 0, but still wants to draw centered and scaled.
+/// @desc Useful when applying a shader to a sprite that is offset at 0, 0, but still wants to draw the sprite centered and scaled.
+/// @param {asset.gmsprite} sprite The sprite to draw.
+/// @param {real} subimg The sprite frame.
+/// @param {real} x The x position to draw.
+/// @param {real} y The y position to draw.
+/// @param {real} xscale The sprite xscale.
+/// @param {real} yscale The sprite yscale.
+/// @param {real} rot The sprite angle.
+/// @param {real} col The sprite blend color.
+/// @param {real} alpha The sprite alpha.
 function draw_sprite_centered_ext(sprite, subimg, x, y, xscale, yscale, rot, col, alpha) {
 	draw_sprite_ext(sprite, subimg, x-(sprite_get_width(sprite)/2)*xscale, y-(sprite_get_height(sprite)/2)*yscale, xscale, yscale, rot, col, alpha);
 }
 
-
+/// @desc Draws a centered surface.
+/// @param {id.surface} surface_id The surface id to draw.
+/// @param {real} x The x position to draw.
+/// @param {real} y The y position to draw.
 function draw_surface_centered(surface_id, x, y) {
 	draw_surface(surface_id, x-(surface_get_width(surface_id)/2), y-(surface_get_height(surface_id)/2));
 }
 
-
+/// @desc Draws a centered surface, with scale, angle, color and alpha.
+/// @param {Id.surface} surface_id The surface id to draw.
+/// @param {real} x The x position to draw.
+/// @param {real} y The y position to draw.
+/// @param {real} xscale The surface xscale.
+/// @param {real} yscale The surface yscale.
+/// @param {real} rot The surface angle.
+/// @param {real} col The surface blend color.
+/// @param {real} alpha The surface alpha.
 function draw_surface_centered_ext(surface_id, x, y, xscale, yscale, rot, col, alpha) {
 	//draw_surface_ext(surface_id, x-(surface_get_width(surface_id)/2)*xscale, y-(surface_get_height(surface_id)/2)*yscale, xscale, yscale, rot, col, alpha);
 	var _col = draw_get_color(),
@@ -111,16 +145,41 @@ function draw_surface_centered_ext(surface_id, x, y, xscale, yscale, rot, col, a
 	matrix_set(matrix_world, _mat);
 }
 
-
-// useful for grass wave effects
-function draw_sprite_pos_ext(sprite, subimg, x, y, width, height, xoffset, yoffset, xscale, yscale, skew_x, skew_y, angle, alpha) {
-	matrix_stack_push(matrix_world);
-	matrix_set(matrix_world, matrix_build(x, y, 0, 0, 0, angle, xscale, yscale, 1));
+/// @desc Draw a sprite with skew. Useful for grass wave effects
+/// @param {asset.gmsprite} sprite The sprite to draw.
+/// @param {real} subimg The sprite frame.
+/// @param {real} subimg The sprite frame.
+/// @param {real} x The x position to draw.
+/// @param {real} y The y position to draw.
+/// @param {real} width The width. The nine slice will be stretched to this exact amount.
+/// @param {real} height The height. The nine slice will be stretched to this exact amount.
+/// @param {real} xoffset Sprite x offset.
+/// @param {real} yoffset Sprite y offset.
+/// @param {real} xscale Relative nineslice xscale.
+/// @param {real} yscale Relative nineslice yscale.
+/// @param {real} skew_x The amount to skew horizontally.
+/// @param {real} skew_y The amount to skew vertically.
+/// @param {real} rot Sprite angle.
+/// @param {real} alpha Sprite alpha.
+function draw_sprite_pos_ext(sprite, subimg, x, y, width, height, xoffset, yoffset, xscale, yscale, skew_x, skew_y, rot, alpha) {
+	var _mat = matrix_get(matrix_world);
+	matrix_set(matrix_world, matrix_build(x, y, 0, 0, 0, rot, xscale, yscale, 1));
 	var xo = -xoffset, yo = -yoffset;
 	draw_sprite_pos(sprite_index, subimg, xo+skew_x, yo+skew_y, width+xo+skew_x, yo+skew_y, width+xo, height+yo, xo, height+yo, alpha);
-	matrix_stack_pop();
+	matrix_set(matrix_world, _mat);
 }
 
+/// @desc Draws a texturized quad.
+/// @param {real} texture_id The texture id. Example: sprite_get_texture(sprite, 0).
+/// @param {real} x1 The first point x position.
+/// @param {real} y1 The first point y position.
+/// @param {real} x2 The second point x position.
+/// @param {real} y2 The second point y position.
+/// @param {real} x3 The third point x position.
+/// @param {real} y3 The third point y position.
+/// @param {real} x4 The fourth point x position.
+/// @param {real} y4 The fourth point y position.
+/// @param {real} precision] Render precision.
 function draw_texture_quad(texture_id, x1, y1, x2, y2, x3, y3, x4, y4, precision=50) {
 	// p1--p2
 	// |    |
@@ -289,6 +348,10 @@ function draw_text_shake(x, y, str, str_width, dist=1) {
 
 #region BLENDING
 
+/// @desc Test all possible blendmodes.
+/// @param {real} index The blendmode number index to test.
+/// @param {bool} debug_info Enable console debug messages.
+/// @returns {string} 
 function gpu_set_blendmode_test(index, debug_info=false) {
 	// Feather disable GM1044
 	// final_pixel_colour =  (Rs,Gs,Bs,As) * source_blend_factor + (Rd,Gd,Bd,Ad) * destination_blend_factor
@@ -381,34 +444,40 @@ function gpu_set_blendmode_test(index, debug_info=false) {
 		_current = 2;
 	} else
 	if (index == 3) {
-		// multiply blendmode
-		gpu_set_blendmode_ext(bm_dest_color, bm_inv_src_alpha); // or bm_zero in B
-		_type = "Multiply";
+		// multiply blendmode (with alpha)
+		gpu_set_blendmode_ext(bm_dest_color, bm_inv_src_alpha);
+		_type = "Multiply (w alpha)";
 		_current = 3;
 	} else
 	if (index == 4) {
-		// subtract blendmode
-		gpu_set_blendmode_ext(bm_zero, bm_inv_src_color); // or bm_zero in B
-		_type = "Subtract";
+		// multiply blendmode
+		gpu_set_blendmode_ext(bm_dest_color, bm_zero);
+		_type = "Multiply";
 		_current = 4;
 	} else
 	if (index == 5) {
+		// subtract blendmode
+		gpu_set_blendmode_ext(bm_zero, bm_inv_src_color); // or bm_zero in B
+		_type = "Subtract";
+		_current = 5;
+	} else
+	if (index == 6) {
 		// invert blendmode
 		gpu_set_blendmode_ext(bm_inv_dest_color, bm_inv_src_color); // the alpha also is affected: RGBA
 		_type = "Invert";
-		_current = 5;
+		_current = 6;
 	} else
-	if (index >= 6 && index <= 9) {
-		var _ind = index-6;
+	if (index >= 7 && index <= 10) {
+		var _ind = index-7;
 		gpu_set_blendmode(_ind); // bm_normal, bm_add, bm_max, bm_subtract
 		_type = __type0(_ind);
 		_current = _ind;
 		_max = 3;
 	} else
-	if (index >= 10) {
+	if (index >= 11) {
 		// all blendmodes
 		var _ind = index;
-		_current = index-10;
+		_current = index-11;
 		_max = 14641;
 		
 		var p = 11;
@@ -430,16 +499,27 @@ function gpu_set_blendmode_test(index, debug_info=false) {
 
 #region COLORS
 
+/// @desc Smoothly merge between array colors. Returns the final color.
+/// @param {array} colors_array Array of colors.
+/// @param {real} progress The array progress, from 0 to 1.
+/// @returns {constant} 
 function color_gradient(colors_array, progress) {
 	var _len = array_length(colors_array)-1;
 	var _prog = clamp(progress, 0, 1) * _len;
 	return merge_color(colors_array[floor(_prog)], colors_array[ceil(_prog)], frac(_prog));
 }
 
+/// @desc Generates a RGB color to be used in a shader. Supports decimal and hex colors.
+/// @param {constant.color} color The color. Supports decimal and hex colors.
+/// @returns {array} 
 function make_color_shader(color) {
 	return [color_get_red(color)/255, color_get_green(color)/255, color_get_blue(color)/255];
 }
 
+/// @desc Function Description
+/// @param {constant.color} color The color. Supports decimal and hex colors.
+/// @param {real} alpha Alpha channel, 0 - 255.
+/// @returns {array} 
 function make_color_rgba_shader(color, alpha) {
 	return [color_get_red(color)/255, color_get_green(color)/255, color_get_blue(color)/255, alpha];
 }
