@@ -18,6 +18,7 @@ function print() {
 }
 
 #macro trace __trace(_GMFILE_ + "/" + _GMFUNCTION_ + ":" + string(_GMLINE_) + ": ")
+/// @desc This function creates a trace method for debugging and displaying location-specific debug messages.
 function __trace(_location) {
 	// credits: "Red", "JuJu Adams"
 	static __struct = {};
@@ -27,7 +28,7 @@ function __trace(_location) {
 	});
 }
 
-/// @desc This function freezes the window for a few milliseconds. It is not recommended to use this function. Only for debug purposes.
+/// @desc This function freezes the application for a few milliseconds. It is not recommended to use this function. Only for debug purposes.
 /// @param {real} [milliseconds]=1000 Description
 function sleep(milliseconds=1000, callback=undefined) {
 	var _time = current_time + milliseconds;
@@ -37,7 +38,7 @@ function sleep(milliseconds=1000, callback=undefined) {
 	}
 }
 
-/// @desc This function reads a data structure and returns a debug message.
+/// @desc This function reads a data structure and returns a debug message with all the contents.
 /// @param {Any} data_structure The data structure index.
 /// @param {Constant.DSType} type The data structure type. Example: ds_type_list.
 function ds_debug_print(data_structure, type) {
@@ -144,6 +145,11 @@ function ds_debug_print(data_structure, type) {
 	show_debug_message(_separator);
 }
 
+/// @desc Draws a button on the screen that can be clicked and execute a callback. For debug purposes.
+/// @param {real} x The button x position to draw.
+/// @param {real} y The button y position to draw.
+/// @param {string} y The button text.
+/// @param {function,method} y The callback to be executed when the button is clicked.
 function draw_debug_button(x, y, text, callback=undefined) {
 	var _old_font = draw_get_font(),
 	old_halign = draw_get_halign(),
@@ -151,7 +157,7 @@ function draw_debug_button(x, y, text, callback=undefined) {
 	old_color = draw_get_color(),
 	_pressed = false, _color_bg = c_dkgray, _color_text = c_white,
 	_ww = string_width(text)+8, _hh = string_height(text)+8;
-	if point_in_rectangle(device_mouse_x_to_gui(0), device_mouse_y_to_gui(0), x, y, x+_ww, y+_hh) {
+	if (point_in_rectangle(device_mouse_x_to_gui(0), device_mouse_y_to_gui(0), x, y, x+_ww, y+_hh)) {
 		_color_bg = c_white;
 		_color_text = c_dkgray;
 		if mouse_check_button(mb_left) {
@@ -177,6 +183,15 @@ function draw_debug_button(x, y, text, callback=undefined) {
 	return _pressed;
 }
 
+/// @desc Draws a slider on the screen that can execute a callback when moving. For debug purposes.
+/// @param {real} x The slider x position to draw.
+/// @param {real} y The slider y position to draw.
+/// @param {real} width The slider width.
+/// @param {string} title The slider title.
+/// @param {any*} default_value Default slider value.
+/// @param {real} min_value Description
+/// @param {real} max_value Description
+/// @param {function} [callback] Description
 function draw_debug_slider(x, y, width, title, default_value, min_value, max_value, callback=undefined) {
 	var height = 16;
 	var _value = default_value;

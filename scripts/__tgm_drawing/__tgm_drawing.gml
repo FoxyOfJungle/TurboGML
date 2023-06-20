@@ -3,9 +3,16 @@
 
 #region SHAPES
 
-function draw_circle_width(x, y, inner, outer, segments, i_start=0) {
+/// @desc Draws a primitive circle, with width.
+/// @param {real} x The x position.
+/// @param {real} y The y position.
+/// @param {real} inner The circle inner.
+/// @param {real} outer The circle outer.
+/// @param {real} segments Amout of segments.
+/// @param {real} seg_start Initial segment
+function draw_circle_width(x, y, inner, outer, segments, seg_start=0) {
 	draw_primitive_begin(pr_trianglestrip);
-	var i = i_start, dir, dx, dy;
+	var i = seg_start, dir, dx, dy;
 	repeat(segments + 1) {
 		dir = (i / segments) * Tau;
 		dx = cos(dir);
@@ -17,12 +24,30 @@ function draw_circle_width(x, y, inner, outer, segments, i_start=0) {
 	draw_primitive_end();
 }
 
+/// @desc Draws a line with direction. Useful for debugging.
+/// @param {real} x The x position.
+/// @param {real} y The y position.
+/// @param {real} angle The line angle.
+/// @param {real} distance The line distance.
 function draw_line_vector(x1, y1, angle, distance) {
 	var _a = degtorad(angle);
 	draw_line(x1, y1, x1+cos(_a)*distance, y1-sin(_a)*distance);
 }
 
+/// @desc Draws a quad of lines. Useful for debugging.
+/// @param {real} x1 The first point x position.
+/// @param {real} y1 The first point y position.
+/// @param {real} x2 The second point x position.
+/// @param {real} y2 The second point y position.
+/// @param {real} x3 The third point x position.
+/// @param {real} y3 The third point y position.
+/// @param {real} x4 The fourth point x position.
+/// @param {real} y4 The fourth point y position.
+/// @param {bool} middle_line Enable middle line drawing.
 function draw_line_quad(x1, y1, x2, y2, x3, y3, x4, y4, middle_line=false) {
+	// p1--p2
+	// |    |
+	// p4--p3
 	draw_line(x1, y1, x2, y2);
 	draw_line(x1, y1, x4, y4);
 	draw_line(x4, y4, x3, y3);
@@ -30,6 +55,12 @@ function draw_line_quad(x1, y1, x2, y2, x3, y3, x4, y4, middle_line=false) {
 	if (middle_line) draw_line(x1, y1, x3, y3);
 }
 
+/// @desc Draws a cone with field of view.
+/// @param {real} x The x position.
+/// @param {real} y The y position.
+/// @param {real} angle The cone angle.
+/// @param {real} dist The cone distance.
+/// @param {real} fov The cone field of view.
 function draw_cone(x, y, angle, dist, fov) {
 	var _len_x1 = dcos(angle - fov/2) * dist,
 		_len_y1 = dsin(angle - fov/2) * dist,
@@ -91,9 +122,9 @@ function draw_sprite_pos_ext(sprite, subimg, x, y, width, height, xoffset, yoffs
 }
 
 function draw_texture_quad(texture_id, x1, y1, x2, y2, x3, y3, x4, y4, precision=50) {
-	/*p1--p2
-	  |    |
-	  p4--p3*/
+	// p1--p2
+	// |    |
+	// p4--p3
 	// original by: icuurd12b42
 	var w1xs = (x1-x2) / precision,
 	w1ys = (y1-y2) / precision,

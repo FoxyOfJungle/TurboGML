@@ -53,14 +53,13 @@ function array_choose(array) {
 	return array[irandom(array_length(array)-1)];
 }
 
-/// @desc Calculates the sum of all numbers contained in the array.
+/// @desc Calculates the sum of all members contained in the array. Works with both string and real.
 /// @param {array} array Array to sum numbers.
 /// @returns {real}
 function array_sum(array) {
-	var _sum = 0;
-	var i = 0, isize = array_length(array);
+	var i = 0, isize = array_length(array), _sum = 0;
 	repeat(isize) {
-		_sum += real(array[i]);
+		_sum += array[i];
 		++i;
 	}
 	return _sum;
@@ -73,32 +72,48 @@ function array_empty(array) {
 	return (array_length(array) == 0);
 }
 
-/// @desc Returns the max value from an array
+/// @desc Returns the max value from an array.
 /// @param {array} array The array to check.
-/// @returns {real,undefined} 
+/// @returns {real} 
 function array_max(array) {
-	var _len = array_length(array);
-	if (_len == 0) return undefined;
-	var i = 0, _val = -infinity;
-	repeat(_len) {
-		if (array[i] > _val) _val = array[i];
-		++i;	
-	}
-	return _val;
+	return script_execute_ext(max, array);
+	//var _len = array_length(array);
+	//if (_len == 0) return 0;
+	//var i = 0, _val = -infinity;
+	//repeat(_len) {
+	//	if (array[i] > _val) _val = array[i];
+	//	++i;	
+	//}
+	//return _val;
 }
 
-/// @desc Returns the min value from an array
+/// @desc Returns the min value from an array.
 /// @param {array} array The array to check.
-/// @returns {real,undefined} 
+/// @returns {real} 
 function array_min(array) {
-	var _len = array_length(array);
-	if (_len == 0) return undefined;
-	var i = 0, _val = infinity;
-	repeat(_len) {
-		if (array[i] < _val) _val = array[i];
-		++i;	
-	}
-	return _val;
+	return script_execute_ext(min, array);
+	//var _len = array_length(array);
+	//if (_len == 0) return 0;
+	//var i = 0, _val = infinity;
+	//repeat(_len) {
+	//	if (array[i] < _val) _val = array[i];
+	//	++i;	
+	//}
+	//return _val;
+}
+
+/// @desc Calculates the mean of an array.
+/// @param {array} array The array to check.
+/// @returns {real}
+function array_mean(array) {
+	return script_execute_ext(mean, array);
+}
+
+/// @desc Calculates the median of an array.
+/// @param {array} array The array to check.
+/// @returns {real}
+function array_median(array) {
+	return script_execute_ext(median, array);
 }
 
 /// @desc Convert array entries to struct.

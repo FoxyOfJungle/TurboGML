@@ -71,7 +71,6 @@ function move_and_collide_simple(hspd, vspd, object) {
 	return new Vector3(_hor_colliding, _ver_colliding, _collision_id);
 }
 
-
 /// @desc This function is used to check collisions based on tags, without slope support.
 /// @param {real} hspd The horizontal vector speed.
 /// @param {real} vspd The vertical vector speed.
