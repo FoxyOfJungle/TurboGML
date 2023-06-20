@@ -34,7 +34,7 @@
   "resources": [
     {"id":{"name":"__tgm_strings","path":"scripts/__tgm_strings/__tgm_strings.yy",},},
     {"id":{"name":"__tgm_audio_load","path":"scripts/__tgm_audio_load/__tgm_audio_load.yy",},},
-    {"id":{"name":"Credits","path":"notes/Credits/Credits.yy",},},
+    {"id":{"name":"__tgm_credits","path":"notes/__tgm_credits/__tgm_credits.yy",},},
     {"id":{"name":"obj_b4","path":"objects/obj_b4/obj_b4.yy",},},
     {"id":{"name":"__tgm_zunused","path":"scripts/__tgm_zunused/__tgm_zunused.yy",},},
     {"id":{"name":"obj_b1","path":"objects/obj_b1/obj_b1.yy",},},

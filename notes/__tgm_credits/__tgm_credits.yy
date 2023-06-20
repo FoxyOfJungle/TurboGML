@@ -1,7 +1,7 @@
 {
   "resourceType": "GMNotes",
   "resourceVersion": "1.1",
-  "name": "Credits",
+  "name": "__tgm_credits",
   "parent": {
     "name": "Others",
     "path": "folders/KazanGames/TurboGML/Others.yy",
