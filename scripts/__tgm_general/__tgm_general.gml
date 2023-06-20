@@ -18,10 +18,17 @@ function ___fps_average() {
 	return floor(total_smooth);
 }
 
-function game_is_compiled() {
-	return (GM_build_type == "exe");
+/// @desc Returns a boolean (true or false) indicating whether the game was exported as a standalone (executable).
+/// @returns {bool} 
+function game_is_standalone() {
+	static is_standalone = GM_build_type == "exe";
+	return is_standalone;
 }
 
+/// @desc Generates a random code string with the input chars.
+/// @param {string} chars Description
+/// @param {real} size Description
+/// @returns {string} Description
 function generate_code(chars, size) {
 	var _len = string_length(chars), _str_final = "", _str_chars = [];
 	var i = 0;
@@ -33,6 +40,12 @@ function generate_code(chars, size) {
 	return string(_str_final);
 }
 
+/// @desc Function Description
+/// @param {function} callback Description
+/// @param {array} args Description
+/// @param {real} time Description
+/// @param {real} [repetitions]=1 Description
+/// @returns {id} Description
 function invoke(callback, args, time, repetitions=1) {
 	var _ts = time_source_create(time_source_game, time, time_source_units_frames, callback, args, repetitions);
 	time_source_start(_ts);

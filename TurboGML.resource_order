@@ -28,6 +28,7 @@
     {"name":"__tgm_file_handle","order":17,"path":"scripts/__tgm_file_handle/__tgm_file_handle.yy",},
     {"name":"obj_solid","order":12,"path":"objects/obj_solid/obj_solid.yy",},
     {"name":"__tgm_paths","order":13,"path":"scripts/__tgm_paths/__tgm_paths.yy",},
+    {"name":"Script25","order":4,"path":"scripts/Script25/Script25.yy",},
     {"name":"Sprite5","order":2,"path":"sprites/Sprite5/Sprite5.yy",},
     {"name":"__tgm_camera","order":11,"path":"scripts/__tgm_camera/__tgm_camera.yy",},
     {"name":"obj_enemy","order":4,"path":"objects/obj_enemy/obj_enemy.yy",},

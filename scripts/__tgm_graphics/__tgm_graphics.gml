@@ -1,4 +1,7 @@
 
+
+
+
 /// Feather ignore all
 
 #region DISPLAY
@@ -10,30 +13,19 @@ function display_get_inches() {
 	return sqrt(sqr(display_get_width()) + sqr(display_get_height())) / mean(display_get_dpi_x(), display_get_dpi_y());
 }
 
-
+/// @desc This function gets returns the display count.
 function display_get_display_count() {
 	// credit: gnysek
 	return array_length(window_get_visible_rects(0, 0, 1, 1)) / 8;
 }
 
-
+/// @desc This function gets returns the current display aspect ratio.
 function display_get_aspect_ratio() {
 	return display_get_width() / display_get_height();
 }
 
-function draw_get_resolutions(x, y, extra_str="") {
-	var _sep = "";//string_repeat("-", 40);
-	var _text =
-	$"display_get_width: {display_get_width()} \ndisplay_get_height: {display_get_height()} | {display_get_width()/display_get_height()}\n{_sep}\n" +
-	$"window_get_width: {window_get_width()} \nwindow_get_height: {window_get_height()} | {window_get_width()/window_get_height()}\n{_sep}\n" +
-	$"browser_width: {browser_width} \nbrowser_height: {browser_height} | {browser_width/browser_height}\n{_sep}\n" +
-	$"application_get_position(): {application_get_position()} | {(application_get_position()[2]-application_get_position()[0])/(application_get_position()[3]-application_get_position()[1])}\n{_sep}\n" +
-	$"display_get_gui_width: {display_get_gui_width()} \ndisplay_get_gui_height: {display_get_gui_height()} | {display_get_gui_width()/display_get_gui_height()}\n{_sep}\n" +
-	$"application_surface width: {surface_get_width(application_surface)} \napplication_surface height: {surface_get_height(application_surface)} | {surface_get_width(application_surface)/surface_get_height(application_surface)}\n{_sep}\n" +
-	$"view_wport0: {view_wport[0]} \nview_hport0: {view_hport[0]} | {view_wport[0]/view_hport[0]}\n{_sep}\n" +
-	$"camera_get_view_width0: {camera_get_view_width(view_camera[0])} \ncamera_get_view_height0: {camera_get_view_height(view_camera[0])} | {camera_get_view_width(view_camera[0])/camera_get_view_height(view_camera[0])}\n{_sep}\n" + string(extra_str);
-	draw_text(x, y, _text);
-}
+
+
 
 function aspect_ratio_gcd(width, height) {
 	var _gcd = gcd(width, height);
