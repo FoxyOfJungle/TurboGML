@@ -13,6 +13,7 @@ function display_get_inches() {
 }
 
 /// @desc Returns the display count.
+/// Please note, this function is slow.
 function display_get_display_count() {
 	// credit: gnysek
 	return array_length(window_get_visible_rects(0, 0, 1, 1)) / 8;
