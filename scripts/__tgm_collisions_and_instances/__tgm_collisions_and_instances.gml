@@ -4,8 +4,8 @@
 /// @desc This function returns a boolean (true or false) depending on whether the position is inside a triangle.
 /// @param {real} px The x position, example: mouse_x.
 /// @param {real} py The y position, example: mouse_y.
-/// @param {real} x The x origin of the cone
-/// @param {real} y The y origin of the cone
+/// @param {real} x The x origin of the cone.
+/// @param {real} y The y origin of the cone.
 /// @param {real} angle The cone angle/direction.
 /// @param {real} dist The cone distance.
 /// @param {real} fov The cone field of view.
@@ -21,14 +21,27 @@ function point_in_cone(px, py, x, y, angle, dist, fov) {
 /// @desc This function returns a boolean (true or false) depending on whether the position is inside a arc.
 /// @param {real} px The x position, example: mouse_x.
 /// @param {real} py The y position, example: mouse_y.
-/// @param {real} x The x origin of the cone
-/// @param {real} y The y origin of the cone
+/// @param {real} x The x origin of the cone.
+/// @param {real} y The y origin of the cone.
 /// @param {real} angle The cone angle/direction.
 /// @param {real} dist The cone distance.
 /// @param {real} fov The cone field of view.
 /// @returns {bool} Description
 function point_in_arc(px, py, x, y, angle, dist, fov) {
 	return (point_distance(px, py, x, y) < dist && abs(angle_difference(angle, point_direction(x, y, px, py))) < fov/2);
+}
+
+/// @desc Checks if a point is inside a parallelogram.
+/// @param {real} x The x position to check.
+/// @param {real} y The y position to check.
+/// @param {array} parallelogram Parallelogram points.
+/// @returns {bool} 
+function point_in_parallelogram(px, py, parallelogram) {
+	// in first
+	if (point_in_triangle(px, py, parallelogram[0], parallelogram[1], parallelogram[2], parallelogram[3], parallelogram[6], parallelogram[7])) return true;
+	// in second
+	if (point_in_triangle(px, py, parallelogram[4], parallelogram[5], parallelogram[2], parallelogram[3], parallelogram[6], parallelogram[7])) return true;
+	return false;
 }
 
 /// @desc This function is used to check collisions without slope support.

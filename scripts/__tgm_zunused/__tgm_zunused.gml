@@ -31,14 +31,6 @@
 //	);
 //}
 
-//function point_in_parallelogram(px, py, parallelogram) {
-//	// in first
-//	if point_in_triangle(px, py, parallelogram[0], parallelogram[1], parallelogram[2], parallelogram[3], parallelogram[6], parallelogram[7]) return true;
-//	// in second
-//	if point_in_triangle(px, py, parallelogram[4], parallelogram[5], parallelogram[2], parallelogram[3], parallelogram[6], parallelogram[7]) return true;
-//	return false;
-//}
-
 //function raycast_hit_point_2d(origin_x, origin_y, object, angle, distance, precise=false, ray_precision=4) {
 //	var _xo = origin_x,
 //	_yo = origin_y,
