@@ -1,13 +1,29 @@
 
 /// Feather ignore all
 
+/// @desc This function converts the coordinates of the room to the GUI dimension. Returns a Vector2(x, y) struct.
+/// @param {real} x1 The x position to convert from.
+/// @param {real} y1 The y position to convert from.
+/// @param {id.camera} camera The current camera in use.
+/// @param {real} gui_width The GUI width.
+/// @param {real} gui_height The GUI height.
+/// @param {bool} normalize If enabled, the value will be returned from 0 to 1 - useful for shaders and so on
+/// @returns {struct} 
 function room_to_gui_dimension(x1, y1, camera, gui_width, gui_height, normalize) {
 	var _px = (x1-camera_get_view_x(camera)) * (gui_width/camera_get_view_width(camera)),
 	_py = (y1-camera_get_view_y(camera)) * (gui_height/camera_get_view_height(camera));
 	return normalize ? new Vector2(_px/gui_width, _py/gui_height) : new Vector2(_px, _py);
 }
 
-
+/// @desc This function converts the coordinates of the GUI to the room dimension. Returns a Vector2(x, y) struct.
+/// @param {real} x1 The x position to convert from.
+/// @param {real} y1 The y position to convert from.
+/// @param {id.camera} camera The current camera in use.
+/// @param {real} angle The camera angle.
+/// @param {real} gui_width The GUI width.
+/// @param {real} gui_height The GUI height.
+/// @param {bool} normalize If enabled, the value will be returned from 0 to 1 - useful for shaders and so on
+/// @returns {struct} 
 function room_to_gui_dimension_ext(x1, y1, camera, angle, gui_width, gui_height, normalize) {
 	var _cw = camera_get_view_width(camera),
 	_ch = camera_get_view_height(camera),
@@ -21,7 +37,15 @@ function room_to_gui_dimension_ext(x1, y1, camera, angle, gui_width, gui_height,
 	return normalize ? new Vector2(_px/gui_width, _py/gui_height) : new Vector2(_px, _py);
 }
 
-
+/// @desc This function converts the coordinates of the GUI to the room dimension, with additional angle parameter. Returns a Vector2(x, y) struct.
+/// @param {real} x1 The x position to convert from.
+/// @param {real} y1 The y position to convert from.
+/// @param {id.camera} camera The current camera in use.
+/// @param {real} angle The camera angle.
+/// @param {real} gui_width The GUI width.
+/// @param {real} gui_height The GUI height.
+/// @param {bool} normalize If enabled, the value will be returned from 0 to 1 - useful for shaders and so on.
+/// @returns {struct} 
 function gui_to_room_dimension_ext(x1, y1, camera, angle, gui_width, gui_height, normalize) {
 	var _cx = camera_get_view_x(camera),
 	_cy = camera_get_view_y(camera),
@@ -37,9 +61,13 @@ function gui_to_room_dimension_ext(x1, y1, camera, angle, gui_width, gui_height,
 	return normalize ? new Vector2(_px/gui_width, _py/gui_height) : new Vector2(_px, _py);
 }
 
-/// @desc Transforms a 2D coordinate (in window space) to a 3D vector (x, y, z). Z is the camera's near plane.
-/// 
-/// Works for both orthographic and perspective projections.
+/// @desc Transforms a 2D coordinate (in window space) to a Vector3(x, y, z) struct. Z is the camera's near plane.
+/// @desc Works for both orthographic and perspective projections.
+/// @param {array} view_mat The current camera view matrix.
+/// @param {array} proj_mat The current camera projection matrix.
+/// @param {real} x Cursor x position in window space. Example: window_mouse_get_x().
+/// @param {real} y Cursor y position in window space. Example: window_mouse_get_y().
+/// @returns {struct} 
 function screen_to_world_dimension(view_mat, proj_mat, xx, yy) {
 	// credits: TheSnidr
 	var _mx = 2 * (xx / window_get_width() - 0.5) / proj_mat[0];
@@ -70,10 +98,15 @@ function screen_to_world_dimension(view_mat, proj_mat, xx, yy) {
 	return new Vector3(_xx, _yy, camera_get_near_plane(proj_mat));
 }
 
-/// @desc Transforms a 3D coordinate to a 2D coordinate. Returns a Vector2(x, y).
-/// Returns Vector2(-1, -1) if the 3D point is behind the camera.
-///
-/// Works for both orthographic and perspective projections.
+/// @desc Transforms a 3D coordinate to a 2D coordinate. Returns a Vector2(x, y) struct. Returns Vector2(-1, -1) if the 3D point is behind the camera.
+/// @desc Works for both orthographic and perspective projections.
+/// @param {array} view_mat The current camera view matrix.
+/// @param {array} proj_mat The current camera projection matrix.
+/// @param {real} xx The x position, in world dimension.
+/// @param {real} yy The y position, in world dimension.
+/// @param {real} zz The z position, in world dimension.
+/// @param {bool} normalize If enabled, the value will be returned from 0 to 1 - useful for shaders and so on.
+/// @returns {struct} 
 function world_to_screen_dimension(view_mat, proj_mat, xx, yy, zz, normalized=false) {
 	// credits: TheSnidr / FoxyOfJungle
 	var _w = view_mat[2] * xx + view_mat[6] * yy + view_mat[10] * zz + view_mat[14];
