@@ -180,7 +180,7 @@ var transform = new Vector2(mouse_x, mouse_y);
 //transform = transform.multiply(new Vector2_Down.negate());
 //transform = transform.snapped(new Vector2(16, 16)).clampedMagnitude(300);
 //transform = transform.clamped_magnitude(300);
-transform.set(150, 150);
+transform.Set(150, 150);
 
 draw_line(0, 0, transform.x, transform.y);
 

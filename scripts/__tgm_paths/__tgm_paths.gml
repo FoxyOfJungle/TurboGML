@@ -1,6 +1,11 @@
 
 /// Feather ignore all
 
+/// @desc Returns the distance between the point and the path.
+/// @param {real} x The x position to check from.
+/// @param {real} y The y position to check from.
+/// @param {asset.gmpath} path The path index.
+/// @returns {real} 
 function distance_to_path(xx, yy, path) {
 	// calculates the shortest distance to the given path
 	var x0 = xx, y0 = yy, i, points, segments, length, pos, pmin, pmax, x1, y1, x2, y2, dx, dy, t, ix, iy, dist, min_dist;
@@ -75,7 +80,11 @@ function distance_to_path(xx, yy, path) {
 	return min_dist;
 }
 
-
+/// @desc Get the nearest point index (n) from a path, based on the distance.
+/// @param {real} x The x position to check from.
+/// @param {real} y The y position to check from.
+/// @param {asset.gmpath} path The path index.
+/// @returns {struct} 
 function path_get_nearest_point(xx, yy, path) {
 	var i = 0, isize = path_get_number(path),
 	_px = 0, _py = 0, _dist = 0,
@@ -97,7 +106,11 @@ function path_get_nearest_point(xx, yy, path) {
 	return _pos;
 }
 
-
+/// @desc Get the nearest point position (x, y).
+/// @param {real} x The x position to check from.
+/// @param {real} y The y position to check from.
+/// @param {asset.gmpath} path The path index.
+/// @returns {struct} 
 function path_get_nearest_point_position(xx, yy, path) {
 	var i = 0, isize = path_get_number(path),
 	_px = 0, _py = 0, _dist = 0,
@@ -119,7 +132,12 @@ function path_get_nearest_point_position(xx, yy, path) {
 	return _pos;
 }
 
-
+/// @desc Get the normalized path position (0 - 1), based on the position (x, y).
+/// @param {real} x The x position to check from.
+/// @param {real} y The y position to check from.
+/// @param {asset.gmpath} path The path index.
+/// @param {real} pixel_precision The path pixel precision. Default is 4.
+/// @returns {real} 
 function path_get_nearest_position(xx, yy, path, pixel_precision=4) {
 	// original by: gnysek
 	var _raycast = infinity, _pos = 0, _dst,
@@ -134,7 +152,10 @@ function path_get_nearest_position(xx, yy, path, pixel_precision=4) {
 	return _pos;
 }
 
-
+/// @desc The the current path direction the object is facing.
+/// @param {asset.gmpath} path The path index.
+/// @param {real} pos The path position. Example: path_position.
+/// @returns {real} 
 function path_get_direction(path, pos) {
 	var _reciprocal = (1 / path_get_length(path)),
 	_pos_1 = pos - _reciprocal,

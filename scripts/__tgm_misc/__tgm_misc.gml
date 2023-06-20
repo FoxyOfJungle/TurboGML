@@ -14,16 +14,21 @@ function io_clear_both() {
 	mouse_clear(mouse_lastbutton);
 }
 
-// return the position of the mouse without it being stuck in the window
+/// @desc Returns the x position of the mouse without it being stuck in the window.
+/// @returns {real} 
 function window_mouse_x() {
     return display_mouse_get_x() - window_get_x();
 }
 
-
+/// @desc Returns the y position of the mouse without it being stuck in the window.
+/// @returns {real} 
 function window_mouse_y() {
     return display_mouse_get_y() - window_get_y();
 }
 
+/// @desc This function returns a boolean if you double-click the mouse.
+/// @param {constant.mousebutton} button Description
+/// @returns {bool} Description
 function mouse_check_doubleclick_pressed(button) {
 	static _time = 500; //ms
 	static _once = false;
@@ -47,14 +52,13 @@ function mouse_check_doubleclick_pressed(button) {
 
 #region 3D
 
-
 // vertex format
 vertex_format_begin();
 vertex_format_add_position_3d();
 vertex_format_add_normal();
 vertex_format_add_texcoord();
 vertex_format_add_color();
-global.__vbf_3d_format = vertex_format_end();
+global.__tgm_vbf_3d_format = vertex_format_end();
 
 /// @func vertex_add_point(vbuff, xx, yy, zz, nx, ny, nz, u, v, color, alpha)
 function vertex_add_point(vbuff, xx, yy, zz, nx, ny, nz, u, v, color, alpha) {
@@ -69,7 +73,7 @@ function vertex_add_point(vbuff, xx, yy, zz, nx, ny, nz, u, v, color, alpha) {
 function model_build_plane(x1, y1, z1, x2, y2, z2, hrepeat, vrepeat, color=c_white, alpha=1) {
 	var _vbuff = vertex_create_buffer();
 	
-	vertex_begin(_vbuff, global.__vbf_3d_format);
+	vertex_begin(_vbuff, global.__tgm_vbf_3d_format);
 	vertex_add_point(_vbuff, x1, y1, z1, 0, 0, 1, 0, 0, color, alpha);
 	vertex_add_point(_vbuff, x2, y1, z1, 0, 0, 1, hrepeat, 0, color, alpha);
 	vertex_add_point(_vbuff, x1, y2, z2, 0, 0, 1, 0, vrepeat, color, alpha);
@@ -87,7 +91,7 @@ function model_build_plane(x1, y1, z1, x2, y2, z2, hrepeat, vrepeat, color=c_whi
 function model_build_cube(x1, y1, z1, x2, y2, z2, hrepeat, vrepeat, color=c_white, alpha=1) {
 	var _vbuff = vertex_create_buffer();
 	
-	vertex_begin(_vbuff, global.__vbf_3d_format);
+	vertex_begin(_vbuff, global.__tgm_vbf_3d_format);
 	
 	// top
 	vertex_add_point(_vbuff, x1, y1, z2, 0, 0, 1, 0, 0, color, alpha);

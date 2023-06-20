@@ -1,7 +1,11 @@
 
 /// Feather ignore all
 
-// get the top instance of a layer (without conflicting with other layers)
+/// @desc Get the top instance of a layer (without conflicting with other layers)
+/// @param {real} px The x position to check.
+/// @param {real} py The y position to check.
+/// @param {real} layer_id The layer id.
+/// @returns {id} 
 function layer_instance_top_position(px, py, layer_id) {
 	var _top_instance = noone;
 	if (layer_exists(layer_id) && layer_get_visible(layer_id)) {
@@ -30,7 +34,9 @@ function layer_instance_top_position(px, py, layer_id) {
 	return _top_instance;
 }
 
-
+/// @desc Get instance count from a specific layer.
+/// @param {real} layer_id The layer id.
+/// @returns {real} 
 function layer_instance_count(layer_id) {
 	return layer_exists(layer_id) ? array_length(layer_get_all_elements(layer_id)) : 0;
 }

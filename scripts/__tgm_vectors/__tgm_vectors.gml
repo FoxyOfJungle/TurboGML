@@ -14,12 +14,15 @@
 #macro Vector2_Right Vector2(1, 0)
 
 
+/// @desc Returns a struct containing x and y.
+/// @param {real} x The value for x.
+/// @param {real} y The value for y.
 function Vector2(x, y=x) constructor {
 	self.x = x;
 	self.y = y;
 	
 	/// @desc Set vector components.
-	static set = function(_x=0, _y=_x) {
+	static Set = function(_x=0, _y=_x) {
 		gml_pragma("forceinline");
 		x = _x;
 		y = _y;
@@ -27,7 +30,7 @@ function Vector2(x, y=x) constructor {
 	};
 	
 	/// @desc Returns true if the given vector is exactly equal to this vector.
-	static equals = function(vector2) {
+	static Equals = function(vector2) {
 		gml_pragma("forceinline");
 		return (
 			x == vector2.x &&
@@ -36,19 +39,19 @@ function Vector2(x, y=x) constructor {
 	}
 		
 	/// @desc Returns the length of this vector (Read Only).
-	static magnitude = function() {
+	static Magnitude = function() {
 		gml_pragma("forceinline");
 		return sqrt(x * x + y * y);
 	};
 	
 	/// @desc Returns the squared length of this vector (Read Only).
-	static sqr_magnitude = function() {
+	static SqrMagnitude = function() {
 		gml_pragma("forceinline");
 		return (x * x + y * y);
 	}
 	
 	/// @desc Returns this vector with a magnitude of 1 (Read Only).
-	static normalized = function() {
+	static Normalized = function() {
 		gml_pragma("forceinline");
 		var _normalized = 1.0 / sqrt(x * x + y * y);
 		return new Vector2(
@@ -58,7 +61,7 @@ function Vector2(x, y=x) constructor {
 	}
 	
 	/// @desc Returns the vector rotated by the amount supplied in degrees.
-	static rotated = function(new_angle) {
+	static Rotated = function(new_angle) {
 		gml_pragma("forceinline");
 		var _sin = dsin(new_angle), _cos = dcos(new_angle);
 		return new Vector2(
@@ -68,7 +71,7 @@ function Vector2(x, y=x) constructor {
 	}
 	
 	/// @desc Returns the vector snapped in a grid
-	static snapped = function(vector2) {
+	static Snapped = function(vector2) {
 		gml_pragma("forceinline");
 		return new Vector2(
 			floor(x/vector2.x+0.5)*vector2.x,
@@ -77,7 +80,7 @@ function Vector2(x, y=x) constructor {
 	}
 	
 	/// @desc Clamps each component of the vector.
-	static clamped = function(min_vector, max_vector) {
+	static Clamped = function(min_vector, max_vector) {
 		gml_pragma("forceinline");
 		return new Vector2(
 			clamp(x, min_vector.x, max_vector.x),
@@ -86,7 +89,7 @@ function Vector2(x, y=x) constructor {
 	};
 	
 	/// @desc Returns a vector with a clamped magnitude
-	static clamped_magnitude = function(max_magnitude) {
+	static ClampedMagnitude = function(max_magnitude) {
 		gml_pragma("forceinline");
 		var _len = magnitude();
 		var _vector = self;
@@ -100,49 +103,49 @@ function Vector2(x, y=x) constructor {
 	}
 	
 	/// @desc Returns the angle in degrees of this vector.
-	static angle = function() {
+	static Angle = function() {
 		gml_pragma("forceinline");
 		return point_direction(0, 0, x, y);
 	}
 	
 	/// @desc Adds two vectors.
-	static add = function(vector2) {
+	static Add = function(vector2) {
 		gml_pragma("forceinline");
 		return new Vector2(x+vector2.x, y+vector2.y);
 	}
 	
 	/// @desc Subtract two vectors.
-	static subtract = function(vector2) {
+	static Subtract = function(vector2) {
 		gml_pragma("forceinline");
 		return new Vector2(x-vector2.x, y-vector2.y);
 	}
 	
 	/// @desc Multiply two vectors.
-	static multiply = function(vector2) {
+	static Multiply = function(vector2) {
 		gml_pragma("forceinline");
 		return new Vector2(x*vector2.x, y*vector2.y);
 	}
 	
 	/// @desc Divide with another vector.
-	static divide = function(vector2) {
+	static Divide = function(vector2) {
 		gml_pragma("forceinline");
 		return new Vector2(x/vector2.x, y/vector2.y);
 	}
 	
 	/// @desc Negates the vector.
-	static negate = function() {
+	static Negate = function() {
 		gml_pragma("forceinline");
 		return new Vector2(-x, -y);
 	}
 	
 	/// @desc Scales the vector.
-	static scale = function(vector2) {
+	static Scale = function(vector2) {
 		gml_pragma("forceinline");
 		return new Vector2(x*vector2.x, y*vector2.y);
 	}
 	
 	/// @desc Normalise (magnitude set to 1) all the components of this
-	static normalize = function() {
+	static Normalize = function() {
 		gml_pragma("forceinline");
 		var _normalized = 1.0 / sqrt(x * x + y * y);
 		x = x * _normalized;
@@ -150,55 +153,55 @@ function Vector2(x, y=x) constructor {
 	}
 	
 	/// @desc Get the dot product of two vectors.
-	static dot = function(vector2) {
+	static Dot = function(vector2) {
 		gml_pragma("forceinline");
 		return (x*vector2.x + y*vector2.y);
 	}
 	
 	/// @desc Returns the cross product.
-	static cross = function(vector2) {
+	static Cross = function(vector2) {
 		gml_pragma("forceinline");
 		return (x*vector2.x - y*vector2.y);
 	}
 	
 	/// @desc Returns the vector with all components rounded down.
-	static floor_v = function() {
+	static Floor = function() {
 		gml_pragma("forceinline");
 		return new Vector2(floor(x), floor(y));
 	}
 	
 	/// @desc Returns the vector with all components rounded up.
-	static ceil_v = function() {
+	static Ceil = function() {
 		gml_pragma("forceinline");
 		return new Vector2(ceil(x), ceil(y));
 	}
 	
 	/// @desc Returns the vector with all components rounded.
-	static round_v = function() {
+	static Round = function() {
 		gml_pragma("forceinline");
 		return new Vector2(round(x), round(y));
 	}
 	
 	/// @desc Returns positive, negative, or zero depending on the value of the components.
-	static sign_v = function() {
+	static Sign = function() {
 		gml_pragma("forceinline");
 		return new Vector2(sign(x), sign(y));
 	}
 	
 	/// @desc Returns a new vector with absolute values.
-	static abs_v = function() {
+	static Abs = function() {
 		gml_pragma("forceinline");
 		return new Vector2(abs(x), abs(y));
 	}
 	
 	/// @desc Returns a new vector with fractional values.
-	static frac_v = function() {
+	static Frac = function() {
 		gml_pragma("forceinline");
 		return new Vector2(frac(x), frac(y));
 	}
 	
 	/// @desc Check if the vector is normalized.
-	static is_normalized = function() {
+	static IsNormalized = function() {
 		gml_pragma("forceinline");
 		var _epsilon = 0.0001;
 		var _difference = abs(sqrMagnitude() - 1.0);
@@ -206,7 +209,7 @@ function Vector2(x, y=x) constructor {
 	}
 	
 	/// @desc Clamps each component of the vector.
-	static lerp_to = function(vector2, amount) {
+	static Lerp = function(vector2, amount) {
 		gml_pragma("forceinline");
 		return new Vector2(
 			lerp(x, vector2.x, amount),
@@ -215,31 +218,31 @@ function Vector2(x, y=x) constructor {
 	};
 	
 	/// @desc Returns the distance between the two vectors.
-	static distance_to = function(vector2) {
+	static Distance = function(vector2) {
 		gml_pragma("forceinline");
 		return sqrt(sqr(x-vector2.x) + sqr(y-vector2.y));
 	}
 	
 	/// @desc Returns the square distance between the two vectors.
-	static sqr_distance_to = function(vector2) {
+	static SqrDistance = function(vector2) {
 		gml_pragma("forceinline");
 		return (sqr(x-vector2.x) + sqr(y-vector2.y));
 	}
 	
 	/// @desc Returns the angle to the given vector.
-	static angle_to = function(vector2) {
+	static Angle = function(vector2) {
 		gml_pragma("forceinline");
 		return point_direction(x, y, vector2.x, vector2.y);
 	}
 	
 	/// @desc Returns the angle between the line connecting the two points.
-	static angle_to_point = function(vector2) {
+	static AngleTo = function(vector2) {
 		gml_pragma("forceinline");
 		return -darctan2(y-vector2.y, x-vector2.x)+180;
 	}
 	
 	/// @desc Returns a vector that is made from the largest components of two vectors.
-	static max_v = function(vector2) {
+	static Max = function(vector2) {
 		gml_pragma("forceinline");
 		return new Vector2(
 			max(x, vector2.x),
@@ -248,7 +251,7 @@ function Vector2(x, y=x) constructor {
 	};
 	
 	/// @desc Returns a vector that is made from the smallest components of two vectors.
-	static min_v = function(vector2) {
+	static Min = function(vector2) {
 		gml_pragma("forceinline");
 		return new Vector2(
 			min(x, vector2.x),
@@ -257,13 +260,13 @@ function Vector2(x, y=x) constructor {
 	};
 	
 	/// @desc Returns the highest value of the vector.
-	static max_component = function(vector2) {
+	static MaxComponent = function(vector2) {
 		gml_pragma("forceinline");
 		return max(x, y);
 	};
 	
 	/// @desc Returns the lowest value of the vector.
-	static min_component = function(vector2) {
+	static MinComponent = function(vector2) {
 		gml_pragma("forceinline");
 		return min(x, y);
 	};
@@ -280,14 +283,17 @@ function Vector2(x, y=x) constructor {
 // Shorthand for writing Vector3(0, 1, 0)
 #macro Vector3_Right Vector3(0, 1, 0)
 
-
+/// @desc Returns a struct containing x, y and z.
+/// @param {real} x The value for x.
+/// @param {real} y The value for y.
+/// @param {real} z The value for z.
 function Vector3(x, y=x, z=x) constructor {
 	self.x = x;
 	self.y = y;
 	self.z = z;
 	
 	/// @desc Set vector components.
-	static set = function(_x=0, _y=_x, _z=_x) {
+	static Set = function(_x=0, _y=_x, _z=_x) {
 		gml_pragma("forceinline");
 		x = _x;
 		y = _y;
@@ -296,7 +302,7 @@ function Vector3(x, y=x, z=x) constructor {
 	};
 	
 	/// @desc Returns true if the given vector is exactly equal to this vector.
-	static equals = function(vector3) {
+	static Equals = function(vector3) {
 		gml_pragma("forceinline");
 		return (
 			x == vector3.x &&
@@ -306,19 +312,19 @@ function Vector3(x, y=x, z=x) constructor {
 	}
 		
 	/// @desc Returns the length of this vector (Read Only).
-	static magnitude = function() {
+	static Magnitude = function() {
 		gml_pragma("forceinline");
 		return sqrt(x * x + y * y + z * z);
 	};
 	
 	/// @desc Returns the squared length of this vector (Read Only).
-	static sqr_magnitude = function() {
+	static SqrMagnitude = function() {
 		gml_pragma("forceinline");
 		return (x * x + y * y + z * z);
 	}
 	
 	/// @desc Returns this vector with a magnitude of 1 (Read Only).
-	static normalized = function() {
+	static Normalized = function() {
 		gml_pragma("forceinline");
 		var _normalized = 1.0 / sqrt(x * x + y * y + z * z);
 		return new Vector3(
@@ -329,7 +335,7 @@ function Vector3(x, y=x, z=x) constructor {
 	}
 	
 	/// @desc Returns the vector snapped in a grid
-	static snapped = function(vector3) {
+	static Snapped = function(vector3) {
 		gml_pragma("forceinline");
 		return new Vector3(
 			floor(x/vector3.x+0.5)*vector3.x,
@@ -339,7 +345,7 @@ function Vector3(x, y=x, z=x) constructor {
 	}
 	
 	/// @desc Clamps each component of the vector.
-	static clamped = function(min_vector, max_vector) {
+	static Clamped = function(min_vector, max_vector) {
 		gml_pragma("forceinline");
 		return new Vector3(
 			clamp(x, min_vector.x, max_vector.x),
@@ -349,7 +355,7 @@ function Vector3(x, y=x, z=x) constructor {
 	};
 	
 	/// @desc Returns a vector with a clamped magnitude
-	static clamped_magnitude = function(max_magnitude) {
+	static ClampedMagnitude = function(max_magnitude) {
 		gml_pragma("forceinline");
 		var _len = magnitude();
 		var _vector = self;
@@ -365,49 +371,49 @@ function Vector3(x, y=x, z=x) constructor {
 	}
 	
 	/// @desc Returns the angle in degrees of this vector.
-	static angle = function() {
+	static Angle = function() {
 		gml_pragma("forceinline");
 		return point_direction(0, 0, x, y);
 	}
 	
 	/// @desc Adds two vectors.
-	static add = function(vector3) {
+	static Add = function(vector3) {
 		gml_pragma("forceinline");
 		return new Vector3(x+vector3.x, y+vector3.y, z+vector3.z);
 	}
 	
 	/// @desc Subtract two vectors.
-	static subtract = function(vector3) {
+	static Subtract = function(vector3) {
 		gml_pragma("forceinline");
 		return new Vector3(x-vector3.x, y-vector3.y, z-vector3.z);
 	}
 	
 	/// @desc Multiply two vectors.
-	static multiply = function(vector3) {
+	static Multiply = function(vector3) {
 		gml_pragma("forceinline");
 		return new Vector3(x*vector3.x, y*vector3.y, z*vector3.z);
 	}
 	
 	/// @desc Divide with another vector.
-	static divide = function(vector3) {
+	static Divide = function(vector3) {
 		gml_pragma("forceinline");
 		return new Vector3(x/vector3.x, y/vector3.y, z/vector3.z);
 	}
 	
 	/// @desc Negates the vector.
-	static negate = function() {
+	static Negate = function() {
 		gml_pragma("forceinline");
 		return new Vector3(-x, -y, -z);
 	}
 	
 	/// @desc Scales the vector.
-	static scale = function(vector3) {
+	static Scale = function(vector3) {
 		gml_pragma("forceinline");
 		return new Vector3(x*vector3.x, y*vector3.y, z*vector3.z);
 	}
 	
 	/// @desc Normalise (magnitude set to 1) all the components of this
-	static normalize = function() {
+	static Normalize = function() {
 		gml_pragma("forceinline");
 		var _normalized = 1.0 / sqrt(x * x + y * y + z * z);
 		x = x * _normalized;
@@ -416,13 +422,13 @@ function Vector3(x, y=x, z=x) constructor {
 	}
 	
 	/// @desc Get the dot product of two vectors.
-	static dot = function(vector3) {
+	static Dot = function(vector3) {
 		gml_pragma("forceinline");
 		return (x*vector3.x + y*vector3.y + z*vector3.z);
 	}
 	
 	/// @desc Returns the cross product.
-	static cross = function(vector3) {
+	static Cross = function(vector3) {
 		gml_pragma("forceinline");
 		return new Vector3(
 			y*vector3.z - z*vector3.y,
@@ -432,43 +438,43 @@ function Vector3(x, y=x, z=x) constructor {
 	}
 	
 	/// @desc Returns the vector with all components rounded down.
-	static floor_v = function() {
+	static Floor = function() {
 		gml_pragma("forceinline");
 		return new Vector3(floor(x), floor(y), floor(z));
 	}
 	
 	/// @desc Returns the vector with all components rounded up.
-	static ceil_v = function() {
+	static Ceil = function() {
 		gml_pragma("forceinline");
 		return new Vector3(ceil(x), ceil(y), ceil(z));
 	}
 	
 	/// @desc Returns the vector with all components rounded.
-	static round_v = function() {
+	static Round = function() {
 		gml_pragma("forceinline");
 		return new Vector3(round(x), round(y), round(z));
 	}
 	
 	/// @desc Returns positive, negative, or zero depending on the value of the components.
-	static sign_v = function() {
+	static Sign = function() {
 		gml_pragma("forceinline");
 		return new Vector3(sign(x), sign(y), sign(z));
 	}
 	
 	/// @desc Returns a new vector with absolute values.
-	static abs_v = function() {
+	static Abs = function() {
 		gml_pragma("forceinline");
 		return new Vector3(abs(x), abs(y), abs(z));
 	}
 	
 	/// @desc Returns a new vector with fractional values.
-	static frac_v = function() {
+	static Frac = function() {
 		gml_pragma("forceinline");
 		return new Vector3(frac(x), frac(y), frac(z));
 	}
 	
 	/// @desc Check if the vector is normalized.
-	static is_normalized = function() {
+	static IsNormalized = function() {
 		gml_pragma("forceinline");
 		var _epsilon = 0.0001;
 		var _difference = abs(sqrMagnitude() - 1.0);
@@ -476,7 +482,7 @@ function Vector3(x, y=x, z=x) constructor {
 	}
 	
 	/// @desc Clamps each component of the vector.
-	static lerp_to = function(vector3, amount) {
+	static Lerp = function(vector3, amount) {
 		gml_pragma("forceinline");
 		return new Vector3(
 			lerp(x, vector3.x, amount),
@@ -486,30 +492,30 @@ function Vector3(x, y=x, z=x) constructor {
 	};
 	
 	/// @desc Returns the distance between the two vectors.
-	static distance_to = function(vector3) {
+	static Distance = function(vector3) {
 		gml_pragma("forceinline");
 		return sqrt(sqr(x-vector3.x) + sqr(y-vector3.y) + sqr(z-vector3.z));
 	}
 	
 	/// @desc Returns the square distance between the two vectors.
-	static sqr_distance_to = function(vector3) {
+	static SqrDistance = function(vector3) {
 		gml_pragma("forceinline");
 		return (sqr(x-vector3.x) + sqr(y-vector3.y) + sqr(z-vector3.z));
 	}
 	
 	/// @desc Returns the angle (z rotation) in degrees to the given vector.
-	static yaw_to = function(vector3) {
+	static YawTo = function(vector3) {
 		gml_pragma("forceinline");
 		return point_direction(x, y, vector3.x, vector3.y); // I was too lazy to write the math behind it for now
 	}
 	
 	/// @desc Returns the pitch angle (x rotation) in degrees to the given vector.
-	static pitch_to = function(vector3) {
+	static PitchTo = function(vector3) {
 		return radtodeg(arctan2(vector3.z-z, point_distance(x, y, vector3.x, vector3.y)));
 	}
 	
 	/// @desc Returns a vector that is made from the largest components of two vectors.
-	static max_v = function(vector3) {
+	static Max = function(vector3) {
 		gml_pragma("forceinline");
 		return new Vector3(
 			max(x, vector3.x),
@@ -519,7 +525,7 @@ function Vector3(x, y=x, z=x) constructor {
 	};
 	
 	/// @desc Returns a vector that is made from the smallest components of two vectors.
-	static min_v = function(vector3) {
+	static Min = function(vector3) {
 		gml_pragma("forceinline");
 		return new Vector3(
 			min(x, vector3.x),
@@ -529,20 +535,23 @@ function Vector3(x, y=x, z=x) constructor {
 	};
 	
 	/// @desc Returns the highest value of the vector.
-	static max_component = function(vector3) {
+	static MaxComponent = function(vector3) {
 		gml_pragma("forceinline");
 		return max(x, y, z);
 	};
 	
 	/// @desc Returns the lowest value of the vector.
-	static min_component = function(vector3) {
+	static MinComponent = function(vector3) {
 		gml_pragma("forceinline");
 		return min(x, y, z);
 	};
 	
 }
 
-
+/// @desc Returns a struct containing x, y, z and w.
+/// @param {real} x The value for x.
+/// @param {real} y The value for y.
+/// @param {real} z The value for z.
 function Vector4(x, y=x, z=x, w=x) constructor {
 	self.x = x;
 	self.y = y;

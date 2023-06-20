@@ -114,3 +114,37 @@
 //	matrix_stack_pop();
 //	matrix_set(matrix_world, matrix_stack_top());
 //}
+
+/// @ignore
+//function __folder_recursive_create(folder, struct_content) {	
+//	// arquivos
+//	if (is_array(struct_content)) {
+//		var i = 0, isize = array_length(struct_content);
+//		repeat(isize) {
+//			var _item = struct_content[i];
+//			var _name = _item.name;
+//			var _type = _item.type;
+//			var _root_folder = _item.root_folder;
+//			print("ARRAY", _name);
+			
+//			// folder
+//			if (_type == 0) {
+//				folder[$ _name] = [];
+//			}
+			
+//			++i;
+//		}
+		
+//	} else
+	
+//	if (is_struct(struct_content)) {
+		
+//	}
+//}
+
+//function folder_content_generate(struct_content) {
+//	var _folder = {};
+//	__folder_recursive_create(_folder, struct_content);
+//	return _folder;
+//}
+

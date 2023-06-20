@@ -7,6 +7,14 @@ enum DIRSCAN_DATA_TYPE {
 	FULL_INFO,
 }
 
+/// @desc Reads all files in a directory and subdirectories. Returns different types of data.
+/// @param {string} path The directory path.
+/// @param {string} extension The file extension to search. Use *.* for every extension.
+/// @param {bool} search_files Enable file search.
+/// @param {bool} search_folders Enable folder search.
+/// @param {bool} search_subdir Enable sub directory search.
+/// @param {real} data_type Determines the type of date to be returned. Example: DIRSCAN_DATA_TYPE.NAME_ONLY.
+/// @param {bool} get_size Get file sizes while scanning.
 function DirectoryScanner(path, extension="*.*", search_files=true, search_folders=true, search_subdir=true, data_type=DIRSCAN_DATA_TYPE.NAME_ONLY, get_size=false) constructor {
 	__contents = [];
 	__loaded = false;
@@ -116,40 +124,9 @@ function __directory_recursive_search(contents, source, extension, search_files,
 }
 
 
-/// @ignore
-/*function __folder_recursive_create(folder, struct_content) {	
-	// arquivos
-	if (is_array(struct_content)) {
-		var i = 0, isize = array_length(struct_content);
-		repeat(isize) {
-			var _item = struct_content[i];
-			var _name = _item.name;
-			var _type = _item.type;
-			var _root_folder = _item.root_folder;
-			print("ARRAY", _name);
-			
-			// folder
-			if (_type == 0) {
-				folder[$ _name] = [];
-			}
-			
-			++i;
-		}
-		
-	} else
-	
-	if (is_struct(struct_content)) {
-		
-	}
-}
-
-function folder_content_generate(struct_content) {
-	var _folder = {};
-	__folder_recursive_create(_folder, struct_content);
-	return _folder;
-}*/
-
-
+/// @desc Get directory name from a file.
+/// @param {string} file File path.
+/// @returns {string} 
 function filename_dir_name(file) {
 	//var _dir_name = filename_name(filename_dir(file));
 	var _dir = filename_dir(file), _dir_name = "";
@@ -165,7 +142,9 @@ function filename_dir_name(file) {
 	return _dir_name;
 }
 
-
+/// @desc Get file name, without extension.
+/// @param {string} file File path.
+/// @returns {string} 
 function filename_name_noext(path) {
 	return filename_name(filename_change_ext(path, ""));
 	//var _name = filename_name(path);
@@ -181,7 +160,9 @@ function filename_name_noext(path) {
 	//return _name;
 }
 
-
+/// @desc Write a string to a file.
+/// @param {string} file_path File path.
+/// @param {any} str Description
 function file_write_string(file_path, str) {
 	var _buff = buffer_create(1, buffer_grow, 1);
 	buffer_write(_buff, buffer_string, str);
@@ -189,7 +170,9 @@ function file_write_string(file_path, str) {
 	buffer_delete(_buff);
 }
 
-
+/// @desc Write a text to a file.
+/// @param {string} file_path File path.
+/// @param {any} str Description
 function file_write_text(file_path, str) {
 	var _buff = buffer_create(1, buffer_grow, 1);
 	buffer_write(_buff, buffer_text, str);
@@ -197,7 +180,8 @@ function file_write_text(file_path, str) {
 	buffer_delete(_buff);
 }
 
-
+/// @desc Read string from file.
+/// @param {string} file_path File path.
 function file_read_string(file_path) {
 	if (!file_exists(file_path)) return undefined;
 	var _buffer = buffer_load(file_path);
@@ -206,7 +190,8 @@ function file_read_string(file_path) {
 	return _result;
 }
 
-
+/// @desc Read text from file.
+/// @param {string} file_path File path.
 function file_read_text(file_path) {
 	if (!file_exists(file_path)) return undefined;
 	var _buffer = buffer_load(file_path);
@@ -215,15 +200,19 @@ function file_read_text(file_path) {
 	return _result;
 }
 
-
+/// @desc Convert bytes to KB, MB, GB, etc.
+/// @param {real} bytes File bytes amount.
+/// @returns {string} 
 function bytes_get_size(bytes) {
 	var _sizes = ["B", "KB", "MB", "GB", "TB", "PB"]; // you can add more
-	if (bytes == 0) return "0 B";
+	if (bytes <= 0) return "0 B";
 	var i = floor(log2(bytes) / log2(1024));
 	return string(round(bytes / power(1024, i))) + " " + _sizes[i];
 }
 
-
+/// @desc Load a file and get the size in bytes.
+/// @param {string} file File path.
+/// @returns {real} 
 function file_get_size(file) {
 	var _buff = buffer_load(file);
 	if (_buff <= 0) return 0;
