@@ -27,8 +27,8 @@ function struct_copy(struct) {
 	return struct;
 }
 
-
-// clear the struct without deleting it
+/// @desc Remove all struct entries, without deleting it.
+/// @param {any} struct Struct index.
 function struct_clear(struct) {
 	if (is_struct(struct)) {
 		var _names = variable_struct_get_names(struct);
@@ -40,27 +40,34 @@ function struct_clear(struct) {
 	}
 }
 
-
+/// @desc Returns a boolean (true or false) indicating whether the struct is empty or not.
+/// @param {any} struct Struct to check.
+/// @returns {bool} 
 function struct_empty(struct) {
 	return (variable_struct_names_count(struct) == 0);
 }
 
-
-// get value from json only if exists, without returning undefined
+/// @desc Get value from json only if exists, without returning undefined. Useful for loading game data.
+/// @param {any} struct Struct to get the variable.
+/// @param {string} name Variable name.
+/// @param {real} default_value This value will be used if the variable is not found in the struct.
 function struct_get_variable(struct, name, default_value=0) {
 	if (!is_struct(struct)) return default_value;
 	return struct[$ name] ?? default_value;
 }
 
-
-// get and remove a variable from a struct
+/// @desc Get and remove a variable from a struct.
+/// @param {any} struct Struct to get the variable.
+/// @param {string} name Variable name.
 function struct_pop(struct, name) {
 	var _value = struct[$ name];
 	variable_struct_remove(struct, name);
 	return _value;
 }
 
-
+/// @desc Gets variables from an instance and transforms it into a struct.
+/// @param {any} inst_id Instance id.
+/// @returns {struct} 
 function struct_from_instance_variables(inst_id) {
 	var _struct = {},
 	_keys = variable_instance_get_names(inst_id),
@@ -74,7 +81,9 @@ function struct_from_instance_variables(inst_id) {
 	return _struct;
 }
 
-
+/// @desc Converts a struct to ds_map.
+/// @param {struct} struct Struct to convert from.
+/// @returns {id} 
 function struct_to_ds_map(struct) {
 	var _ds_map = ds_map_create(),
 	_keys = variable_struct_get_names(struct),
@@ -88,7 +97,9 @@ function struct_to_ds_map(struct) {
 	return _ds_map;
 }
 
-
+/// @desc Converts a ds_map to a struct.
+/// @param {id.dsmap} map ds_map index.
+/// @returns {struct} 
 function ds_map_to_struct(map) {
     var _struct = {},
     _key = ds_map_find_first(map),

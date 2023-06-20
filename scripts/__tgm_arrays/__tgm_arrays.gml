@@ -174,8 +174,10 @@ function array_copy_all(from, to) {
 	array_copy(to, 0, from, 0, array_length(from));
 }
 
-// testing...
-function array_shift(array, reverse) {
+/// @desc Move all elements of an array.
+/// @param {array} array The array to shift.
+/// @param {bool} reverse Reverse order?
+function array_shift_indexes(array, reverse=false) {
 	if (reverse) {
 		var _old = array[array_length(array)-1];
 		array_pop(array);
@@ -187,12 +189,15 @@ function array_shift(array, reverse) {
 	}
 }
 
-function array_shift_index(array, index, way) {
+/// @desc Swap a single index of an array.
+/// @param {array} array The array to be used.
+/// @param {real} index The array position to swap to another position.
+/// @param {real} offset The offset to swap the element. 0 will have no effect, 1 will swap with the next element. -1 will swap with the previous element. You can use other numbers.
+function array_swap_index(array, index, offset) {
 	var _len = array_length(array)-1;
-	if (index+way < 0 || index > _len-way) exit;
+	if (index+offset < 0 || index > _len-offset) exit;
 	var _current = array[index];
-	var _next = array[index + way];
-	array[index + way] = _current;
+	var _next = array[index + offset];
+	array[index + offset] = _current;
 	array[index] = _next;
 }
-

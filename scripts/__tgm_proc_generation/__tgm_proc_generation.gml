@@ -1,6 +1,11 @@
 
 /// Feather ignore all
 
+/// @desc Read a sprite and returns an array of blocks. Useful for coins patterns.
+/// @param {asset.gmsprite} sprite The sprite to read pixels from.
+/// @param {real} wspace Padding width.
+/// @param {real} hspace Padding height.
+/// @returns {struct} 
 function pattern_read_sprite(sprite, wspace=1, hspace=1) {
 	var _width = sprite_get_width(sprite),
 	_height = sprite_get_height(sprite),
@@ -55,7 +60,9 @@ function pattern_read_sprite(sprite, wspace=1, hspace=1) {
 	return data;
 }
 
-
+/// @desc Generates pseudo random numbers. Useful for procedural generation or non-repeating music sequence.
+/// @param {real} amount Array size.
+/// @returns {array} 
 function random_pseudo_array(amount) {
 	var _array = [];
 	var i = 0;
@@ -63,11 +70,14 @@ function random_pseudo_array(amount) {
 		_array[i] = i;
 		++i;
 	}
-	array_shuffle(_array);
+	_array = array_shuffle(_array);
 	return _array;
 }
 
-
+/// @desc Generates a random array of data returned by the function.
+/// @param {real} amount Array size.
+/// @param {function,method} func The function or method to execute.
+/// @returns {array} 
 function random_pseudo_array_ext(amount, func=undefined) {
 	var _func = func;
 	if (is_undefined(_func)) {
@@ -82,6 +92,6 @@ function random_pseudo_array_ext(amount, func=undefined) {
 		if (!is_undefined(_val)) _array[i] = _val;
 		++i;
 	}
-	array_shuffle(_array);
+	_array = array_shuffle(_array);
 	return _array;
 }

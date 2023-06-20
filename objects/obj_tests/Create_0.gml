@@ -1,4 +1,12 @@
-surf = -1;
+
+array = [00, 11, 22, 33, 44, 55];
+show_debug_message(array);
+array_swap_index(array, 3, 0);
+show_debug_message(array);
+
+
+
+
 gpu_set_tex_filter(true);
 show_debug_overlay(true);
 
@@ -18,7 +26,6 @@ tests = 0;
 pseudo_action_list = [];
 
 
-trace("Hello World!");
 
 
 //show_message(aspect_ratio_gcd(1280, 1280));
