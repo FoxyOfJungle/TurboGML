@@ -92,8 +92,11 @@ function move_and_collide_simple_tag(hspd, vspd, tags) {
 	return move_and_collide_simple(hspd, vspd, _obj);
 }
 
-
-// get the top instance of any layer/depth
+/// @desc Gets the instance with the highest depth, regardless of the layer
+/// @param {real} px The x position to check.
+/// @param {real} py The y position to check.
+/// @param {any*} object The object to check.
+/// @returns {id} 
 function instance_top_position(px, py, object) {
 	var _top_instance = noone,
 	_list = ds_list_create(),
@@ -109,7 +112,9 @@ function instance_top_position(px, py, object) {
 	return _top_instance;
 }
 
-
+/// @desc Get the number of instances of a specific object.
+/// @param {asset.gmobject} object The object asset.
+/// @returns {real} 
 function instance_number_object(object) {
 	var _number = 0;
 	with(object) {
@@ -117,7 +122,6 @@ function instance_number_object(object) {
 	}
 	return _number;
 }
-
 
 /// @desc Gets the nearest instance of an object, based on x and y position.
 /// @param {Real} x The x position to check from.
