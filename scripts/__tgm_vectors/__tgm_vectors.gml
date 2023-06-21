@@ -535,13 +535,13 @@ function Vector3(x, y=x, z=x) constructor {
 	};
 	
 	/// @desc Returns the highest value of the vector.
-	static MaxComponent = function(vector3) {
+	static MaxComponent = function() {
 		gml_pragma("forceinline");
 		return max(x, y, z);
 	};
 	
 	/// @desc Returns the lowest value of the vector.
-	static MinComponent = function(vector3) {
+	static MinComponent = function() {
 		gml_pragma("forceinline");
 		return min(x, y, z);
 	};
