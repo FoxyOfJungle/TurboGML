@@ -2,7 +2,7 @@
 <p align="center"><img src="https://github.com/FoxyOfJungle/TurboGML/blob/main/ICON.png" style="display:block; margin:auto; width:300px"></p>
 <h1 align="center">TurboGML</h1>
 
-<p align="center">The most large collection of useful general GML functions (Math, AI, Linear Algebra - Vectors, Arrays, Structs, Strings, File Search, Paths, Conversions etc)</p>
+<p align="center">The largest collection of useful general GML functions (Math, AI, Linear Algebra - Vectors, Arrays, Structs, Strings, File Search, Paths, Conversions etc)</p>
 
 
 ## Installation:

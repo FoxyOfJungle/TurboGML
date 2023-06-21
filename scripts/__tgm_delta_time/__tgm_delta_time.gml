@@ -19,6 +19,9 @@
 // Delta update smoothness, is the interpolated speed used to smooth out sudden FPS changes (1 = default)
 #macro DELTA_UPDATE_LERP 1
 
+// The maximum delta time should reach, until reset to 1. 3 is a good value
+#macro DELTA_TIME_TOLERANCE 1000
+
 // Current time, based on Delta Time. Useful for animations
 #macro TIMER global.__timer
 
@@ -52,6 +55,7 @@ if (__DELTA_TIME_ENABLE) {
 		global.__delta_speed = 1/FRAME_RATE;
 		global.__delta_time_multiplier_base = (delta_time/1000000)/global.__delta_speed;
 		global.__delta_time_multiplier = lerp(global.__delta_time_multiplier, global.__delta_time_multiplier_base, 1) * global.__delta_time_scale;
+		if (global.__delta_time_multiplier > DELTA_TIME_TOLERANCE) global.__delta_time_multiplier = 1;
 	
 		// delta mouse
 		global.__mouse_x_delta = mouse_x - global.__mouse_x_previous;
