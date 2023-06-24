@@ -1,0 +1,4 @@
+# GameMaker Files
+*.yy linguist-language=Game Maker Language
+*.yyp linguist-language=Game Maker Language
+*.resource_order linguist-language=Game Maker Language
