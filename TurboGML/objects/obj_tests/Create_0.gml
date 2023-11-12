@@ -1,40 +1,9 @@
 
-/*array = [
-	{order : 37},
-	{order : 7},
-	{order : 12},
-	{order : 22},
-	{order : 82},
-	{order : 6},
-];
-
-
-var _array = array;
-
-show_debug_message(_array);
-
-var n = array_length(_array);
-var i, j;
-for (i = 0; i < n; i++) {
-	show_debug_message(i);
-	
-    for (j = 0; j < n-1-i; j++) {
-        if (_array[j].order > _array[j+1].order) {
-            var temp = _array[j];
-            _array[j] = _array[j+1];
-            _array[j+1] = temp;
-        }
-    }
-}
-
-show_debug_message(_array);
-*/
-
-
 gpu_set_tex_filter(true);
-show_debug_overlay(true, true);
+show_debug_overlay(true);
 
-//
+
+// tests...
 angle = 90;
 angle_slow = 0;
 angle2 = 180;
@@ -50,45 +19,32 @@ tests = 0;
 pseudo_action_list = [];
 
 
-
-
-//show_message(aspect_ratio_gcd(1280, 1280));
+/*
+// Search for stuff in directories
+files = [];
+directory_get_contents("F:/TestFolder", files, "*.*", true, true, true, DIRSCAN_DATA_TYPE.NAME_ONLY);
+show_debug_message(json_stringify(files, true));
+*/
 
 /*
-array = array_create_3d(8, 8, 2);
-
-//show_debug_message(json_beautify(json_stringify(array)));
-show_debug_message(array);
-
+// Load .wav
+sound_struct = audio_load_wav("explosion3.wav");
+audio_play_sound(sound_struct.audio, 0, false);
 */
 
 
-
-/*var files = new DirectoryScanner("F:/TestFolder", "*.*", true, true, true, DIRSCAN_DATA_TYPE.FULL_INFO, false);
-show_debug_message( json_stringify(files.GetContents(), true) );
-
-clipboard_set_text(string(files.GetContents()));
-*/
-
-
-
-//sound_struct = audio_load_wav("explosion3.wav");
-//audio_play_sound(sound_struct.audio, 0, false);
-
-
-
-/*struct = {
+/*
+struct = {
 	name : "Fox",
 	test : 10,
 	count : 956,
 	array : [32, 6456, "grdfg"],
-}
+};
 array = [
 	10, 20, 30,
-]
+];
 var aa = struct_get_variable(struct, "array", 2);
 show_debug_message(aa);*/
-
 
 
 
@@ -121,11 +77,4 @@ ds_queue_enqueue(_queue, 32, 64, 82, 100);
 
 
 show_debug_message(ds_debug_print(_queue, ds_type_queue));*/
-
-
-
-
-
-
-
 

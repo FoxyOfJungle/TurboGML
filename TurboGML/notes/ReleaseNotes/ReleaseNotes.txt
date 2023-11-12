@@ -1,0 +1,33 @@
+
+===================[ v3.0 ]===================
+
+[FIXED] ds_debug_print() saying data structure doesn't exists even if it exists.
+[FIXED] Improved draw_debug_resolutions() function.
+[FIXED] Improved array_min, array_max and array_median.
+[FIXED] Improved performance of array_contains_value().
+[FIXED] DirectoryScanner returning files as -1 in some situations with different settings.
+[FIXED] Small fix in display_get_inches(), it now works correctly.
+[FIXED] Example improved.
+[FIXED] Small fixes.
+
+[CHANGED] DirectoryScanner constructor is now a function called directory_get_contents(), so TurboGML is free of constructors now.
+[CHANGED] array_sum() now works with both numbers and strings.
+[CHANGED] Renamed array_empty() function to array_is_empty().
+[CHANGED] Renamed random_pseudo_numbers() to random_pseudo_numbers().
+[CHANGED] Renamed random_pseudo_numbers_ext() to random_pseudo_numbers_ext().
+[CHANGED] array_shift_indexes() function now has a "times" parameter.
+[CHANGED] Renamed scripts for better organization.
+[CHANGED] "make_color_rgba_shader" renamed to "make_color_shader_rgba", for better consistency.
+
+[REMOVED] All 3D-related functions (model_build_cube, model_build_plane, vertex_add_point...)
+[REMOVED] draw_debug_slider(), because GameMaker added dbg_* functions. Use them instead.
+[REMOVED] draw_debug_button(), because GameMaker added dbg_* functions. Use them instead.
+[REMOVED] Delta time functions (there are better alternatives, please use them).
+[REMOVED] All assert sunctions (there are better alternatives, please use them).
+[REMOVED] generate_code() function. This function is not very useful and too generic, better do it yourself.
+[REMOVED] Unused scripts/files.
+
+
+===================[ v2.1 ]===================
+
+[FIXED] Optimized camera_get_area_2d().

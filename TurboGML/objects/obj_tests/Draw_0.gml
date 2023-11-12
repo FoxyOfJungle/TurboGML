@@ -1,29 +1,13 @@
 
-//draw_circle_width(mouse_x, mouse_y, 32, 64, 32, floor(gui_mouse_x_normalized*12));
+var testX = mouse_x/room_width;
 
+//draw_circle_width(mouse_x, mouse_y, 32, 64, 32, floor(testX*12));
 
-
-//var _val = floor(gui_mouse_x_normalized*1000);
-//draw_text(10, 50, _val);
-//draw_text(10, 80, inverse_sqrt(_val));
-
-
-
-/*var _numbber = floor(gui_mouse_x_normalized*100);
-draw_text(10, 80, _numbber);
-draw_text(10, 100, is_odd_number(_numbber));
-
-
-draw_debug_button(40, 40, "TEST");
-
-draw_debug_slider(40, 100, 200, "Test", 0.5, -5, 5);*/
-
-
-var _a = smoothstep(0, 255, gui_mouse_x_normalized*255); // returns 0 - 1
-var _b = linearstep(0, 255, gui_mouse_x_normalized*255); // returns 0 - 1
-var _c = lerp(0, 255, gui_mouse_x_normalized); // returns 0 - 255
-var _d = step(0.5, gui_mouse_x_normalized); // returns 0 or 1
-var _e = relerp(0, 1, gui_mouse_x_normalized, 0, room_width); // returns 0 - 255
+var _a = smoothstep(0, 255, testX*255); // returns 0 - 1
+var _b = linearstep(0, 255, testX*255); // returns 0 - 1
+var _c = lerp(0, 255, testX); // returns 0 - 255
+var _d = step(0.5, testX); // returns 0 or 1
+var _e = relerp(0, 1, testX, 0, room_width); // returns 0 - 255
 
 draw_text(10, 200, _a);
 draw_text(10, 220, _b);
@@ -120,48 +104,29 @@ for (var xx = 0; xx < array_length(array); ++xx) {
 
 //
 
-/*
+
 #region TESTS
-var mx = mouse_x/room_width;
-
-angle2 += 2;
-angle2 = clamp_wrap(angle2, 0, 360);
-draw_text(10, 10, angle2);
+//var mx = mouse_x/room_width;
 
 
-var _x1 = 300;
-var _y1 = 300;
-var _x2 = mouse_x;
-var _y2 = mouse_y;
-draw_line(_x1, _y1, _x2, _y2);
-var _rot = point_direction(_x1, _y1, _x2, _y2);
-draw_sprite(spr_player, angle_get_subimg(_rot, 15), 200, 200);
+//var _x1 = 400;
+//var _y1 = 300;
+//var _x2 = mouse_x;
+//var _y2 = mouse_y;
+//draw_line(_x1, _y1, _x2, _y2);
+//var _rot = point_direction(_x1, _y1, _x2, _y2);
+//draw_sprite(spr_player, angle_get_subimg(_rot, 15), 200, 200);
 
 // smooth rot
-angle_slow = lerp(angle_slow, angle_towards(angle, _rot, 5), 0.2);
-angle -= angle_slow;
+//angle_slow = lerp(angle_slow, angle_towards(angle, _rot, 5), 0.3);
+//angle -= angle_slow;
 
+// linear angle
+//angle -= angle_towards(angle, _rot, 5);
 
-
-draw_sprite_ext(spr_player, 0, 300, 200, 1, 1, angle, c_white, 1);
-
-
-
-
-
-
-
-draw_text(10, 80, distance(30, 50));
-
-draw_text(10, 120, string_zeros(125, 10));
-
-
-
-//draw_sprite_centered(Sprite2, 0, room_width/2, room_height/2);
-//draw_sprite_centered_ext(Sprite2, 0, room_width/2, room_height/2, mx, mx, 0, c_white, 1);
+//draw_sprite_ext(spr_player, 0, _x1, _y1, 1, 1, angle, c_white, 1);
 
 #endregion
-*/
 
 
 
@@ -184,6 +149,12 @@ draw_text(10, 120, string_zeros(125, 10));
 //draw_line(0, 0, transform.x, transform.y);
 
 //draw_text(10, 300, transform);
+
+
+
+
+
+
 
 
 
@@ -214,9 +185,6 @@ var aa = point_direction_radians_vec2(150, 150, mouse_x, mouse_y);
 
 
 
-
-
-
 //draw_sprite_pos_persp(Sprite7, 0, obj_b1.x, obj_b1.y, obj_b2.x, obj_b2.y, obj_b3.x, obj_b3.y, obj_b4.x, obj_b4.y, 1);
 
 
@@ -234,6 +202,5 @@ var aa = point_direction_radians_vec2(150, 150, mouse_x, mouse_y);
 //var size = aspect_ratio_maintain(ww, hh, 480, 270);
 
 //draw_sprite_stretched(Sprite9, 0, x1, y1, size.x, size.y);
-
 
 

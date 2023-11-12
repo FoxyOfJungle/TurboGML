@@ -1,3 +1,0 @@
-
-//
-moving = false;
