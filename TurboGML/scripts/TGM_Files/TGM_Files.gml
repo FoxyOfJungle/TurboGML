@@ -6,6 +6,7 @@ enum DIRSCAN_DATA_TYPE {
 	FULL_INFO,
 }
 
+// based on https://yal.cc/gamemaker-recursive-folder-copying/
 /// @desc Reads all files in a directory and subdirectories. Returns different types of data.
 /// @param {string} path_source The directory path.
 /// @param {array} contents_array The array to fill with contents.
@@ -16,7 +17,7 @@ enum DIRSCAN_DATA_TYPE {
 /// @param {real} data_type Determines the type of date to be returned. Example: DIRSCAN_DATA_TYPE.NAME_ONLY.
 /// @param {bool} get_size Get file sizes while scanning.
 /// @returns {array} Array with contents.
-function directory_get_contents(path_source, contents_array, extension="*.*", search_files=true, search_folders=true, search_subdir=true, data_type=DIRSCAN_DATA_TYPE.NAME_ONLY, get_size=false) {
+function directory_get_contents(path_source, contents_array, extension="*.*", search_files=true, search_folders=true, search_subdir=true, data_type=DIRSCAN_DATA_TYPE.FULL_PATH, get_size=false) {
 	if (!directory_exists(path_source)) {
 		return undefined;
 	}
