@@ -1,7 +1,7 @@
 
-/*--------------------------------------------------------------------------------------------
+/*=============================================================================================
 	TurboGML. A complete library with must-have functionality.
-	- Library by FoxyOfJungle (Mozart Junior). (C) 2023, MIT License.
+	- Library by Mozart Junior (FoxyOfJungle). (C) 2024, MIT License.
 	
 	It would mean a lot to me to have my name in your project/game credits! :D (Mozart Junior)
 	Don't remove this notice, please :)
@@ -10,19 +10,19 @@
 	https://twitter.com/foxyofjungle
 	
 	..............................
-	Special Thanks, contributions:
-	YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, icuurd12b42, DragoniteSpam,
+	Special Thanks / contributions:
+	Freya Holmér, YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, icuurd12b42, DragoniteSpam,
 	Grisgram, Red, JuJu Adams, TabularElf.
 	(authors' names written in comment inside the functions used)
 	
 	Supporters:
 	RookTKO, EW
----------------------------------------------------------------------------------------------*/
+=============================================================================================*/
 
 /*
 	MIT License
 	
-	Copyright (c) 2023 Mozart Junior (FoxyOfJungle)
+	Copyright (c) 2024 Mozart Junior (FoxyOfJungle)
 	
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal

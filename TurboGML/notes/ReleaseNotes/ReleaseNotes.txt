@@ -1,4 +1,63 @@
 
+===================[ v4.0 ]===================
+
+[ADDED] clamp_angle_fov() function. With this function, you can limit the rotation angle based on the target angle.
+[ADDED] lerp_dt() function. Works exactly the same as lerp(), but with delta time support.
+[ADDED] lerp_angle_dt() function. Works like a lerp_angle() but works with delta time.
+[ADDED] approach_angle() function. Move linearly angle A to angle B in the specified amount.
+[ADDED] array_find_closest_number() function. Find the number closest to the reference value in an array.
+[ADDED] string_get_read_time() function. Calculates the reading time of a string (useful for dialogues).
+[ADDED] buffer_slice() function. Make a new buffer, based on parts from an existing buffer.
+[ADDED] buffer_debug() function. Read the contents of a buffer and print each value to the console.
+[ADDED] mod_wrap() function. Works like "mod" or "%" but works as expected for negative numbers. a % b.
+[ADDED] distance_to_rectangle() function. Returns the distance from a point to a rectangle (Manhattan distance).
+[ADDED] distance_to_cube() function. Returns the distance from a point to a cube (Manhattan distance).
+[ADDED] eerp() function. Interpolates in log scale (multiplicatively linear). Alternative to lerp().
+[ADDED] matrix_get_position() function.
+[ADDED] matrix_get_scale() function.
+[ADDED] matrix_get_x() function.
+[ADDED] matrix_get_y() function.
+[ADDED] matrix_get_z() function.
+[ADDED] matrix_get_xscale() function.
+[ADDED] matrix_get_yscale() function.
+[ADDED] matrix_get_zscale() function.
+[ADDED] string_currency_prettify() function. Formats a number that represents money in the game, in a beautiful way, adding surfixes like K, M, B, T. Also supports negative numbers.
+[ADDED] display_get_true_resolutions() function.
+[ADDED] ds_list_get_random() function.
+[ADDED] ds_list_sum() function.
+[ADDED] ds_list_is_empty() function.
+[ADDED] ds_list_max() function.
+[ADDED] ds_list_min() function.
+[ADDED] ds_list_mean() function.
+[ADDED] ds_list_median() function.
+[ADDED] ds_list_contains_value() function.
+[ADDED] ds_list_sort_ext() function.
+[ADDED] ds_list_to_array() function.
+[ADDED] .Project() method to Vector2 and Vector3.
+
+[FIXED] More organized functions and feather fixes.
+[FIXED] bytes_get_size() optimized.
+[FIXED] string_word_first_letter_upper_case() optimized.
+[FIXED] string_case_reverse() optimized.
+[FIXED] ClampedMagnitude() from Vector2 and Vector3 was giving an error.
+
+[CHANGED] SORT_ASCENDING and SORT_DESCENDING optimized.
+[CHANGED] world_to_screen_dimension() now receives canvas size, so it is not necessary to calculate it several times, if you are using the function more than once.
+[CHANGED] struct_empty() function renamed to struct_is_empty().
+[CHANGED] array_empty() function renamed to array_is_empty().
+[CHANGED] array_choose() function renamed to array_get_random().
+[CHANGED] array_random_index() function renamed to array_get_random_index().
+[CHANGED] random_pseudo_numbers() function renamed to array_create_random_sequence().
+[CHANGED] random_pseudo_numbers_ext() function renamed to array_create_random_sequence_ext().
+[CHANGED] Renamed camera_get_area_2d() to camera_get_rect()
+[CHANGED] Improved fps_average function.
+[CHANGED] Improved draw_debug_resolutions() function.
+[CHANGED] It is now possible to initialize Vector2 and Vector3 as 0, without having to declare the number explicitly.
+
+[REMOVED] wave_normalized(), as this function is a bit inconsistent and not very useful. Use wave_period() instead, or sin() directly.
+[REMOVED] texturegroup_debug_draw_sprites(). Use the debug window with show_debug_overlay().
+
+
 ===================[ v3.0 ]===================
 
 [FIXED] ds_debug_print() saying data structure doesn't exists even if it exists.

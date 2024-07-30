@@ -17,9 +17,9 @@
 /// @desc Returns a struct containing x and y.
 /// @param {real} x The value for x.
 /// @param {real} y The value for y.
-function Vector2(x, y=x) constructor {
-	self.x = x;
-	self.y = y;
+function Vector2(_x=0, _y=_x) constructor {
+	self.x = _x;
+	self.y = _y;
 	
 	/// @desc Set vector components.
 	static Set = function(_x=0, _y=_x) {
@@ -30,12 +30,9 @@ function Vector2(x, y=x) constructor {
 	};
 	
 	/// @desc Returns true if the given vector is exactly equal to this vector.
-	static Equals = function(vector2) {
+	static Equals = function(_vectorB) {
 		gml_pragma("forceinline");
-		return (
-			x == vector2.x &&
-			y == vector2.y
-		);
+		return (x == _vectorB.x && y == _vectorB.y);
 	}
 		
 	/// @desc Returns the length of this vector (Read Only).
@@ -61,9 +58,9 @@ function Vector2(x, y=x) constructor {
 	}
 	
 	/// @desc Returns the vector rotated by the amount supplied in degrees.
-	static Rotated = function(new_angle) {
+	static Rotated = function(_angle) {
 		gml_pragma("forceinline");
-		var _sin = dsin(new_angle), _cos = dcos(new_angle);
+		var _sin = dsin(_angle), _cos = dcos(_angle);
 		return new Vector2(
 			x*_cos - y*_sin,
 			x*_sin + y*_cos
@@ -71,33 +68,33 @@ function Vector2(x, y=x) constructor {
 	}
 	
 	/// @desc Returns the vector snapped in a grid
-	static Snapped = function(vector2) {
+	static Snapped = function(_vectorB) {
 		gml_pragma("forceinline");
 		return new Vector2(
-			floor(x/vector2.x+0.5)*vector2.x,
-			floor(y/vector2.y+0.5)*vector2.y
+			floor(x/_vectorB.x+0.5)*_vectorB.x,
+			floor(y/_vectorB.y+0.5)*_vectorB.y
 		);
 	}
 	
 	/// @desc Clamps each component of the vector.
-	static Clamped = function(min_vector, max_vector) {
+	static Clamped = function(_minVector, _maxVector) {
 		gml_pragma("forceinline");
 		return new Vector2(
-			clamp(x, min_vector.x, max_vector.x),
-			clamp(y, min_vector.y, max_vector.y)
+			clamp(x, _minVector.x, _maxVector.x),
+			clamp(y, _minVector.y, _maxVector.y)
 		);
 	};
 	
 	/// @desc Returns a vector with a clamped magnitude
-	static ClampedMagnitude = function(max_magnitude) {
+	static ClampedMagnitude = function(_maxMagnitude) {
 		gml_pragma("forceinline");
-		var _len = magnitude();
+		var _len = Magnitude();
 		var _vector = self;
-		if (_len > 0 && max_magnitude < _len) {
+		if (_len > 0 && _maxMagnitude < _len) {
 			_vector.x /= _len;
 			_vector.y /= _len;
-			_vector.x *= max_magnitude;
-			_vector.y *= max_magnitude;
+			_vector.x *= _maxMagnitude;
+			_vector.y *= _maxMagnitude;
 		}
 		return _vector;
 	}
@@ -109,27 +106,27 @@ function Vector2(x, y=x) constructor {
 	}
 	
 	/// @desc Adds two vectors.
-	static Add = function(vector2) {
+	static Add = function(_vectorB) {
 		gml_pragma("forceinline");
-		return new Vector2(x+vector2.x, y+vector2.y);
+		return new Vector2(x+_vectorB.x, y+_vectorB.y);
 	}
 	
 	/// @desc Subtract two vectors.
-	static Subtract = function(vector2) {
+	static Subtract = function(_vectorB) {
 		gml_pragma("forceinline");
-		return new Vector2(x-vector2.x, y-vector2.y);
+		return new Vector2(x-_vectorB.x, y-_vectorB.y);
 	}
 	
 	/// @desc Multiply two vectors.
-	static Multiply = function(vector2) {
+	static Multiply = function(_vectorB) {
 		gml_pragma("forceinline");
-		return new Vector2(x*vector2.x, y*vector2.y);
+		return new Vector2(x*_vectorB.x, y*_vectorB.y);
 	}
 	
 	/// @desc Divide with another vector.
-	static Divide = function(vector2) {
+	static Divide = function(_vectorB) {
 		gml_pragma("forceinline");
-		return new Vector2(x/vector2.x, y/vector2.y);
+		return new Vector2(x/_vectorB.x, y/_vectorB.y);
 	}
 	
 	/// @desc Negates the vector.
@@ -139,9 +136,9 @@ function Vector2(x, y=x) constructor {
 	}
 	
 	/// @desc Scales the vector.
-	static Scale = function(vector2) {
+	static Scale = function(_scale) {
 		gml_pragma("forceinline");
-		return new Vector2(x*vector2.x, y*vector2.y);
+		return new Vector2(x*_scale, y*_scale);
 	}
 	
 	/// @desc Normalise (magnitude set to 1) all the components of this
@@ -153,16 +150,22 @@ function Vector2(x, y=x) constructor {
 	}
 	
 	/// @desc Get the dot product of two vectors.
-	static Dot = function(vector2) {
+	static Dot = function(_vectorB) {
 		gml_pragma("forceinline");
-		return (x*vector2.x + y*vector2.y);
+		return (x*_vectorB.x + y*_vectorB.y);
 	}
 	
 	/// @desc Returns the cross product.
-	static Cross = function(vector2) {
+	static Cross = function(_vectorB) {
 		gml_pragma("forceinline");
-		return (x*vector2.x - y*vector2.y);
+		return (x*_vectorB.x - y*_vectorB.y);
 	}
+		
+	/// Returns the projection of the vector.
+    static Project = function(_origin, _vectorB) {
+        gml_pragma("forceinline");
+        return _origin.Dot(_vectorB) / _origin.Magnitude();
+    }
 	
 	/// @desc Returns the vector with all components rounded down.
 	static Floor = function() {
@@ -188,7 +191,7 @@ function Vector2(x, y=x) constructor {
 		return new Vector2(sign(x), sign(y));
 	}
 	
-	/// @desc Returns a new vector with absolute values.
+	/// @desc Returns a new vector with absolute values (i.e. positive).
 	static Abs = function() {
 		gml_pragma("forceinline");
 		return new Vector2(abs(x), abs(y));
@@ -209,64 +212,59 @@ function Vector2(x, y=x) constructor {
 	}
 	
 	/// @desc Clamps each component of the vector.
-	static Lerp = function(vector2, amount) {
+	static Lerp = function(_vectorB, _amount) {
 		gml_pragma("forceinline");
 		return new Vector2(
-			lerp(x, vector2.x, amount),
-			lerp(y, vector2.y, amount)
+			lerp(x, _vectorB.x, _amount),
+			lerp(y, _vectorB.y, _amount)
 		);
 	};
 	
 	/// @desc Returns the distance between the two vectors.
-	static Distance = function(vector2) {
+	static Distance = function(_vectorB) {
 		gml_pragma("forceinline");
-		return sqrt(sqr(x-vector2.x) + sqr(y-vector2.y));
+		return sqrt(sqr(x-_vectorB.x) + sqr(y-_vectorB.y));
 	}
 	
 	/// @desc Returns the square distance between the two vectors.
-	static SqrDistance = function(vector2) {
+	static SqrDistance = function(_vectorB) {
 		gml_pragma("forceinline");
-		return (sqr(x-vector2.x) + sqr(y-vector2.y));
-	}
-	
-	/// @desc Returns the angle to the given vector.
-	static Angle = function(vector2) {
-		gml_pragma("forceinline");
-		return point_direction(x, y, vector2.x, vector2.y);
+		return (sqr(x-_vectorB.x) + sqr(y-_vectorB.y));
 	}
 	
 	/// @desc Returns the angle between the line connecting the two points.
-	static AngleTo = function(vector2) {
+	static AngleTo = function(_vectorB) {
 		gml_pragma("forceinline");
-		return -darctan2(y-vector2.y, x-vector2.x)+180;
+		return point_direction(x, y, _vectorB.x, _vectorB.y);
+		//return -darctan2(y-_vectorB.y, x-_vectorB.x)+180;
 	}
 	
 	/// @desc Returns a vector that is made from the largest components of two vectors.
-	static Max = function(vector2) {
+	static Max = function(_vectorB) {
 		gml_pragma("forceinline");
 		return new Vector2(
-			max(x, vector2.x),
-			max(y, vector2.y)
+			max(x, _vectorB.x),
+			max(y, _vectorB.y)
 		);
 	};
 	
 	/// @desc Returns a vector that is made from the smallest components of two vectors.
-	static Min = function(vector2) {
+	static Min = function(_vectorB) {
 		gml_pragma("forceinline");
 		return new Vector2(
-			min(x, vector2.x),
-			min(y, vector2.y)
+			min(x, _vectorB.x),
+			min(y, _vectorB.y)
 		);
 	};
 	
 	/// @desc Returns the highest value of the vector.
-	static MaxComponent = function(vector2) {
+	static MaxComponent = function(_vectorB) {
 		gml_pragma("forceinline");
 		return max(x, y);
 	};
 	
 	/// @desc Returns the lowest value of the vector.
-	static MinComponent = function(vector2) {
+	static MinComponent = function(_vectorB) {
 		gml_pragma("forceinline");
 		return min(x, y);
 	};
@@ -287,10 +285,10 @@ function Vector2(x, y=x) constructor {
 /// @param {real} x The value for x.
 /// @param {real} y The value for y.
 /// @param {real} z The value for z.
-function Vector3(x, y=x, z=x) constructor {
-	self.x = x;
-	self.y = y;
-	self.z = z;
+function Vector3(_x=0, _y=_x, _z=_x) constructor {
+	self.x = _x;
+	self.y = _y;
+	self.z = _z;
 	
 	/// @desc Set vector components.
 	static Set = function(_x=0, _y=_x, _z=_x) {
@@ -302,12 +300,12 @@ function Vector3(x, y=x, z=x) constructor {
 	};
 	
 	/// @desc Returns true if the given vector is exactly equal to this vector.
-	static Equals = function(vector3) {
+	static Equals = function(_vectorB) {
 		gml_pragma("forceinline");
 		return (
-			x == vector3.x &&
-			y == vector3.y &&
-			z == vector3.z
+			x == _vectorB.x &&
+			y == _vectorB.y &&
+			z == _vectorB.z
 		);
 	}
 		
@@ -335,37 +333,37 @@ function Vector3(x, y=x, z=x) constructor {
 	}
 	
 	/// @desc Returns the vector snapped in a grid
-	static Snapped = function(vector3) {
+	static Snapped = function(_vectorB) {
 		gml_pragma("forceinline");
 		return new Vector3(
-			floor(x/vector3.x+0.5)*vector3.x,
-			floor(y/vector3.y+0.5)*vector3.y,
-			floor(z/vector3.z+0.5)*vector3.z
+			floor(x/_vectorB.x+0.5)*_vectorB.x,
+			floor(y/_vectorB.y+0.5)*_vectorB.y,
+			floor(z/_vectorB.z+0.5)*_vectorB.z
 		);
 	}
 	
 	/// @desc Clamps each component of the vector.
-	static Clamped = function(min_vector, max_vector) {
+	static Clamped = function(_minVector, _maxVector) {
 		gml_pragma("forceinline");
 		return new Vector3(
-			clamp(x, min_vector.x, max_vector.x),
-			clamp(y, min_vector.y, max_vector.y),
-			clamp(z, min_vector.z, max_vector.z)
+			clamp(x, _minVector.x, _maxVector.x),
+			clamp(y, _minVector.y, _maxVector.y),
+			clamp(z, _minVector.z, _maxVector.z)
 		);
 	};
 	
 	/// @desc Returns a vector with a clamped magnitude
-	static ClampedMagnitude = function(max_magnitude) {
+	static ClampedMagnitude = function(_maxMagnitude) {
 		gml_pragma("forceinline");
-		var _len = magnitude();
+		var _len = Magnitude();
 		var _vector = self;
-		if (_len > 0 && max_magnitude < _len) {
+		if (_len > 0 && _maxMagnitude < _len) {
 			_vector.x /= _len;
 			_vector.y /= _len;
 			_vector.z /= _len;
-			_vector.x *= max_magnitude;
-			_vector.y *= max_magnitude;
-			_vector.z *= max_magnitude;
+			_vector.x *= _maxMagnitude;
+			_vector.y *= _maxMagnitude;
+			_vector.z *= _maxMagnitude;
 		}
 		return _vector;
 	}
@@ -377,27 +375,27 @@ function Vector3(x, y=x, z=x) constructor {
 	}
 	
 	/// @desc Adds two vectors.
-	static Add = function(vector3) {
+	static Add = function(_vectorB) {
 		gml_pragma("forceinline");
-		return new Vector3(x+vector3.x, y+vector3.y, z+vector3.z);
+		return new Vector3(x+_vectorB.x, y+_vectorB.y, z+_vectorB.z);
 	}
 	
 	/// @desc Subtract two vectors.
-	static Subtract = function(vector3) {
+	static Subtract = function(_vectorB) {
 		gml_pragma("forceinline");
-		return new Vector3(x-vector3.x, y-vector3.y, z-vector3.z);
+		return new Vector3(x-_vectorB.x, y-_vectorB.y, z-_vectorB.z);
 	}
 	
 	/// @desc Multiply two vectors.
-	static Multiply = function(vector3) {
+	static Multiply = function(_vectorB) {
 		gml_pragma("forceinline");
-		return new Vector3(x*vector3.x, y*vector3.y, z*vector3.z);
+		return new Vector3(x*_vectorB.x, y*_vectorB.y, z*_vectorB.z);
 	}
 	
 	/// @desc Divide with another vector.
-	static Divide = function(vector3) {
+	static Divide = function(_vectorB) {
 		gml_pragma("forceinline");
-		return new Vector3(x/vector3.x, y/vector3.y, z/vector3.z);
+		return new Vector3(x/_vectorB.x, y/_vectorB.y, z/_vectorB.z);
 	}
 	
 	/// @desc Negates the vector.
@@ -407,9 +405,9 @@ function Vector3(x, y=x, z=x) constructor {
 	}
 	
 	/// @desc Scales the vector.
-	static Scale = function(vector3) {
+	static Scale = function(_scale) {
 		gml_pragma("forceinline");
-		return new Vector3(x*vector3.x, y*vector3.y, z*vector3.z);
+		return new Vector3(x*_scale, y*_scale, z*_scale);
 	}
 	
 	/// @desc Normalise (magnitude set to 1) all the components of this
@@ -422,20 +420,26 @@ function Vector3(x, y=x, z=x) constructor {
 	}
 	
 	/// @desc Get the dot product of two vectors.
-	static Dot = function(vector3) {
+	static Dot = function(_vectorB) {
 		gml_pragma("forceinline");
-		return (x*vector3.x + y*vector3.y + z*vector3.z);
+		return (x*_vectorB.x + y*_vectorB.y + z*_vectorB.z);
 	}
 	
 	/// @desc Returns the cross product.
-	static Cross = function(vector3) {
+	static Cross = function(_vectorB) {
 		gml_pragma("forceinline");
 		return new Vector3(
-			y*vector3.z - z*vector3.y,
-			z*vector3.x - x*vector3.z,
-			x*vector3.y - y*vector3.x
+			y*_vectorB.z - z*_vectorB.y,
+			z*_vectorB.x - x*_vectorB.z,
+			x*_vectorB.y - y*_vectorB.x
 		);
 	}
+	
+	/// Returns the projection of the vector.
+    static Project = function(_origin, _vectorB) {
+        gml_pragma("forceinline");
+        return _origin.Dot(_vectorB) / _origin.Magnitude();
+    }
 	
 	/// @desc Returns the vector with all components rounded down.
 	static Floor = function() {
@@ -482,55 +486,55 @@ function Vector3(x, y=x, z=x) constructor {
 	}
 	
 	/// @desc Clamps each component of the vector.
-	static Lerp = function(vector3, amount) {
+	static Lerp = function(_vectorB, _amount) {
 		gml_pragma("forceinline");
 		return new Vector3(
-			lerp(x, vector3.x, amount),
-			lerp(y, vector3.y, amount),
-			lerp(z, vector3.z, amount)
+			lerp(x, _vectorB.x, _amount),
+			lerp(y, _vectorB.y, _amount),
+			lerp(z, _vectorB.z, _amount)
 		);
 	};
 	
 	/// @desc Returns the distance between the two vectors.
-	static Distance = function(vector3) {
+	static Distance = function(_vectorB) {
 		gml_pragma("forceinline");
-		return sqrt(sqr(x-vector3.x) + sqr(y-vector3.y) + sqr(z-vector3.z));
+		return sqrt(sqr(x-_vectorB.x) + sqr(y-_vectorB.y) + sqr(z-_vectorB.z));
 	}
 	
 	/// @desc Returns the square distance between the two vectors.
-	static SqrDistance = function(vector3) {
+	static SqrDistance = function(_vectorB) {
 		gml_pragma("forceinline");
-		return (sqr(x-vector3.x) + sqr(y-vector3.y) + sqr(z-vector3.z));
+		return (sqr(x-_vectorB.x) + sqr(y-_vectorB.y) + sqr(z-_vectorB.z));
 	}
 	
 	/// @desc Returns the angle (z rotation) in degrees to the given vector.
-	static YawTo = function(vector3) {
+	static YawTo = function(_vectorB) {
 		gml_pragma("forceinline");
-		return point_direction(x, y, vector3.x, vector3.y); // I was too lazy to write the math behind it for now
+		return point_direction(x, y, _vectorB.x, _vectorB.y); // I was too lazy to write the math behind it for now
 	}
 	
 	/// @desc Returns the pitch angle (x rotation) in degrees to the given vector.
-	static PitchTo = function(vector3) {
-		return radtodeg(arctan2(vector3.z-z, point_distance(x, y, vector3.x, vector3.y)));
+	static PitchTo = function(_vectorB) {
+		return radtodeg(arctan2(_vectorB.z-z, point_distance(x, y, _vectorB.x, _vectorB.y)));
 	}
 	
 	/// @desc Returns a vector that is made from the largest components of two vectors.
-	static Max = function(vector3) {
+	static Max = function(_vectorB) {
 		gml_pragma("forceinline");
 		return new Vector3(
-			max(x, vector3.x),
-			max(y, vector3.y),
-			max(z, vector3.z)
+			max(x, _vectorB.x),
+			max(y, _vectorB.y),
+			max(z, _vectorB.z)
 		);
 	};
 	
 	/// @desc Returns a vector that is made from the smallest components of two vectors.
-	static Min = function(vector3) {
+	static Min = function(_vectorB) {
 		gml_pragma("forceinline");
 		return new Vector3(
-			min(x, vector3.x),
-			min(y, vector3.y),
-			min(z, vector3.z)
+			min(x, _vectorB.x),
+			min(y, _vectorB.y),
+			min(z, _vectorB.z)
 		);
 	};
 	
@@ -552,10 +556,10 @@ function Vector3(x, y=x, z=x) constructor {
 /// @param {real} x The value for x.
 /// @param {real} y The value for y.
 /// @param {real} z The value for z.
-function Vector4(x, y=x, z=x, w=x) constructor {
-	self.x = x;
-	self.y = y;
-	self.z = z;
-	self.w = w;
+function Vector4(_x=0, _y=_x, _z=_x, _w=_x) constructor {
+	self.x = _x;
+	self.y = _y;
+	self.z = _z;
+	self.w = _w;
 }
 

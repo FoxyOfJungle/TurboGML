@@ -22,7 +22,7 @@ vsp = clamp(vsp, -fall_speed, fall_speed);
 
 if (keyboard_check_pressed(vk_up)) vsp = -14;
 
-var _col = move_and_collide_simple(hsp, vsp, obj_solid); // using objects
+var _col = move_and_collide_simple(hsp, vsp, objSolid); // using objects
 //var _col = move_and_collide_simple_tag(hsp, vsp, "ground"); // using object tags
 if (_col.z != noone) {
 	if (_col.x) hsp = 0;

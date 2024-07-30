@@ -6,17 +6,17 @@
 /// @param {real} py The y position to check.
 /// @param {real} layer_id The layer id.
 /// @returns {id} 
-function layer_instance_top_position(px, py, layer_id) {
-	var _top_instance = noone;
-	if (layer_exists(layer_id) && layer_get_visible(layer_id)) {
+function layer_instance_top_position(_px, _py, _layerId) {
+	var _topInstance = noone;
+	if (layer_exists(_layerId) && layer_get_visible(_layerId)) {
 		var _list = ds_list_create();
-		var _elements = layer_get_all_elements(layer_id);
-		var isize = array_length(_elements), i = isize-1;
-		repeat(isize) {
+		var _elements = layer_get_all_elements(_layerId);
+		var _isize = array_length(_elements), i = _isize - 1;
+		repeat(_isize) {
 			if (layer_get_element_type(_elements[i]) == layerelementtype_instance) {
-			    var _inst = layer_instance_get_instance(_elements[i]);
-				if instance_exists(_inst) {
-					if position_meeting(px, py, _inst) ds_list_add(_list, _inst);
+			    var _instance = layer_instance_get_instance(_elements[i]);
+				if (instance_exists(_instance)) {
+					if (position_meeting(_px, _py, _instance)) ds_list_add(_list, _instance);
 				}
 			}
 			--i;
@@ -25,18 +25,18 @@ function layer_instance_top_position(px, py, layer_id) {
 		if (_num > 0) {
 			i = 0;
 			repeat(_num) {
-				_top_instance = _list[| ds_list_size(_list)-1];
+				_topInstance = _list[| ds_list_size(_list) - 1];
 				++i;
 			}
 		}
 		ds_list_destroy(_list);
 	}
-	return _top_instance;
+	return _topInstance;
 }
 
 /// @desc Get instance count from a specific layer.
-/// @param {real} layer_id The layer id.
+/// @param {real} layerId The layer id.
 /// @returns {real} 
-function layer_instance_count(layer_id) {
-	return layer_exists(layer_id) ? array_length(layer_get_all_elements(layer_id)) : 0;
+function layer_instance_count(_layer_id) {
+	return layer_exists(_layer_id) ? array_length(layer_get_all_elements(_layer_id)) : 0;
 }

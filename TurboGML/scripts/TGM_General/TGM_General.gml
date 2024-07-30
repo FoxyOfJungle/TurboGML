@@ -4,25 +4,23 @@
 #macro fps_average ___fps_average()
 /// @ignore
 function ___fps_average() {
-	static frames = 0;
-	static total_fps = 1;
-	static total_smooth = 0;
-	frames++;
-	if (frames > 250) {
-		frames = 1;
-		total_fps = 1;
+	static fpsList = ds_list_create();
+	static maxFpsValues = 50;
+	static fpsSmooth = 0;
+	static fpsSmoothRate = 0.1;
+	ds_list_add(fpsList, fps_real);
+	if (ds_list_size(fpsList) > maxFpsValues) {
+		ds_list_delete(fpsList, 0);
 	}
-	total_fps += fps_real;
-	var _fps_avg = total_fps / frames;
-	total_smooth = lerp(total_smooth, _fps_avg, 0.2);
-	return floor(total_smooth);
+	fpsSmooth = lerp(fpsSmooth, ds_list_mean(fpsList), fpsSmoothRate);
+	return fpsSmooth;
 }
 
 /// @desc Returns a boolean (true or false) indicating whether the game was exported as a standalone (executable).
 /// @returns {bool} 
 function game_is_standalone() {
-	static is_standalone = (GM_build_type == "exe");
-	return is_standalone;
+	static isStandalone = (GM_build_type == "exe");
+	return isStandalone;
 }
 
 /// @desc Function Description
@@ -31,8 +29,8 @@ function game_is_standalone() {
 /// @param {real} time Description
 /// @param {real} [repetitions]=1 Description
 /// @returns {id} Description
-function invoke(callback, args, time, repetitions=1) {
-	var _ts = time_source_create(time_source_game, time, time_source_units_frames, callback, args, repetitions);
+function invoke(_callback, _args, _time, _repetitions=1) {
+	var _ts = time_source_create(time_source_game, _time, time_source_units_frames, _callback, _args, _repetitions);
 	time_source_start(_ts);
 	return _ts;
 }

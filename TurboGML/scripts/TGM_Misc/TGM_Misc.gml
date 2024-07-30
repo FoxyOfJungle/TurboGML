@@ -8,12 +8,6 @@
 #macro gui_mouse_x_normalized (device_mouse_x_to_gui(0)/display_get_gui_width())
 #macro gui_mouse_y_normalized (device_mouse_y_to_gui(0)/display_get_gui_height())
 
-// this is useful for some libraries by Samuel
-function io_clear_both() {
-	keyboard_clear(keyboard_lastkey);
-	mouse_clear(mouse_lastbutton);
-}
-
 /// @desc Returns the x position of the mouse without it being stuck in the window.
 /// @returns {real} 
 function window_mouse_x() {
@@ -29,12 +23,12 @@ function window_mouse_y() {
 /// @desc This function returns a boolean if you double-click the mouse.
 /// @param {constant.mousebutton} button Description
 /// @returns {bool} Description
-function mouse_check_doubleclick_pressed(button) {
+function mouse_check_doubleclick_pressed(_button) {
 	static _time = 500; //ms
 	static _once = false;
 	static _delta = 0;
 	var _pressed = false;
-	if mouse_check_button_pressed(button) {
+	if (mouse_check_button_pressed(_button)) {
 		if (!_once) {
 			_delta = current_time;
 			_once = true;
@@ -48,3 +42,22 @@ function mouse_check_doubleclick_pressed(button) {
 	}
 	return _pressed;
 }
+
+/// @desc Clear both keyboard and mouse input.
+/// This is particularly useful for some libraries by Samuel Venable.
+function io_clear_both() {
+	keyboard_clear(keyboard_lastkey);
+	mouse_clear(mouse_lastbutton);
+}
+
+/// @ignore
+function __compare_ascending(_a, _b) {
+	return _a - _b;
+}
+/// @ignore
+function __compare_descending(_a, _b) {
+	return _b - _a;
+}
+
+#macro SORT_ASCENDING __compare_ascending
+#macro SORT_DESCENDING __compare_descending

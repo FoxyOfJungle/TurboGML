@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "TGM_Collisions",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "Code",
-    "path": "folders/KazanGames/TurboGML/Code.yy",
+  "$GMScript":"v1",
+  "%Name":"TGM_Collisions",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"TGM_Collisions",
+  "parent":{
+    "name":"Code",
+    "path":"folders/KazanGames/TurboGML/Code.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

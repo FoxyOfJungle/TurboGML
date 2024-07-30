@@ -2,40 +2,41 @@
 /// Feather ignore all
 
 /// @desc Get camera's field of view.
-/// @param {array} proj_mat The camera projection matrix.
+/// @param {array} projMat The camera projection matrix.
 /// @returns {real}
-function camera_get_fov(proj_mat) {
-	return radtodeg(arctan(1.0/proj_mat[5]) * 2.0);
+function camera_get_fov(_projMat) {
+	return radtodeg(arctan(1.0/_projMat[5]) * 2.0);
 }
 
 /// @desc Get camera's aspect ratio.
-/// @param {array} proj_mat The camera projection matrix.
+/// @param {array} projMat The camera projection matrix.
 /// @returns {real}
-function camera_get_aspect(proj_mat) {
-	return proj_mat[5] / proj_mat[0];
+function camera_get_aspect(_projMat) {
+	return _projMat[5] / _projMat[0];
 }
 
 /// @desc Get camera's far plane.
-/// @param {array} proj_mat The camera projection matrix.
+/// @param {array} projMat The camera projection matrix.
 /// @returns {real}
-function camera_get_far_plane(proj_mat) {
-	return -proj_mat[14] / (proj_mat[10]-1);
+function camera_get_far_plane(_projMat) {
+	return -_projMat[14] / (_projMat[10]-1);
 }
 
 /// @desc Get camera's near plane.
-/// @param {array} proj_mat The camera projection matrix.
+/// @param {array} projMat The camera projection matrix.
 /// @returns {real}
-function camera_get_near_plane(proj_mat) {
-	return -2 * proj_mat[14] / (proj_mat[10]+1);
+function camera_get_near_plane(_projMat) {
+	return -2 * _projMat[14] / (_projMat[10]+1);
 }
 
-/// @desc Get camera's 2D rect area. Returns a Vector4(x1, y1, width, height).
-/// @param {array} proj_mat The camera projection matrix.
+/// @desc Get camera's 2D rectangle area. Returns a Vector4(x1, y1, width, height).
+/// @param {array} viewMat The camera view matrix.
+/// @param {array} projMat The camera projection matrix.
 /// @returns {real}
-function camera_get_area_2d(view_mat, proj_mat) {
-	var _cam_x = -view_mat[12],
-		_cam_y = -view_mat[13],
-		_cam_w = round(abs(2/proj_mat[0])),
-		_cam_h = round(abs(2/proj_mat[5]));
+function camera_get_rect(_viewMat, _projMat) {
+	var _cam_x = -_viewMat[12],
+		_cam_y = -_viewMat[13],
+		_cam_w = round(abs(2/_projMat[0])),
+		_cam_h = round(abs(2/_projMat[5]));
 	return new Vector4(_cam_x-_cam_w/2, _cam_y-_cam_h/2, _cam_w, _cam_h);
 }

@@ -9,19 +9,19 @@
 /// @param {real} inner The circle inner.
 /// @param {real} outer The circle outer.
 /// @param {real} segments Amout of segments.
-/// @param {real} seg_start Initial segment
-function draw_circle_width(x, y, inner, outer, segments, seg_start=0) {
-	draw_primitive_begin(pr_trianglestrip);
-	var i = seg_start, dir, dx, dy;
-	repeat(segments + 1) {
-		dir = (i / segments) * Tau;
-		dx = cos(dir);
-		dy = sin(dir);
-		draw_vertex(x + dx*inner, y - dy*inner);
-		draw_vertex(x + dx*outer, y - dy*outer);
-		i++;
-	}
-	draw_primitive_end();
+/// @param {real} segStart Initial segment
+function draw_circle_width(_x, _y, _inner, _outer, _segments, _segStart=0) {
+    draw_primitive_begin(pr_trianglestrip);
+    var i = _segStart, _dir, _dx, _dy;
+    repeat(_segments + 1) {
+        _dir = (i / _segments) * Tau;
+        _dx = cos(_dir);
+        _dy = sin(_dir);
+        draw_vertex(_x + _dx * _inner, _y - _dy * _inner);
+        draw_vertex(_x + _dx * _outer, _y - _dy * _outer);
+        i++;
+    }
+    draw_primitive_end();
 }
 
 /// @desc Draws a line with direction. Useful for debugging.
@@ -29,9 +29,9 @@ function draw_circle_width(x, y, inner, outer, segments, seg_start=0) {
 /// @param {real} y The y position.
 /// @param {real} angle The line angle.
 /// @param {real} distance The line distance.
-function draw_line_vector(x1, y1, angle, distance) {
-	var _a = degtorad(angle);
-	draw_line(x1, y1, x1+cos(_a)*distance, y1-sin(_a)*distance);
+function draw_line_vector(_x1, _y1, _angle, _distance) {
+	var _a = degtorad(_angle);
+	draw_line(_x1, _y1, _x1+cos(_a)*_distance, _y1-sin(_a)*_distance);
 }
 
 /// @desc Draws a quad of lines. Useful for debugging.
@@ -43,16 +43,16 @@ function draw_line_vector(x1, y1, angle, distance) {
 /// @param {real} y3 The third point y position.
 /// @param {real} x4 The fourth point x position.
 /// @param {real} y4 The fourth point y position.
-/// @param {bool} middle_line Enable middle line drawing.
-function draw_line_quad(x1, y1, x2, y2, x3, y3, x4, y4, middle_line=false) {
+/// @param {bool} middleLine Enable middle line drawing.
+function draw_line_quad(_x1, _y1, _x2, _y2, _x3, _y3, _x4, _y4, _middleLine=false) {
 	// p1--p2
 	// |    |
 	// p4--p3
-	draw_line(x1, y1, x2, y2);
-	draw_line(x1, y1, x4, y4);
-	draw_line(x4, y4, x3, y3);
-	draw_line(x2, y2, x3, y3);
-	if (middle_line) draw_line(x1, y1, x3, y3);
+	draw_line(_x1, _y1, _x2, _y2);
+	draw_line(_x1, _y1, _x4, _y4);
+	draw_line(_x4, _y4, _x3, _y3);
+	draw_line(_x2, _y2, _x3, _y3);
+	if (_middleLine) draw_line(_x1, _y1, _x3, _y3);
 }
 
 /// @desc Draws a cone with field of view.
@@ -61,14 +61,14 @@ function draw_line_quad(x1, y1, x2, y2, x3, y3, x4, y4, middle_line=false) {
 /// @param {real} angle The cone angle.
 /// @param {real} dist The cone distance.
 /// @param {real} fov The cone field of view.
-function draw_cone(x, y, angle, dist, fov) {
-	var _len_x1 = dcos(angle - fov/2) * dist,
-		_len_y1 = dsin(angle - fov/2) * dist,
-		_len_x2 = dcos(angle + fov/2) * dist,
-		_len_y2 = dsin(angle + fov/2) * dist;
-	draw_line(x, y, x+_len_x1, y-_len_y1);
-	draw_line(x, y, x+_len_x2, y-_len_y2);
-	draw_line(x+_len_x1, y-_len_y1, x+_len_x2, y-_len_y2);
+function draw_cone(_x, _y, angle, dist, fov) {
+	var _lenX1 = dcos(angle - fov / 2) * dist,
+		_lenY1 = dsin(angle - fov / 2) * dist,
+		_lenX2 = dcos(angle + fov / 2) * dist,
+		_lenY2 = dsin(angle + fov / 2) * dist;
+	draw_line(_x, _y, _x + _lenX1, _y - _lenY1);
+	draw_line(_x, _y, _x + _lenX2, _y - _lenY2);
+	draw_line(_x + _lenX1, _y - _lenY1, _x + _lenX2, _y - _lenY2);
 }
 
 #endregion
@@ -87,8 +87,8 @@ function draw_cone(x, y, angle, dist, fov) {
 /// @param {real} rot Sprite angle.
 /// @param {real} col Blend color.
 /// @param {real} alpha Sprite alpha.
-function draw_nineslice_stretched_ext(sprite, subimg, x, y, width, height, xscale, yscale, rot, col, alpha) {
-	draw_sprite_ext(sprite, subimg, x, y, (width/sprite_get_width(sprite))*xscale, (height/sprite_get_height(sprite))*yscale, rot, col, alpha);
+function draw_nineslice_stretched_ext(_sprite, _subimg, _x, _y, _width, _height, _xscale, _yscale, _rot, _col, _alpha) {
+	draw_sprite_ext(_sprite, _subimg, _x, _y, (_width / sprite_get_width(_sprite)) * _xscale, (_height / sprite_get_height(_sprite)) * _yscale, _rot, _col, _alpha);
 }
 
 /// @desc Useful when applying a shader to a sprite that is offset at 0, 0, but still wants to draw centered.
@@ -96,8 +96,8 @@ function draw_nineslice_stretched_ext(sprite, subimg, x, y, width, height, xscal
 /// @param {real} subimg The sprite frame.
 /// @param {real} x The x position to draw.
 /// @param {real} y The y position to draw.
-function draw_sprite_centered(sprite, subimg, x, y) {
-	draw_sprite(sprite, subimg, x-sprite_get_width(sprite)/2, y-sprite_get_height(sprite)/2);
+function draw_sprite_centered(_sprite, _subimg, _x, _y) {
+	draw_sprite(_sprite, _subimg, _x - sprite_get_width(_sprite) / 2, _y - sprite_get_height(_sprite) / 2);
 }
 
 /// @desc Useful when applying a shader to a sprite that is offset at 0, 0, but still wants to draw the sprite centered and scaled.
@@ -110,20 +110,20 @@ function draw_sprite_centered(sprite, subimg, x, y) {
 /// @param {real} rot The sprite angle.
 /// @param {real} col The sprite blend color.
 /// @param {real} alpha The sprite alpha.
-function draw_sprite_centered_ext(sprite, subimg, x, y, xscale, yscale, rot, col, alpha) {
-	draw_sprite_ext(sprite, subimg, x-(sprite_get_width(sprite)/2)*xscale, y-(sprite_get_height(sprite)/2)*yscale, xscale, yscale, rot, col, alpha);
+function draw_sprite_centered_ext(_sprite, _subimg, _x, _y, _xscale, _yscale, _rot, _color, _alpha) {
+	draw_sprite_ext(_sprite, _subimg, _x - (sprite_get_width(_sprite) / 2) * _xscale, _y - (sprite_get_height(_sprite) / 2) * _yscale, _xscale, _yscale, _rot, _color, _alpha);
 }
 
 /// @desc Draws a centered surface.
-/// @param {id.surface} surface_id The surface id to draw.
+/// @param {id.surface} surfaceId The surface id to draw.
 /// @param {real} x The x position to draw.
 /// @param {real} y The y position to draw.
-function draw_surface_centered(surface_id, x, y) {
-	draw_surface(surface_id, x-(surface_get_width(surface_id)/2), y-(surface_get_height(surface_id)/2));
+function draw_surface_centered(_surfaceId, _x, _y) {
+	draw_surface(_surfaceId, _x - (surface_get_width(_surfaceId) / 2), _y - (surface_get_height(_surfaceId) / 2));
 }
 
 /// @desc Draws a centered surface, with scale, angle, color and alpha.
-/// @param {Id.surface} surface_id The surface id to draw.
+/// @param {Id.surface} surfaceId The surface id to draw.
 /// @param {real} x The x position to draw.
 /// @param {real} y The y position to draw.
 /// @param {real} xscale The surface xscale.
@@ -131,23 +131,22 @@ function draw_surface_centered(surface_id, x, y) {
 /// @param {real} rot The surface angle.
 /// @param {real} col The surface blend color.
 /// @param {real} alpha The surface alpha.
-function draw_surface_centered_ext(surface_id, x, y, xscale, yscale, rot, col, alpha) {
-	//draw_surface_ext(surface_id, x-(surface_get_width(surface_id)/2)*xscale, y-(surface_get_height(surface_id)/2)*yscale, xscale, yscale, rot, col, alpha);
-	var _col = draw_get_color(),
-	_alpha = draw_get_alpha(),
-	_mat = matrix_get(matrix_world);
-	matrix_set(matrix_world, matrix_build(x, y, 0, 0, 0, rot, xscale, yscale, 1));
-	draw_set_color(col);
-	draw_set_alpha(alpha);
-	draw_surface(surface_id, -surface_get_width(surface_id)/2, -surface_get_height(surface_id)/2);
-	draw_set_color(_col);
+function draw_surface_centered_ext(_surfaceId, _x, _y, _xscale, _yscale, _rot, _color, _alpha) {
+	//draw_surface_ext(_surfaceId, x-(surface_get_width(_surfaceId)/2)*xscale, y-(surface_get_height(_surfaceId)/2)*yscale, xscale, yscale, rot, col, alpha);
+	var _oldColor = draw_get_color(),
+		_oldAlpha = draw_get_alpha(),
+		_oldMat = matrix_get(matrix_world);
+	matrix_set(matrix_world, matrix_build(_x, _y, 0, 0, 0, _rot, _xscale, _yscale, 1));
+	draw_set_color(_color);
 	draw_set_alpha(_alpha);
-	matrix_set(matrix_world, _mat);
+	draw_surface(_surfaceId, -surface_get_width(_surfaceId)/2, -surface_get_height(_surfaceId)/2);
+	draw_set_color(_oldColor);
+	draw_set_alpha(_oldAlpha);
+	matrix_set(matrix_world, _oldMat);
 }
 
 /// @desc Draw a sprite with skew. Useful for grass wave effects
 /// @param {asset.gmsprite} sprite The sprite to draw.
-/// @param {real} subimg The sprite frame.
 /// @param {real} subimg The sprite frame.
 /// @param {real} x The x position to draw.
 /// @param {real} y The y position to draw.
@@ -161,12 +160,12 @@ function draw_surface_centered_ext(surface_id, x, y, xscale, yscale, rot, col, a
 /// @param {real} skew_y The amount to skew vertically.
 /// @param {real} rot Sprite angle.
 /// @param {real} alpha Sprite alpha.
-function draw_sprite_pos_ext(sprite, subimg, x, y, width, height, xoffset, yoffset, xscale, yscale, skew_x, skew_y, rot, alpha) {
-	var _mat = matrix_get(matrix_world);
-	matrix_set(matrix_world, matrix_build(x, y, 0, 0, 0, rot, xscale, yscale, 1));
-	var xo = -xoffset, yo = -yoffset;
-	draw_sprite_pos(sprite_index, subimg, xo+skew_x, yo+skew_y, width+xo+skew_x, yo+skew_y, width+xo, height+yo, xo, height+yo, alpha);
-	matrix_set(matrix_world, _mat);
+function draw_sprite_pos_ext(_sprite, _subimg, _x, _y, _width, _height, _xoffset, _yoffset, _xscale, _yscale, _skewX, _skewY, _rotation, _alpha) {
+    var _oldMatrix = matrix_get(matrix_world);
+    matrix_set(matrix_world, matrix_build(_x, _y, 0, 0, 0, _rotation, _xscale, _yscale, 1));
+    var _xo = -_xoffset, _yo = -_yoffset;
+    draw_sprite_pos(sprite_index, _subimg, _xo+_skewX, _yo+_skewY, _width+_xo+_skewX, _yo+_skewY, _width+_xo, _height+_yo, _xo, _height+_yo, _alpha);
+    matrix_set(matrix_world, _oldMatrix);
 }
 
 /// @desc Draws a texturized quad.
@@ -180,30 +179,31 @@ function draw_sprite_pos_ext(sprite, subimg, x, y, width, height, xoffset, yoffs
 /// @param {real} x4 The fourth point x position.
 /// @param {real} y4 The fourth point y position.
 /// @param {real} precision] Render precision.
-function draw_texture_quad(texture_id, x1, y1, x2, y2, x3, y3, x4, y4, precision=50) {
+function draw_texture_quad(_textureId, _x1, _y1, _x2, _y2, _x3, _y3, _x4, _y4, _precision=50) {
 	// p1--p2
 	// |    |
 	// p4--p3
 	// original by: icuurd12b42
-	var w1xs = (x1-x2) / precision,
-	w1ys = (y1-y2) / precision,
-	w2xs = (x4-x3) / precision,
-	w2ys = (y4-y3) / precision,
-	w1xat = x1,
-	w1yat = y1,
-	w2xat = x4,
-	w2yat = y4,
-	us = 1 / precision,
-	uat = 1;
-	draw_primitive_begin_texture(pr_trianglestrip, texture_id);
-	repeat(precision+1) {
-	    draw_vertex_texture(w1xat, w1yat, uat, 0);
-	    draw_vertex_texture(w2xat, w2yat, uat, 1);
-	    uat -= us;
-	    w1xat -= w1xs;
-	    w1yat -= w1ys;
-	    w2xat -= w2xs;
-	    w2yat -= w2ys;
+	var _w1xs = (_x1 - _x2) / _precision,
+		_w1ys = (_y1 - _y2) / _precision,
+		_w2xs = (_x4 - _x3) / _precision,
+		_w2ys = (_y4 - _y3) / _precision,
+		_w1xat = _x1,
+		_w1yat = _y1,
+		_w2xat = _x4,
+		_w2yat = _y4,
+		_us = 1 / _precision,
+		_uat = 1;
+       
+	draw_primitive_begin_texture(pr_trianglestrip, _textureId);
+	repeat(_precision + 1) {
+		draw_vertex_texture(_w1xat, _w1yat, _uat, 0);
+		draw_vertex_texture(_w2xat, _w2yat, _uat, 1);
+		_uat -= _us;
+		_w1xat -= _w1xs;
+		_w1yat -= _w1ys;
+		_w2xat -= _w2xs;
+		_w2yat -= _w2ys;
 	}
 	draw_primitive_end();
 }
@@ -214,9 +214,9 @@ function draw_texture_quad(texture_id, x1, y1, x2, y2, x3, y3, x4, y4, precision
 
 /// @desc Test all possible blendmodes.
 /// @param {real} index The blendmode number index to test.
-/// @param {bool} debug_info Enable console debug messages.
+/// @param {bool} _debugInfo Enable console debug messages.
 /// @returns {string} 
-function gpu_set_blendmode_test(index, debug_info=false) {
+function gpu_set_blendmode_test(index, _debugInfo=false) {
 	// Feather disable GM1044
 	// final_pixel_colour =  (Rs,Gs,Bs,As) * source_blend_factor + (Rd,Gd,Bd,Ad) * destination_blend_factor
 	// s = source | d = destination
@@ -267,8 +267,8 @@ function gpu_set_blendmode_test(index, debug_info=false) {
 		return val;
 	}
 	var _type = "",
-	_current = 0,
-	_max = 5,
+		_current = 0,
+		_max = 5,
 	
 	// default blendmode
 	_bm1 = bm_src_alpha,
@@ -355,7 +355,7 @@ function gpu_set_blendmode_test(index, debug_info=false) {
 	}
 	
 	var _info = $"{index} | {_current} / {_max} ({_type})";
-	if (debug_info) show_debug_message(_info);
+	if (_debugInfo) show_debug_message(_info);
 	return _info;
 }
 
@@ -367,158 +367,151 @@ function gpu_set_blendmode_test(index, debug_info=false) {
 /// @param {array} colors_array Array of colors.
 /// @param {real} progress The array progress, from 0 to 1.
 /// @returns {constant} 
-function color_gradient(colors_array, progress) {
-	var _len = array_length(colors_array)-1;
-	var _prog = clamp(progress, 0, 1) * _len;
-	return merge_color(colors_array[floor(_prog)], colors_array[ceil(_prog)], frac(_prog));
+function color_gradient(_colorsArray, _progress) {
+	var _len = array_length(_colorsArray) - 1;
+	var _prog = clamp(_progress, 0, 1) * _len;
+	return merge_color(_colorsArray[floor(_prog)], _colorsArray[ceil(_prog)], frac(_prog));
 }
 
 /// @desc Generates a RGB color to be used in a shader. Supports decimal and hex colors.
 /// @param {constant.color} color The color. Supports decimal and hex colors.
 /// @returns {array} 
-function make_color_shader(color) {
-	return [color_get_red(color)/255, color_get_green(color)/255, color_get_blue(color)/255];
+function make_color_shader(_color) {
+	return [color_get_red(_color)/255, color_get_green(_color)/255, color_get_blue(_color)/255];
 }
 
 /// @desc Function Description
 /// @param {constant.color} color The color. Supports decimal and hex colors.
 /// @param {real} alpha Alpha channel, 0 - 255.
 /// @returns {array} 
-function make_color_shader_rgba(color, alpha) {
-	return [color_get_red(color)/255, color_get_green(color)/255, color_get_blue(color)/255, alpha];
+function make_color_shader_rgba(_color, alpha) {
+	return [color_get_red(_color)/255, color_get_green(_color)/255, color_get_blue(_color)/255, alpha];
 }
 
 #endregion
 
 #region TEXT
 
-function draw_text_shadow(x, y, str, shadow_color=c_black, shadow_alpha=1, shadow_dist_x=1, shadow_dist_y=1) {
-	var _old_col = draw_get_color();
-	var _old_alpha = draw_get_alpha();
-	draw_set_color(shadow_color);
-	draw_set_alpha(shadow_alpha);
-	draw_text(x+shadow_dist_x, y+shadow_dist_y, str);
-	draw_set_color(_old_col);
-	draw_set_alpha(_old_alpha);
-	draw_text(x, y, str);
+function draw_text_shadow(_x, _y, _str, _shadowColor=c_black, _shadowAlpha=1, _shadowDistX=1, _shadowDistY=1) {
+	var _oldColor = draw_get_color();
+	var _oldAlpha = draw_get_alpha();
+	draw_set_color(_shadowColor);
+	draw_set_alpha(_shadowAlpha);
+	draw_text(_x + _shadowDistX, _y + _shadowDistY, _str);
+	draw_set_color(_oldColor);
+	draw_set_alpha(_oldAlpha);
+	draw_text(_x, _y, _str);
 }
 
 
-function draw_text_ext_shadow(x, y, str, sep, width, shadow_color=c_black, shadow_alpha=1, shadow_dist_x=1, shadow_dist_y=1) {
-	var _old_col = draw_get_color();
-	var _old_alpha = draw_get_alpha();
-	draw_set_color(shadow_color);
-	draw_set_alpha(shadow_alpha);
-	draw_text_ext(x+shadow_dist_x, y+shadow_dist_y, str, sep, width);
-	draw_set_color(_old_col);
-	draw_set_alpha(_old_alpha);
-	draw_text_ext(x, y, str, sep, width);
+function draw_text_ext_shadow(_x, _y, _str, _sep, _width, _shadowColor=c_black, _shadowAlpha=1, _shadowDistX=1, _shadowDistY=1) {
+	var _oldColor = draw_get_color();
+	var _oldAlpha = draw_get_alpha();
+	draw_set_color(_shadowColor);
+	draw_set_alpha(_shadowAlpha);
+	draw_text_ext(_x + _shadowDistX, _y + _shadowDistY, _str, _sep, _width);
+	draw_set_color(_oldColor);
+	draw_set_alpha(_oldAlpha);
+	draw_text_ext(_x, _y, _str, _sep, _width);
 }
 
 
-function draw_text_outline(x, y, str, outline_color=c_black, outline_alpha=1, outline_size=1, fidelity=4) {
-	var _old_col = draw_get_color();
-	var _old_alpha = draw_get_alpha();
-	draw_set_color(outline_color);
-	draw_set_alpha(outline_alpha);
-	var _fid = Tau / fidelity,
-	for(var i = 0; i < Tau; i += _fid) {
-		draw_text(x+cos(i)*outline_size, y-sin(i)*outline_size, str);
+function draw_text_outline(_x, _y, _str, _outlineColor=c_black, _outlineAlpha=1, _outlineSize=1, _fidelity=4) {
+	var _oldColor = draw_get_color();
+	var _oldAlpha = draw_get_alpha();
+	draw_set_color(_outlineColor);
+	draw_set_alpha(_outlineAlpha);
+	var _fidelityIncrement = Tau / _fidelity;
+	for (var i = 0; i < Tau; i += _fidelityIncrement) {
+	    draw_text(_x + cos(i) * _outlineSize, _y - sin(i) * _outlineSize, _str);
 	}
-	draw_set_color(_old_col);
-	draw_set_alpha(_old_alpha);
-	draw_text(x, y, str);
+	draw_set_color(_oldColor);
+	draw_set_alpha(_oldAlpha);
+	draw_text(_x, _y, _str);
 }
 
-
-function draw_text_outline_gradient(x, y, str, outline_color1=c_black, outline_color2=c_black, outline_color3=c_black, outline_color4=c_black, outline_alpha=1, outline_size=1, fidelity=4) {
-	var _fid = Tau / fidelity,
-	for(var i = 0; i < Tau; i += _fid) {
-		draw_text_color(x+cos(i)*outline_size, y-sin(i)*outline_size, str, outline_color1, outline_color2, outline_color3, outline_color4, outline_alpha);
+function draw_text_outline_gradient(_x, _y, _str, _outlineColor1=c_black, _outlineColor2=c_black, _outlineColor3=c_black, _outlineColor4=c_black, _outlineAlpha=1, _outlineSize=1, _fidelity=4) {
+	var _fidelityIncrement = Tau / _fidelity;
+	for (var i = 0; i < Tau; i += _fidelityIncrement) {
+		draw_text_color(_x+cos(i)*_outlineSize, _y-sin(i)*_outlineSize, _str, _outlineColor1, _outlineColor2, _outlineColor3, _outlineColor4, _outlineAlpha);
 	}
-	draw_text(x, y, str);
+	draw_text(_x, _y, _str);
 }
 
-
-function draw_text_transformed_shadow(x, y, str, xscale, yscale, angle, shadow_color=c_black, shadow_alpha=1, shadow_dist_x=1, shadow_dist_y=1) {
-	var _old_col = draw_get_color();
-	var _old_alpha = draw_get_alpha();
-	draw_set_color(shadow_color);
-	draw_set_alpha(shadow_alpha);
-	draw_text_transformed(x+(shadow_dist_x*xscale), y+(shadow_dist_y*xscale), str, xscale, yscale, angle);
-	draw_set_color(_old_col);
-	draw_set_alpha(_old_alpha);
-	draw_text_transformed(x, y, str, xscale, yscale, angle);
+function draw_text_transformed_shadow(_x, _y, _str, _xscale, _yscale, _angle, _shadowColor=c_black, _shadowAlpha=1, _shadowDistX=1, _shadowDistY=1) {
+	var _oldColor = draw_get_color();
+	var _oldAlpha = draw_get_alpha();
+	draw_set_color(_shadowColor);
+	draw_set_alpha(_shadowAlpha);
+	draw_text_transformed(_x + (_shadowDistX * _xscale), _y + (_shadowDistY * _yscale), _str, _xscale, _yscale, _angle);
+	draw_set_color(_oldColor);
+	draw_set_alpha(_oldAlpha);
+	draw_text_transformed(_x, _y, _str, _xscale, _yscale, _angle);
 }
 
-
-function draw_text_wave(x, y, str, str_width, wave_amplitude=3, wave_speed=0.01) {
-	var _xx = x, _yy = y;
-	var i = 1, isize = string_length(str);
-	repeat(isize) {
-		var _char = string_char_at(str, i);
+function draw_text_wave(_x, _y, _str, _strWidth, _waveAmplitude=3, _waveSpeed=0.01) {
+	var _xx = _x, _yy = _y;
+	var i = 1, _isize = string_length(_str);
+	repeat(_isize) {
+		var _char = string_char_at(_str, i);
 		var _ww = string_width(_char);
-		var _wf = (str_width == 0) ? 0 : str_width/2;
-		draw_text(_xx - _wf, _yy + sin(i + current_time * wave_speed) * wave_amplitude, _char);
+		var _wf = (_strWidth == 0) ? 0 : _strWidth / 2;
+		draw_text(_xx - _wf, _yy + sin(i + current_time * _waveSpeed) * _waveAmplitude, _char);
 		_xx += _ww;
 		i++;
 	}
 }
 
-
-function draw_text_wave_colorful(x, y, str, str_width, wave_amplitude=3, wave_speed=0.01, color_speed=0.1) {
-	var _xx = x, _yy = y;
-	var i = 1, isize = string_length(str);
-	repeat(isize) {
-		var _char = string_char_at(str, i);
+function draw_text_wave_colorful(_x, _y, _str, _strWidth, _waveAmplitude=3, _waveSpeed=0.01, _colorSpeed=0.1) {
+	var _xx = _x, _yy = _y;
+	var i = 1, _isize = string_length(_str);
+	repeat(_isize) {
+		var _char = string_char_at(_str, i);
 		var _ww = string_width(_char);
-		var _wf = (str_width == 0) ? 0 : str_width/2;
-		draw_set_color(make_color_hsv(current_time*color_speed % 255, 255, 255));
-		draw_text(_xx - _wf, _yy + sin(i + current_time * wave_speed) * wave_amplitude, _char);
+		var _wf = (_strWidth == 0) ? 0 : _strWidth / 2;
+		draw_set_color(make_color_hsv(current_time * _colorSpeed % 255, 255, 255));
+		draw_text(_xx - _wf, _yy + sin(i + current_time * _waveSpeed) * _waveAmplitude, _char);
 		_xx += _ww;
 		i++;
 	}
 }
 
-
-function draw_text_wave_rainbow(x, y, str, str_width, wave_amplitude=3, wave_speed=0.01, color_speed=0.1) {
-	var _xx = x, _yy = y;
-	var i = 1, isize = string_length(str);
-	repeat(isize) {
-		var _char = string_char_at(str, i);
+function draw_text_wave_rainbow(_x, _y, _str, _strWidth, _waveAmplitude=3, _waveSpeed=0.01, _colorSpeed=0.1) {
+	var _xx = _x, _yy = _y;
+	var i = 1, _isize = string_length(_str);
+	repeat(_isize) {
+		var _char = string_char_at(_str, i);
 		var _ww = string_width(_char);
-		var _wf = (str_width == 0) ? 0 : str_width/2;
-		draw_set_color(make_color_hsv((current_time * color_speed + i*10) % 255, 255, 255));
-		draw_text(_xx - _wf, _yy + sin(i + current_time * wave_speed) * wave_amplitude, _char);
+		var _wf = (_strWidth == 0) ? 0 : _strWidth / 2;
+		draw_set_color(make_color_hsv((current_time * _colorSpeed + i * 10) % 255, 255, 255));
+		draw_text(_xx - _wf, _yy + sin(i + current_time * _waveSpeed) * _waveAmplitude, _char);
 		_xx += _ww;
 		i++;
 	}
 }
 
-
-function draw_text_rainbow(x, y, str, str_width, color_speed=0.1) {
-	var _xx = x, _yy = y;
-	var i = 1, isize = string_length(str);
-	repeat(isize) {
-		var _char = string_char_at(str, i);
+function draw_text_rainbow(_x, _y, _str, _strWidth, _colorSpeed=0.1) {
+	var _xx = _x, _yy = _y;
+	var i = 1, _isize = string_length(_str);
+	repeat(_isize) {
+		var _char = string_char_at(_str, i);
 		var _ww = string_width(_char);
-		var _wf = (str_width == 0) ? 0 : str_width/2;
-		draw_set_color(make_color_hsv((current_time * color_speed + i*10) % 255, 255, 255));
+		var _wf = (_strWidth == 0) ? 0 : _strWidth / 2;
+		draw_set_color(make_color_hsv((current_time * _colorSpeed + i * 10) % 255, 255, 255));
 		draw_text(_xx - _wf, _yy, _char);
 		_xx += _ww;
 		i++;
 	}
 }
 
-
-function draw_text_shake(x, y, str, str_width, dist=1) {
-	var _xx = x, _yy = y;
-	var i = 1, isize = string_length(str);
-	repeat(isize) {
-		var _char = string_char_at(str, i);
+function draw_text_shake(_x, _y, _str, _strWidth, _dist=1) {
+	var _xx = _x, _yy = _y;
+	var i = 1, _isize = string_length(_str);
+	repeat(_isize) {
+		var _char = string_char_at(_str, i);
 		var _ww = string_width(_char);
-		var _wf = (str_width == 0) ? 0 : str_width/2;
-		draw_text(_xx-_wf + random_range(-dist, dist), _yy + random_range(-dist, dist), _char);
+		var _wf = (_strWidth == 0) ? 0 : _strWidth / 2;
+		draw_text(_xx - _wf + random_range(-_dist, _dist), _yy + random_range(-_dist, _dist), _char);
 		_xx += _ww;
 		i++;
 	}

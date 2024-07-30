@@ -1,9 +1,11 @@
 {
-  "resourceType": "GMNotes",
-  "resourceVersion": "1.1",
-  "name": "ReleaseNotes",
-  "parent": {
-    "name": "TurboGML",
-    "path": "TurboGML.yyp",
+  "$GMNotes":"",
+  "%Name":"ReleaseNotes",
+  "name":"ReleaseNotes",
+  "parent":{
+    "name":"TurboGML",
+    "path":"TurboGML.yyp",
   },
+  "resourceType":"GMNotes",
+  "resourceVersion":"2.0",
 }

@@ -1,4 +1,57 @@
 
+
+//draw_cone(150, 150, tankAngle, 32, 90);
+//draw_line_vector(150, 150, turretAngle, 64);
+
+
+time += 1;
+yup = wave_period(time, 10*60, 50);
+
+draw_circle(80, 100, 8, true);
+draw_circle(80, 100+yup, 32, true);
+
+
+
+
+//var _deltaSpeed = 1 / 60;
+//var _dt = (delta_time / 1000000) / _deltaSpeed; //
+var _dt = 60 / game_get_speed(gamespeed_fps); // I know this is not the way to do it
+
+draw_circle(room_width/2, room_height/2, 8, true);
+var _dir = point_direction(room_width/2, room_height/2, mouse_x, mouse_y);
+
+angle1 = lerp(angle1, _dir, 0.1);
+angle2 = lerp_angle(angle2, _dir, 0.1);
+
+angle2 = lerp_dt(angle2, _dir, 0.1, _dt);
+angle3 = lerp_angle(angle3, _dir, 0.1);
+angle4 = lerp_angle_dt(angle3, _dir, 0.1, _dt);
+angle5 = approach(angle5, _dir, 3 * _dt)
+angle6 = approach_angle(angle6, _dir, 3 * _dt);
+
+var _yy = 100;
+draw_line_vector(150, _yy, angle1, 32);
+_yy += 40;
+draw_line_vector(150, _yy, angle2, 32);
+_yy += 40;
+draw_line_vector(150, _yy, angle3, 32);
+_yy += 40;
+draw_line_vector(150, _yy, angle4, 32);
+_yy += 80;
+draw_line_vector(150, _yy, angle5, 32);
+_yy += 40;
+draw_line_vector(150, _yy, angle6, 32);
+
+
+
+
+//var test = 4_103_200 * gui_mouse_x_normalized;
+
+//draw_text(10, 100, string_currency_prettify(test));
+//draw_text(10, 120, dollars_to_string(test));
+
+
+/*
 var testX = mouse_x/room_width;
 
 //draw_circle_width(mouse_x, mouse_y, 32, 64, 32, floor(testX*12));
@@ -20,6 +73,7 @@ draw_circle(room_width*_b, 220+10, 8, true);
 draw_circle(room_width*(_c/255), 240+10, 8, true);
 draw_circle(room_width*_d, 260+10, 8, true);
 draw_circle(_e, 280+10, 8, true);
+*/
 
 
 
@@ -78,34 +132,6 @@ draw_set_color(c_white);
 draw_line_vector(mouse_x, mouse_y, angle, dist);
 */
 
-
-/*
-for (var xx = 0; xx < array_length(array); ++xx) {
-	for (var yy = 0; yy < array_length(array[xx]); ++yy) {
-		for (var zz = 0; zz < array_length(array[xx][yy]); ++zz) {
-			var _x = 32 + xx*32 + zz*300;
-			var _y = 32 + yy*32;
-			draw_text(_x, _y, array[xx][yy][zz]);
-		}
-	}
-}*/
-
-
-/*for (var xx = 0; xx < array_length(array); ++xx) {
-	for (var yy = 0; yy < array_length(array[xx]); ++yy) {
-		var _x = 32 + xx*32;
-		var _y = 32 + yy*32;
-		draw_text(_x, _y, array[xx][yy]);
-	}
-}*/
-
-
-
-
-//
-
-
-#region TESTS
 //var mx = mouse_x/room_width;
 
 
@@ -125,9 +151,6 @@ for (var xx = 0; xx < array_length(array); ++xx) {
 //angle -= angle_towards(angle, _rot, 5);
 
 //draw_sprite_ext(spr_player, 0, _x1, _y1, 1, 1, angle, c_white, 1);
-
-#endregion
-
 
 
 
@@ -153,11 +176,6 @@ for (var xx = 0; xx < array_length(array); ++xx) {
 
 
 
-
-
-
-
-
 /*var dir = point_direction(150, 150, mouse_x, mouse_y);
 var aa = point_direction_radians_vec2(150, 150, mouse_x, mouse_y);
 */
@@ -174,33 +192,7 @@ var aa = point_direction_radians_vec2(150, 150, mouse_x, mouse_y);
 //	150, 150, 0, 1,
 //];
 
-
 //matrix_set(matrix_world, _matrix);
-
 //draw_sprite(Sprite3, 0, 0, 0);
-
 //matrix_set(matrix_world, matrix_build_identity());
-
-
-
-
-
-//draw_sprite_pos_persp(Sprite7, 0, obj_b1.x, obj_b1.y, obj_b2.x, obj_b2.y, obj_b3.x, obj_b3.y, obj_b4.x, obj_b4.y, 1);
-
-
-//draw_texture_quad(sprite_get_texture(Sprite7, 0), obj_b1.x, obj_b1.y, obj_b2.x, obj_b2.y, obj_b3.x, obj_b3.y, obj_b4.x, obj_b4.y, 100);
-
-
-//var x1 = 50;
-//var y1 = 50;
-//var x2 = mouse_x;
-//var y2 = mouse_y;
-//var ww = x2 - x1;
-//var hh = y2 - y1;
-
-//draw_rectangle(x1, y1, x2, y2, true);
-//var size = aspect_ratio_maintain(ww, hh, 480, 270);
-
-//draw_sprite_stretched(Sprite9, 0, x1, y1, size.x, size.y);
-
 
