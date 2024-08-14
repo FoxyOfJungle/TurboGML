@@ -261,7 +261,7 @@ function is_odd(_value) {
 /// @returns {bool} 
 function is_prime(_value) {
 	if (_value < 2) return false;
-	for(var i = 2; i < _value; i++) {
+	for(var i = 2; i * i <= _value; i++) {
 		if (_value % i == 0) {
 			return false;
 		}
