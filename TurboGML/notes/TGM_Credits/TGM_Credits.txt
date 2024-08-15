@@ -12,7 +12,7 @@
 	..............................
 	Special Thanks / contributions:
 	Freya Holmér, YellowAfterLife, Cecil, TheSnidr, Xot, Shaun Spalding, gnysek, icuurd12b42, DragoniteSpam,
-	Grisgram, Red, JuJu Adams, TabularElf.
+	Grisgram, Red, JuJu Adams, TabularElf, Evoleo.
 	(authors' names written in comment inside the functions used)
 	
 	Supporters:
