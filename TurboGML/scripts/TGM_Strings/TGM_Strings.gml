@@ -63,9 +63,6 @@ function string_limit(_str, _width) {
 /// @desc Add an ellipsis to the string if it is longer than the given width, for non-monospace fonts.
 /// @param {string} str Text string.
 /// @param {real} width The maximum text width.
-
-/// Feather ignore all
-
 /// @returns {string} 
 function string_limit_nonmono(_str, _width) {
 	if (string_width(_str) < _width) return _str;
