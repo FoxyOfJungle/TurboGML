@@ -106,10 +106,10 @@ function array_to_struct(_array) {
 /// @param {Array} array The array to check
 /// @param {any} value The value to check inside the array.
 /// @returns {bool} Description
-function array_contains_value(_array, value) {
+function array_contains_value(_array, _value) {
 	var i = 0, isize = array_length(_array);
 	repeat(isize) {
-		if (_array[i++] == value) return true;
+		if (_array[i++] == _value) return true;
 	}
 	return false;
 }
@@ -125,8 +125,8 @@ function array_copy_all(_from, _to) {
 /// @param {Array} array The array to shift.
 /// @param {Array} times How many times to shift array values.
 /// @param {bool} reverse Reverse order?
-function array_shift_indexes(_array, times, reverse=false) {
-	if (reverse) {
+function array_shift_indexes(_array, times, _reverse=false) {
+	if (_reverse) {
 		repeat(times) {
 			var _old = _array[array_length(_array)-1];
 			array_pop(_array);
@@ -145,13 +145,13 @@ function array_shift_indexes(_array, times, reverse=false) {
 /// @param {Array} array The array to be used.
 /// @param {real} index The array position to swap to another position.
 /// @param {real} offset The offset to swap the element. 0 will have no effect, 1 will swap with the next element. -1 will swap with the previous element and so on. You can use other numbers.
-function array_swap_index(_array, index, offset) {
+function array_swap_index(_array, _index, _offset) {
 	var _len = array_length(_array)-1;
-	if (index+offset < 0 || index > _len-offset) exit;
-	var _current = _array[index];
-	var _next = _array[index + offset];
-	_array[index + offset] = _current;
-	_array[index] = _next;
+	if (_index+_offset < 0 || _index > _len-_offset) exit;
+	var _current = _array[_index];
+	var _next = _array[_index + _offset];
+	_array[_index + _offset] = _current;
+	_array[_index] = _next;
 }
 
 /// @desc Find the number closest to the reference value in an array.
@@ -208,43 +208,43 @@ function array_get_random_index_ext(_array, _offset=0, _length=undefined) {
 }
 
 /// @desc This function returns creates a 2D array.
-/// @param {real} x_size Number of columns.
-/// @param {real} y_size Number of lines.
+/// @param {real} xSize Number of columns.
+/// @param {real} ySize Number of lines.
 /// @param {real} value Initial value for each array index.
 /// @returns {Array} 
-function array_create_2d(x_size, y_size, value=0) {
-	var _grid = array_create(x_size, value);
-	for (var i = 0; i < x_size; i++) {
-		_grid[i] = array_create(y_size, value);
+function array_create_2d(_xSize, _ySize, _value=0) {
+	var _grid = array_create(_xSize, _value);
+	for (var i = 0; i < _xSize; i++) {
+		_grid[i] = array_create(_ySize, _value);
 	}
 	return _grid;
 }
 
 /// @desc This function returns creates a 2D array and executes a callback.
-/// @param {real} x_size Number of columns.
-/// @param {real} y_size Number of lines.
+/// @param {real} xSize Number of columns.
+/// @param {real} ySize Number of lines.
 /// @param {function} func Function to execute for each index.
 /// @returns {Array} 
-function array_create_2d_ext(x_size, y_size, func=undefined) {
-	var _grid = array_create(x_size);
-	for (var i = x_size; i >= 0; i--) {
-		_grid[i] = array_create_ext(y_size, func);
+function array_create_2d_ext(_xSize, _ySize, _func=undefined) {
+	var _grid = array_create(_xSize);
+	for (var i = _xSize; i >= 0; i--) {
+		_grid[i] = array_create_ext(_ySize, _func);
 	}
 	return _grid;
 }
 
 /// @desc This function returns creates a 3D array.
-/// @param {real} x_size Number of entries.
-/// @param {real} y_size Number of entries.
-/// @param {real} z_size Number of entries.
+/// @param {real} xSize Number of entries.
+/// @param {real} ySize Number of entries.
+/// @param {real} zSize Number of entries.
 /// @param {real} value Initial value for each array index.
 /// @returns {Array} 
-function array_create_3d(x_size, y_size, z_size, value=0) {
-	var _grid = array_create(x_size, value);
-	for (var i = x_size; i >= 0; i--) {
-		_grid[i] = array_create(y_size, value);
-		for(var j = y_size; j >= 0; j--) {
-			_grid[i][j] = array_create(z_size, value);
+function array_create_3d(_xSize, _ySize, _zSize, _value=0) {
+	var _grid = array_create(_xSize, _value);
+	for (var i = _xSize; i >= 0; i--) {
+		_grid[i] = array_create(_ySize, _value);
+		for(var j = _ySize; j >= 0; j--) {
+			_grid[i][j] = array_create(_zSize, _value);
 		}
 	}
 	return _grid;

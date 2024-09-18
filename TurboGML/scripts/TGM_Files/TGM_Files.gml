@@ -125,9 +125,9 @@ function filename_name_noext(_path) {
 /// @desc Write a string to a file.
 /// @param {string} filePath File path.
 /// @param {any} str Description
-function file_write_string(_filePath, str) {
+function file_write_string(_filePath, _str) {
 	var _buff = buffer_create(0, buffer_grow, 1);
-	buffer_write(_buff, buffer_string, str);
+	buffer_write(_buff, buffer_string, _str);
 	buffer_save(_buff, _filePath);
 	buffer_delete(_buff);
 }
@@ -135,9 +135,9 @@ function file_write_string(_filePath, str) {
 /// @desc Write a text to a file.
 /// @param {string} filePath File path.
 /// @param {any} str Description
-function file_write_text(_filePath, str) {
+function file_write_text(_filePath, _str) {
 	var _buff = buffer_create(0, buffer_grow, 1);
-	buffer_write(_buff, buffer_text, str);
+	buffer_write(_buff, buffer_text, _str);
 	buffer_save(_buff, _filePath);
 	buffer_delete(_buff);
 }

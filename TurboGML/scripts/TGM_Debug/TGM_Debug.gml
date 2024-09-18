@@ -17,9 +17,9 @@ function print() {
 	}
 }
 
-#macro trace __trace(_GMFILE_ + "/" + _GMFUNCTION_ + ":" + string(_GMLINE_) + ": ")
+#macro trace __tgmTrace(_GMFILE_ + "/" + _GMFUNCTION_ + ":" + string(_GMLINE_) + ": ")
 /// @desc This function creates a trace method for debugging and displaying location-specific debug messages.
-function __trace(_location) {
+function __tgmTrace(_location) {
 	// credits: "Red", "JuJu Adams"
 	static __struct = {};
 	__struct.__location = _location;
@@ -28,13 +28,13 @@ function __trace(_location) {
 	});
 }
 
-/// @desc This function freezes the application for a few milliseconds. It is not recommended to use this function. Only for debug purposes.
+/// @desc This function freezes the application for a few milliseconds. It is NOT recommended to use this function. Only for debug purposes.
 /// @param {real} [milliseconds]=1000 Description
-function sleep(milliseconds=1000, callback=undefined) {
-	var _time = current_time + milliseconds;
+function sleep(_milliseconds=1000, _callback=undefined) {
+	var _time = current_time + _milliseconds;
 	while(current_time < _time) {
 		// idle
-		if (callback != undefined) callback();
+		if (_callback != undefined) _callback();
 	}
 }
 

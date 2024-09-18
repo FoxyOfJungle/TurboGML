@@ -93,10 +93,10 @@ function ds_list_median(_list) {
 /// @param {Id.DsList} list The list to check.
 /// @param {any} value The value to check inside the list.
 /// @returns {bool} Description
-function ds_list_contains_value(_list, value) {
+function ds_list_contains_value(_list, _value) {
 	var i = 0, isize = ds_list_size(_list);
 	repeat(isize) {
-		if (_list[| i++] == value) return true;
+		if (_list[| i++] == _value) return true;
 	}
 	return false;
 }
@@ -104,13 +104,13 @@ function ds_list_contains_value(_list, value) {
 /// @desc With this function, you can sort a ds_list using a function. NOTE: array_sort() is much faster...
 /// @param {Id.DsList} list The list to sort.
 /// @param {Function} sortFunc The sort function. It should return -1 (a < b), 0 (equal) or 1 (a > b).
-function ds_list_sort_ext(_list, _sort_func=SORT_ASCENDING) {
+function ds_list_sort_ext(_list, _sortFunc=SORT_ASCENDING) {
 	// do a sort using the Bubble Sort algorigthm
 	var i, j, n = ds_list_size(_list);
 	for (i = 0; i < n; i++) {
 	    for (j = 0; j < n-1-i; j++) {
 	        //if (_list[| j].order > _list[| j+1].order) {
-			if (_sort_func(_list[| j], _list[| j+1]) > 0) {
+			if (_sortFunc(_list[| j], _list[| j+1]) > 0) {
 	            var temp = _list[| j];
 	            _list[| j] = _list[| j+1];
 	            _list[| j+1] = temp;

@@ -1,4 +1,12 @@
 
+===================[ v4.0.1 ]===================
+
+[CHANGED] Renamed the internal function "__trace" to "__tgmTrace", to prevent name clash with other libraries.
+
+[FIXED] IsNormalized() method error from Vector2() and Vector3().
+[FIXED] Small typo fixes.
+
+
 ===================[ v4.0 ]===================
 
 [ADDED] clamp_angle_fov() function. With this function, you can limit the rotation angle based on the target angle.
