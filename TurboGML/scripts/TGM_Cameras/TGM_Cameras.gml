@@ -34,9 +34,9 @@ function camera_get_near_plane(_projMat) {
 /// @param {array} projMat The camera projection matrix.
 /// @returns {real}
 function camera_get_rect(_viewMat, _projMat) {
-	var _cam_x = -_viewMat[12],
-		_cam_y = -_viewMat[13],
-		_cam_w = round(abs(2/_projMat[0])),
-		_cam_h = round(abs(2/_projMat[5]));
-	return new Vector4(_cam_x-_cam_w/2, _cam_y-_cam_h/2, _cam_w, _cam_h);
+	var _viewX = -_viewMat[12],
+		_viewY = -_viewMat[13],
+		_viewW = round(abs(2/_projMat[0])),
+		_viewH = round(abs(2/_projMat[5]));
+	return new Vector4(_viewX-_viewW/2, _viewY-_viewH/2, _viewW, _viewH);
 }

@@ -13,7 +13,6 @@ turretAngle = approach_angle(turretAngle, _aimDir, 1);
 turretAngle = clamp_angle_fov(turretAngle, tankAngle, 90);
 
 
-
 /*
 // Save and Load example, using rc4
 #macro GAMEDATA_KEY "aK74das#4%sdb574"

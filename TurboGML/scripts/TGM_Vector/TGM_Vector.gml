@@ -206,8 +206,8 @@ function Vector2(_x=0, _y=_x) constructor {
 	/// @desc Check if the vector is normalized.
 	static IsNormalized = function() {
 		gml_pragma("forceinline");
-		var _epsilon = 0.0001;
-		var _difference = abs(sqrMagnitude() - 1.0);
+		static _epsilon = 0.0001;
+		var _difference = abs(SqrMagnitude() - 1.0);
 		return (_difference < _epsilon);
 	}
 	
@@ -480,8 +480,8 @@ function Vector3(_x=0, _y=_x, _z=_x) constructor {
 	/// @desc Check if the vector is normalized.
 	static IsNormalized = function() {
 		gml_pragma("forceinline");
-		var _epsilon = 0.0001;
-		var _difference = abs(sqrMagnitude() - 1.0);
+		static _epsilon = 0.0001;
+		var _difference = abs(SqrMagnitude() - 1.0);
 		return (_difference < _epsilon);
 	}
 	

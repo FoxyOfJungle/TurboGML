@@ -2,7 +2,7 @@
 /// Feather ignore all
 
 #macro DEBUG_SPEED_INIT ___time = get_timer()
-#macro DEBUG_SPEED_GET show_debug_message(string((get_timer()-___time)/1000) + "ms")
+#macro DEBUG_SPEED_GET show_debug_message($"{(get_timer()-___time)/1000}ms")
 
 /// @desc Similar to show_debug_message(), but with multiple arguments separated by commas.
 function print() {
