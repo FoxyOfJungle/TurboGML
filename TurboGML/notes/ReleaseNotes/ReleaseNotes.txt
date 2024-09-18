@@ -4,6 +4,7 @@
 [CHANGED] Renamed the internal function "__trace" to "__tgmTrace", to prevent name clash with other libraries.
 
 [FIXED] IsNormalized() method error from Vector2() and Vector3().
+[FIXED] is_prime() square root optimization by @evolutionleo.
 [FIXED] Small typo fixes.
 
 
