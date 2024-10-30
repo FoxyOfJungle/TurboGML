@@ -17,12 +17,12 @@ function print() {
 	}
 }
 
-#macro trace __tgmTrace(_GMFILE_ + "/" + _GMFUNCTION_ + ":" + string(_GMLINE_) + ": ")
+#macro trace __tgmTrace(_GMFILE_, _GMFUNCTION_, _GMLINE_)
 /// @desc This function creates a trace method for debugging and displaying location-specific debug messages.
-function __tgmTrace(_location) {
+function __tgmTrace(_file, _func, _line) {
 	// credits: "Red", "JuJu Adams"
 	static __struct = {};
-	__struct.__location = _location;
+	__struct.__location = $"{_file}/{_func}:{_line}: ";;
 	return method(__struct, function(_str) {
 		show_debug_message(__location + ": " + string(_str));
 	});
