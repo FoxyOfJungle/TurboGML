@@ -1,4 +1,5 @@
 
+draw_text(100, 170, string_limit("the quick brown fox jumps over the lazy dog", mouse_x));
 
 //draw_cone(150, 150, tankAngle, 32, 90);
 //draw_line_vector(150, 150, turretAngle, 64);
@@ -23,7 +24,7 @@ var _dir = point_direction(room_width/2, room_height/2, mouse_x, mouse_y);
 angle1 = lerp(angle1, _dir, 0.1);
 angle2 = lerp_angle(angle2, _dir, 0.1);
 
-angle2 = lerp_dt(angle2, _dir, 0.1, _dt);
+//angle2 = lerp_dt(angle2, _dir, 0.1, _dt);
 angle3 = lerp_angle(angle3, _dir, 0.1);
 angle4 = lerp_angle_dt(angle3, _dir, 0.1, _dt);
 angle5 = approach(angle5, _dir, 3 * _dt)
@@ -42,7 +43,7 @@ draw_line_vector(150, _yy, angle5, 32);
 _yy += 40;
 draw_line_vector(150, _yy, angle6, 32);
 
-
+draw_sprite_ext(sprPlayer, angle_get_portion(angle2, 16), 200, 300, 1, 1, 0, c_white, 1);
 
 
 //var test = 4_103_200 * gui_mouse_x_normalized;

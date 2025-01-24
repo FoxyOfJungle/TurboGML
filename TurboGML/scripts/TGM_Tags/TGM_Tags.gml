@@ -3,7 +3,7 @@
 
 /// @desc Returns the id of the tag object instances.
 /// @param {String,Array} tags Tags string or array
-/// @param {Bool} include_children Description
+/// @param {Bool} includeChildren If true, will include children instances.
 /// @returns {array} 
 function tag_get_instance_ids(_tags, _includeChildren) {
 	var _array = [], _count = 0;

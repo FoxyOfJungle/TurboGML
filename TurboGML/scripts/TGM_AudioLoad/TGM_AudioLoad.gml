@@ -155,4 +155,3 @@ function audio_stream_get_format(_streamData) {
 	if (is_struct(_streamData)) return _streamData.audio.format;
 	return "";
 }
-

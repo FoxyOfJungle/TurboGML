@@ -23,7 +23,7 @@ function buffer_slice(_buffer, _start=0, _size=-1) {
 /// @param {string} key The unique key to encrypt/decrypt. You need to keep it secret.
 /// @param {real} offset The buffer offset. Example: 0.
 /// @param {real} length The buffer length.
-function rc4_cryptography(_buffer, _key, _offset, _length) {
+function cryptography_rc4(_buffer, _key, _offset, _length) {
 	var i, j, s, _temp, _keyLength, _pos;
 	s = array_create(256);
 	_keyLength = string_byte_length(_key);
@@ -47,8 +47,19 @@ function rc4_cryptography(_buffer, _key, _offset, _length) {
 		_temp = s[i];
 		s[i] = s[j];
 		s[j] = _temp;
-		var cur_byte = buffer_peek(_buffer, _pos++, buffer_u8);
-		buffer_write(_buffer, buffer_u8, s[(s[i]+s[j]) % 256] ^ cur_byte);
+		var _currentByte = buffer_peek(_buffer, _pos++, buffer_u8);
+		buffer_write(_buffer, buffer_u8, s[(s[i]+s[j]) % 256] ^ _currentByte);
+	}
+}
+
+/// @desc The function implements the XOR cryptography algorithm to encrypt or decrypt data in the given buffer using the provided key, offset, and length. This is a simple cryptography method and it's not very safe.
+/// @param {id.buffer} buffer The buffer to encrypt/decrypt.
+/// @param {string} key The unique HEX key to encrypt/decrypt. You need to keep it secret. Example: 0xAA, 0x4F, 0x48
+/// @param {real} offset The buffer offset. Example: 0.
+/// @param {real} length The buffer length.
+function cryptography_xor(_buffer, _key, _offset, _length) {
+	for (var i = _offset; i < _length; ++i) {
+		buffer_poke(_buffer, i, buffer_u8, _key ^ buffer_peek(_buffer, i, buffer_u8))
 	}
 }
 

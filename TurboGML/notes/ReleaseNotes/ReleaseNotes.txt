@@ -1,4 +1,19 @@
 
+===================[ v5.0 ]===================
+
+[ADDED] cryptography_xor() function.
+[ADDED] debug_resources() function. Show game resources usage (including memory) in a Debug View.
+[ADDED] Suffix to string_limit() and string_limit_nonmono().
+
+[FIXED] angle_get_portion() now works with negative angles.
+[FIXED] string_proper_case() optimized.
+[FIXED] Small fixes.
+
+[CHANGED] Renamed angle_get_subimg() to angle_get_portion().
+[CHANGED] Renamed rc4_cryptography() to cryptography_rc4().
+[CHANGED] Renamed string_word_first_letter_upper_case() to string_proper_case();
+
+
 ===================[ v4.0.1 ]===================
 
 [CHANGED] Renamed the internal function "__trace" to "__tgmTrace", to prevent name clash with other libraries.

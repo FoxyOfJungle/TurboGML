@@ -52,19 +52,21 @@ function string_get_read_time(_string, _charsPerMinute=1000) {
 }
 
 /// @desc Add an ellipsis to the string if it is longer than the given width.
-/// @param {string} str Text string.
-/// @param {real} width The maximum text width.
+/// @param {String} str Text string.
+/// @param {Real} width The maximum text width.
+/// @param {String} suffix The suffix to add after the string, if the text does not reach the width.
 /// @returns {string} 
-function string_limit(_str, _width) {
+function string_limit(_str, _width, _suffix="...") {
 	var _len = _width / string_width("M");
 	return string_width(_str) < _width ? _str : string_copy(_str, 1, _len) + "...";
 }
 
 /// @desc Add an ellipsis to the string if it is longer than the given width, for non-monospace fonts.
-/// @param {string} str Text string.
-/// @param {real} width The maximum text width.
+/// @param {String} str Text string.
+/// @param {Real} width The maximum text width.
+/// @param {String} suffix The suffix to add after the string, if the text does not reach the width.
 /// @returns {string} 
-function string_limit_nonmono(_str, _width) {
+function string_limit_nonmono(_str, _width, _suffix="...") {
 	if (string_width(_str) < _width) return _str;
 	var _strFinal = "", _char = "",
 	i = 1, isize = string_length(_str), _ww = 0;
@@ -74,7 +76,7 @@ function string_limit_nonmono(_str, _width) {
 		if (_ww < _width) _strFinal += _char;
 		++i;
 	}
-	return _strFinal + "...";
+	return _strFinal + _suffix;
 }
 
 /// @desc Leave each character in the string with random case.
@@ -121,14 +123,14 @@ function string_first_letter_upper_case(_str) {
 /// @desc Capitalizes each word in the string.
 /// @param {string} str Text string.
 /// @returns {string} 
-function string_word_first_letter_upper_case(_str) {
+function string_proper_case(_str) {
 	var _string = string_lower(_str),
 	_strFinal = "",
 	i = 1, isize = string_length(_str), _char = "", _pchar = "";
 	repeat(isize) {
 		_char = string_char_at(_string, i);
-		_pchar = string_char_at(_string, i-1);
 		_strFinal += (_pchar == " " || i == 1) ? string_upper(_char) : _char;
+		_pchar = _char;
 		++i;
 	}
 	return _strFinal;

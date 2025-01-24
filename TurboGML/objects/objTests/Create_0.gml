@@ -124,4 +124,3 @@ ds_queue_enqueue(_queue, 32, 64, 82, 100);
 
 
 show_debug_message(ds_debug_print(_queue, ds_type_queue));*/
-

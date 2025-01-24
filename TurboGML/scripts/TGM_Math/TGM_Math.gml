@@ -398,11 +398,13 @@ function angle_predict_intersection(_x1, _y1, _x2, _y2, _targetSpeed, _targetAng
 	return (abs(_beta) < 1) ? _angle+radtodeg(arcsin(_beta)) : -1;
 }
 
-/// @desc This function returns the frame index to be used on a sprite, relative to the angle it is pointing at.
-/// @param {real} angle Description
-/// @param {real} framesAmount Description
-function angle_get_subimg(_angle, _framesAmount) {
-	var _angleSeg = 360 / _framesAmount;
+/// @desc This function returns the portion of an angle. Useful for use as the image index of a sprite.
+/// @param {real} angle The angle.
+/// @param {real} segments The amount of segments.
+function angle_get_portion(_angle, _segments) {
+	_angle = _angle % 360;
+	if (_angle < 0) _angle += 360;
+	var _angleSeg = 360 / _segments;
 	return ((_angle + (_angleSeg / 2)) % 360) div _angleSeg;
 }
 

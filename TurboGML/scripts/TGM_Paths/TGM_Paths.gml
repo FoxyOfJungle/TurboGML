@@ -8,26 +8,25 @@
 /// @returns {real} 
 function distance_to_path(_x, _y, _path) {
 	// calculates the shortest distance to the given path
-	var x0 = _x, y0 = _y, i, points, segments, length, pos, pmin, pmax, x1, y1, x2, y2, dx, dy, t, ix, iy, dist, minDist;
+	var x0=_x, y0=_y, i, _segments, _length, _pos, _pmin, _pmax, x1, y1, x2, y2, dx, dy, t, ix, iy, _dist, _minDist;
 	if (path_get_kind(_path) == 0) {
 		// straight path
 		// get the number of control points and line segments on the path
-		segments = points;
-		if (!path_get_closed(_path)) segments -= 1;
+		_segments = path_get_number(_path);
 		// first, find the nearest control point.
-		minDist = infinity;
-		for (i = 0; i < points; i++) {
+		_minDist = infinity;
+		for (i = 0; i < _segments; i++) {
 			x1 = path_get_point_x(_path, i);
 			y1 = path_get_point_y(_path, i);
-			dist = point_distance(x0, y0, x1, y1);
-			if (dist < minDist) minDist = dist;
+			_dist = point_distance(x0, y0, x1, y1);
+			if (_dist < _minDist) _minDist = _dist;
 		}
 		// second, calculate the distance to each line segment and find the nearest one.
 		x1 = path_get_point_x(_path, 0);
 		y1 = path_get_point_y(_path, 0);
-		for(i = 0; i < segments; i++) {
-			x2 = path_get_point_x(_path, (i+1) % points);
-			y2 = path_get_point_y(_path, (i+1) % points);
+		for(i = 0; i < _segments; i++) {
+			x2 = path_get_point_x(_path, (i+1) % _segments);
+			y2 = path_get_point_y(_path, (i+1) % _segments);
 			dx = x2 - x1;
 			dy = y2 - y1;
 			if (dx != 0 || dy != 0) {
@@ -35,12 +34,12 @@ function distance_to_path(_x, _y, _path) {
 				// and the perpendicular line to it.
 				t = -(dx * (x1 - x0) + dy * (y1 - y0)) / (sqr(dx) + sqr(dy));
 				if (t >= 0 && t < 1) {
-					// Calculate the distance to the intersection point.
+					// calculate the distance to the intersection point.
 					ix = x1 + dx * t;
 					iy = y1 + dy * t;
-					dist = point_distance(x0, y0, ix, iy);
-					if (dist < minDist)
-					minDist = dist;
+					_dist = point_distance(x0, y0, ix, iy);
+					if (_dist < _minDist)
+					_minDist = _dist;
 				}
 			}
 			x1 = x2;
@@ -49,35 +48,34 @@ function distance_to_path(_x, _y, _path) {
 	} else {
 		// smooth path
 		// first, split the path into a few segments and find the nearest one.
-		length = path_get_length(_path);
-		segments = max(4, length / 32); // Hope this is enough
-		minDist = infinity;
-		pmin = 0;
-		for(i = 0; i <= segments; i += 1) {
-			pos = i/segments;
-			x1 = path_get_x(_path, pos);
-			y1 = path_get_y(_path, pos);
-			dist = point_distance(x0, y0, x1, y1);
-			if (dist < minDist) {
-				minDist = dist;
-				pmin = pos;
+		_length = path_get_length(_path);
+		_segments = max(4, _length / 32); // Hope this is enough
+		_minDist = infinity;
+		_pmin = 0;
+		for(i = 0; i <= _segments; i += 1) {
+			_pos = i/_segments;
+			x1 = path_get_x(_path, _pos);
+			y1 = path_get_y(_path, _pos);
+			_dist = point_distance(x0, y0, x1, y1);
+			if (_dist < _minDist) {
+				_minDist = _dist;
+				_pmin = _pos;
 			}
 		}
-		// now, accurately find the nearest point on the segment.
-		// at this point, pmin has the position of the provisional nearest point,
+		// now, accurately find the nearest point on the segment. at this point, _pmin has the position of the provisional nearest point,
 		// and the following two lines are to get two end points adjacent to it.
-		pmax = min(pmin + 1/segments, 1);
-		pos = max(0, pmin - 1/segments);
+		_pmax = min(_pmin + 1/_segments, 1);
+		_pos = max(0, _pmin - 1/_segments);
 		do {
-			x1 = path_get_x(_path, pos);
-			y1 = path_get_y(_path, pos);
-			dist = point_distance(x0, y0, x1, y1);
-			if (dist < minDist) minDist = dist;
-			pos += 1/length;
+			x1 = path_get_x(_path, _pos);
+			y1 = path_get_y(_path, _pos);
+			_dist = point_distance(x0, y0, x1, y1);
+			if (_dist < _minDist) _minDist = _dist;
+			_pos += 1/_length;
 		}
-		until (pos >= pmax);
+		until (_pos >= _pmax);
 	}
-	return minDist;
+	return _minDist;
 }
 
 /// @desc Get the nearest point index (n) from a path, based on the distance.

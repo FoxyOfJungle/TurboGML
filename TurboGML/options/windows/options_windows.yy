@@ -8,7 +8,7 @@
   "option_windows_copyright_info":"",
   "option_windows_copy_exe_to_dest":false,
   "option_windows_description_info":"A GameMaker Game",
-  "option_windows_disable_sandbox":true,
+  "option_windows_disable_sandbox":false,
   "option_windows_display_cursor":true,
   "option_windows_display_name":"Created with GameMaker",
   "option_windows_enable_steam":false,
