@@ -157,13 +157,13 @@ function clamp_angle_fov(_angle, _destAngle, _fov) {
 	}
 }
 
+// Original source: https://stackoverflow.com/questions/43566019/how-to-choose-a-weighted-random-array-element-in-javascript
 /// @desc Returns a random value depending on its weight. Useful for probability of returning an item. Both arrays must be the same size to work correctly.
 /// @param {Array} items Total array of items to be returned. It can be any data type: numbers, strings, arrays, structs, data structures, etc.
 /// @param {Array<Real>} weights Weight of items in order. Higher values have a higher probability of returning the item.
 /// You can use any range of numbers, either 0 to 1 or 0 to 9999 or inf.
 /// It is possible to use equal weights, having the same probability of being returned.
 function choose_weighted(_items, _weights) {
-	// Original source: https://stackoverflow.com/questions/43566019/how-to-choose-a-weighted-random-array-element-in-javascript
 	var isize = array_length(_items);
 	var wsize = array_length(_weights);
 	// sum weights
@@ -351,9 +351,9 @@ function distance_1d(_a, _b) {
 /// @param {Real} x2 The rectangles's bottom right x position.
 /// @param {Real} y2 The rectangles's bottom right y position.
 function distance_to_rectangle(_pointX, _pointY, _x1, _y1, _x2, _y2) {
-	var _dx = max(_x1 - _pointX, 0, _pointX - _x2);
-	var _dy = max(_y1 - _pointY, 0, _pointY - _y2);
-	return sqrt(_dx * _dx + _dy * _dy);
+	var _dX = max(_x1 - _pointX, 0, _pointX - _x2);
+	var _dY = max(_y1 - _pointY, 0, _pointY - _y2);
+	return sqrt(_dX * _dX + _dY * _dY);
 }
 
 /// @desc Returns the distance from a point to a cube (Manhattan distance).
@@ -367,11 +367,30 @@ function distance_to_rectangle(_pointX, _pointY, _x1, _y1, _x2, _y2) {
 /// @param {Real} y2 The cube's bottom right y position.
 /// @param {Real} yz The cube's bottom right z position.
 function distance_to_cube(_pointX, _pointY, _pointZ, _x1, _y1, _z1, _x2, _y2, _z2) {
-	var _dx = max(_x1 - _pointX, 0, _pointX - _x2);
-	var _dy = max(_y1 - _pointY, 0, _pointY - _y2);
-	var _dz = max(_z1 - _pointZ, 0, _pointZ - _z2);
-	return sqrt(_dx * _dx + _dy * _dy + _dz * _dz);
+	var _dX = max(_x1 - _pointX, 0, _pointX - _x2);
+	var _dY = max(_y1 - _pointY, 0, _pointY - _y2);
+	var _dZ = max(_z1 - _pointZ, 0, _pointZ - _z2);
+	return sqrt(_dX * _dX + _dY * _dY + _dZ * _dZ);
 }
+
+// Suggested by Delfos, improved by Mozart Junior
+/// @desc Returns the distance from a point to a line segment.
+/// @param {Real} pointX The x origin.
+/// @param {Real} pointX The y origin.
+/// @param {Real} x1 The x position of the line start position.
+/// @param {Real} y1 The y position of the line start position.
+/// @param {Real} x1 The x position of the line end position.
+/// @param {Real} y1 The y position of the line end position.
+function distance_to_line(_pointX, _pointY, _x1, _y1, _x2, _y2) {
+	var _dX = _x2 - _x1,
+		_dY = _y2 - _y1,
+		_numerator = abs(_dX * (_y1 - _pointY) - (_x1 - _pointX) * _dY),
+		_denominator = sqrt(_dX * _dX + _dY * _dY);
+    if (_denominator == 0) {
+        return point_distance(_pointX, _pointY, _x1, _y1);
+    }
+    return _numerator / _denominator;
+};
 
 /// @desc Calculates the distance traveled by an object in free fall under the influence of friction.
 /// @param {Real} distance The distance an object falls
@@ -381,6 +400,7 @@ function speed_to_reach(_distance, _friction) {
 	return sqrt(2 * _distance * _friction);
 }
 
+// Original author: Xot
 // Based on: https://www.reddit.com/r/gamemaker/comments/b0zelv/need_a_help_about_the_prediction_shot/
 /// @desc This function predicts the angle that must be aimed until the bullet hits exactly on the target.
 /// @param {Real} x1 Origin X position.
@@ -392,12 +412,12 @@ function speed_to_reach(_distance, _friction) {
 /// @param {Real} bulletSpeed Bullet moving speed.
 /// @returns {Real} 
 function angle_predict_intersection(_x1, _y1, _x2, _y2, _targetSpeed, _targetAngle, _bulletSpeed) {
-	// Original author: Xot
 	var _angle = point_direction(_x1, _y1, _x2, _y2),
 		_beta = sin(degtorad(_targetAngle - _angle)) * (_targetSpeed/_bulletSpeed);
 	return (abs(_beta) < 1) ? _angle+radtodeg(arcsin(_beta)) : -1;
 }
 
+// by Mozart Junior
 /// @desc This function returns the portion of an angle. Useful for use as the image index of a sprite.
 /// @param {real} angle The angle.
 /// @param {real} segments The amount of segments.
@@ -430,6 +450,7 @@ function point_direction_normalized(_x1, _y1, _x2, _y2) {
 	return new Vector2((_x2 - _x1) / _len, (_y2 - _y1) / _len);
 }
 
+// by Mozart Junior
 /// @desc This function prevents it from returning 0, returning another value instead, if this happen.
 /// @param {Real} value The value.
 /// @param {Real} zeroValue Value to return.
@@ -437,6 +458,7 @@ function non_zero(_value, _zeroValue=1) {
 	return _value == 0 ? _zeroValue : _value;
 }
 
+// by Mozart Junior
 /// This function creates a normalized wave (from 0 to 1) based on the period.
 /// @param {Real} time The current time. In frames or in seconds.
 /// @param {Real} period The total time period. If time is in frames, this value should be in frames too. So you can do for example: 5 frames * 60 FPS = 5 seconds to go from 0 to 1.

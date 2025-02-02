@@ -58,7 +58,6 @@ function audio_load_raw(_filePath, _sampleRate, _bitsPerSample, _channels) {
     return undefined;
 }
 
-
 /// @desc Load an external .raw audio file. Returns a struct with information.
 /// @param {string} file_path The file location.
 /// @returns {Struct,Real,undefined}

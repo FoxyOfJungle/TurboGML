@@ -13,6 +13,14 @@ draw_circle(80, 100+yup, 32, true);
 
 
 
+draw_line(30, 30, 300, 50);
+
+var _dist = distance_to_line(mouse_x, mouse_y, 30, 30, 300, 50);
+
+draw_text(300, 30, _dist);
+
+
+
 
 //var _deltaSpeed = 1 / 60;
 //var _dt = (delta_time / 1000000) / _deltaSpeed; //
