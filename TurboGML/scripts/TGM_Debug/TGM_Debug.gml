@@ -220,80 +220,53 @@ function draw_debug_resolutions(_x, _y, _showInvisible=false, _extraString="") {
 /// @param {Real} updateTime Number of frames until information is updated.
 /// @param {Real} uiX The debug UI x position.
 /// @param {Real} uiY The debug UI y position.
-function debug_resources(_updateTime=10, _uiX=16, _uiY=35) {
+function show_debug_resources(_updateTime=10, _uiX=16, _uiY=35) {
 	// Based on: https://gist.github.com/glebtsereteli/04578cf8d3f9c9cd1954599c9b480b5a (by glebtsereteli)
 	// Adjustments by Mozart Junior (@foxyofjungle)
-	static _dbgView = undefined;
-	static _resourcesParams = [
-		undefined, "Resources",
-		"DS Lists", "listCount",
-		"DS Maps", "mapCount",
-		"DS Queues", "queueCount",
-		"DS Grids", "gridCount",
-		"DS Priority Queues", "priorityCount",
-		"DS Stacks", "stackCount",
-		"MP Grids", "mpGridCount",
-		"Buffers", "bufferCount",
-		"Surfaces", "surfaceCount",
-		"Audio Emitters", "audioEmitterCount",
-		"Particle Systems", "partSystemCount",
-		"Particle Emitters", "partEmitterCount",
-		"Particle Types", "partTypeCount",
-		"Time Sources", "timeSourceCount",
-		undefined, "Assets",
-		"Sprites", "spriteCount",
-		"Paths", "pathCount",
-		"Fonts", "fontCount",
-		"Rooms", "roomCount",
-		"Timelines", "timelineCount",
-		undefined, "Instances",
-		"Instances", "instanceCount"
-	];
-	static _memoryParams = [
-		"Used", "totalUsed",
-		"Free","free",
-		"Max Usage", "peakUsage"
-	];
-	static _resourcesParamsSize = array_length(_resourcesParams);
-	static _memoryParamsSize = array_length(_memoryParams);
-	static _resourcesVars = {};
-	static _memoryVars = {};
-	static _time = 0;
-	
-	// update variables every time
-	if (_time++ % _updateTime == 0) {
-		// ResourcesCount
-		var _resourcesStruct = debug_event("ResourceCounts", true);
-		for (var i = 0; i < _resourcesParamsSize; i+=2) {
-			_resourcesVars[$ _resourcesParams[i]] = _resourcesStruct[$ _resourcesParams[i+1]];
-		}
-		// DumpMemory
-		var _memoryStruct = debug_event("DumpMemory", true);
-		for (var i = 0; i < _memoryParamsSize; i+=2) {
-			_memoryVars[$ _memoryParams[i]] = bytes_get_size(_memoryStruct[$ _memoryParams[i+1]]);
-		}
-	}
-	
-	// create UI using variables
-	if (_dbgView == undefined || !dbg_view_exists(_dbgView)) {
-		_dbgView = dbg_view("Game Resources Debug", true, _uiX, _uiY, 320, 545);
+	static __obj = function(_updateTime, _uiX, _uiY) constructor {
+		__uiX = _uiX;
+		__uiY = _uiY;
+		__updateTime = _updateTime;
+		var _refresh = function() {
+		if (!is_debug_overlay_open()) return;
+			struct_foreach(debug_event("ResourceCounts", true), function(_key, _value) {
+				self[$ _key] = _value;
+			});
+			struct_foreach(debug_event("DumpMemory", true), function(_key, _value) {
+				self[$ _key] = bytes_get_size(_value);
+			});
+		};
+		_refresh();
+		call_later(__updateTime, time_source_units_frames, _refresh, true);
+		dbg_view("Game Resources Debug", true, __uiX, __uiY, 320, 545);
 		dbg_section("Resources");
-		for (var i = 0; i < _resourcesParamsSize; i += 2) {
-			var _name = _resourcesParams[i];
-			if (_name == undefined) {
-				dbg_text_separator(_resourcesParams[i+1]);
-			} else {
-				dbg_watch(ref_create(_resourcesVars, _name));
-			}
-		}
+		dbg_text_separator("Resources");
+		dbg_watch(ref_create(self, "listCount"), "DS Lists");
+		dbg_watch(ref_create(self, "mapCount"), "DS Maps");
+		dbg_watch(ref_create(self, "queueCount"), "DS Queues");
+		dbg_watch(ref_create(self, "gridCount"), "DS Grids");
+		dbg_watch(ref_create(self, "priorityCount"), "DS Priority Queues");
+		dbg_watch(ref_create(self, "stackCount"), "DS Stacks");
+		dbg_watch(ref_create(self, "mpGridCount"), "DS Grids");
+		dbg_watch(ref_create(self, "bufferCount"), "Buffers");
+		dbg_watch(ref_create(self, "surfaceCount"), "Surfaces");
+		dbg_watch(ref_create(self, "audioEmitterCount"), "Audio Emitters");
+		dbg_watch(ref_create(self, "partSystemCount"), "Particle Systems");
+		dbg_watch(ref_create(self, "partEmitterCount"), "Particle Emitters");
+		dbg_watch(ref_create(self, "partTypeCount"), "Particle Types");
+		dbg_watch(ref_create(self, "timeSourceCount"), "Time Sources");
+		dbg_text_separator("Assets");                        
+		dbg_watch(ref_create(self, "spriteCount"), "Sprites");        
+		dbg_watch(ref_create(self, "pathCount"), "Paths");
+		dbg_watch(ref_create(self, "fontCount"), "Fonts");
+		dbg_watch(ref_create(self, "roomCount"), "Rooms");
+		dbg_watch(ref_create(self, "timelineCount"), "Timelines");
+		dbg_text_separator("Instances");                    
+		dbg_watch(ref_create(self, "instanceCount"), "Instances");
 		dbg_section("Memory");
-		for (var i = 0; i < _memoryParamsSize; i += 2) {
-			var _name = _memoryParams[i];
-			if (_name == undefined) {
-				dbg_text_separator(_memoryParams[i+1]);
-			} else {
-				dbg_watch(ref_create(_memoryVars, _name));
-			}
-		}
+		dbg_watch(ref_create(self, "totalUsed"), "Used");
+		dbg_watch(ref_create(self, "free"), "Free");
+		dbg_watch(ref_create(self, "peakUsage"), "Max Usage");
 	}
+	new __obj(_updateTime, _uiX, _uiY);
 }
