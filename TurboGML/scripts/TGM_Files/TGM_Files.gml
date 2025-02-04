@@ -86,6 +86,27 @@ function directory_get_contents(_pathSource, _contentsArray, _extension="*.*", _
     return _contents;
 }
 
+/// @desc Load a file and get the size in bytes.
+/// @param {string} file File path.
+/// @returns {real} 
+function file_get_size(_file) {
+	var _buff = buffer_load(_file);
+	if (_buff <= 0) return 0;
+	var _size = buffer_get_size(_buff);
+	buffer_delete(_buff);
+	return _size;
+}
+
+/// @desc Convert bytes to KB, MB, GB, etc.
+/// @param {real} bytes File bytes amount.
+/// @returns {string} 
+function bytes_get_size(_bytes) {
+	static _sizes = ["B", "KB", "MB", "GB", "TB", "PB"]; // you can add more
+	if (_bytes <= 0) return "0 B";
+	var i = floor(log2(_bytes) / log2(1024));
+	return string(round(_bytes / power(1024, i))) + " " + _sizes[i];
+}
+
 /// @desc Get directory name from a file.
 /// @param {string} file File path.
 /// @returns {string} 
@@ -109,17 +130,6 @@ function filename_dir_name(_file) {
 /// @returns {string} 
 function filename_name_noext(_path) {
 	return filename_name(filename_change_ext(_path, ""));
-	//var _name = filename_name(path);
-	//var _size = string_length(_name);
-	//for (var i = 1; i <= _size; ++i) {
-	//	var _char = string_char_at(_name, i);
-	//	if (_char == ".") {
-	//		var _pos = string_pos(".", _name);
-	//		var _word = string_copy(_name, _pos+1, string_length(_name)-_pos);
-	//		_name = string_delete(_name, _pos, string_length(_word)+1);
-	//	}
-	//}
-	//return _name;
 }
 
 /// @desc Write a string to a file.
@@ -166,25 +176,4 @@ function file_read_text(_filePath) {
 	var _result = buffer_read(_buffer, buffer_text);
 	buffer_delete(_buffer);
 	return _result;
-}
-
-/// @desc Convert bytes to KB, MB, GB, etc.
-/// @param {real} bytes File bytes amount.
-/// @returns {string} 
-function bytes_get_size(_bytes) {
-	static _sizes = ["B", "KB", "MB", "GB", "TB", "PB"]; // you can add more
-	if (_bytes <= 0) return "0 B";
-	var i = floor(log2(_bytes) / log2(1024));
-	return string(round(_bytes / power(1024, i))) + " " + _sizes[i];
-}
-
-/// @desc Load a file and get the size in bytes.
-/// @param {string} file File path.
-/// @returns {real} 
-function file_get_size(_file) {
-	var _buff = buffer_load(_file);
-	if (_buff <= 0) return 0;
-	var _size = buffer_get_size(_buff);
-	buffer_delete(_buff);
-	return _size;
 }

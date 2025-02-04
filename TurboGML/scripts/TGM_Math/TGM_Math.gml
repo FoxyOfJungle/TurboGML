@@ -25,17 +25,6 @@ function relerp(_inMin, _inMax, _value, _outMin, _outMax) {
 	//return lerp(_outMin, _outMax, linearstep(_inMin, _inMax, _value));
 }
 
-/// @desc Inverse linear interpolation (lerp). Interpolates between a and b, based on value. Returns a value between 0 and 1, representing where the "value" parameter falls within the range defined by a and b.
-///
-/// Example: var prog = linearstep(20, 40, 22) -> 0.10;
-/// @param {Real} a The start of the range.
-/// @param {Real} b The end of the range.
-/// @param {Real} value The point within the range you want to calculate.
-/// @returns {Real}
-function linearstep(_a, _b, _value) {
-	return (_value - _a) / (_b - _a);
-}
-
 /// @desc Interpolates between a and b, based on value. With smoothing at the limits (Hermite interpolation). Always returns a value from 0 to 1.
 ///
 /// Example: var prog = smoothstep(20, 40, 22) -> 0.03;
@@ -46,6 +35,17 @@ function linearstep(_a, _b, _value) {
 function smoothstep(_a, _b, _value) {
 	var _t = clamp((_value - _a) / (_b - _a), 0, 1);
 	return _t * _t * (3 - 2 * _t);
+}
+
+/// @desc Same as smoothstep() but linear. Inverse linear interpolation (lerp). Interpolates between a and b, based on value. Returns a value between 0 and 1, representing where the "value" parameter falls within the range defined by a and b.
+///
+/// Example: var prog = linearstep(20, 40, 22) -> 0.10;
+/// @param {Real} a The start of the range.
+/// @param {Real} b The end of the range.
+/// @param {Real} value The point within the range you want to calculate.
+/// @returns {Real}
+function linearstep(_a, _b, _value) {
+	return (_value - _a) / (_b - _a);
 }
 
 /// @desc 0 is returned if value < edge, and 1 is returned otherwise.
@@ -392,7 +392,7 @@ function distance_to_line(_pointX, _pointY, _x1, _y1, _x2, _y2) {
     return _numerator / _denominator;
 };
 
-/// @desc Calculates the distance traveled by an object in free fall under the influence of friction.
+/// @desc Calculates the speed required to reach a given distance, considering the friction.
 /// @param {Real} distance The distance an object falls
 /// @param {Real} friction Coefficient of friction acting on the object.
 /// @returns {Real}

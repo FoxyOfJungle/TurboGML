@@ -268,7 +268,6 @@ function Vector2(_x=0, _y=_x) constructor {
 		gml_pragma("forceinline");
 		return min(x, y);
 	};
-	
 }
 
 

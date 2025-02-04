@@ -9,6 +9,15 @@ function string_password(_str, _char="*") {
 	return string_repeat(_char, string_length(_str));
 }
 
+/// @func string_contains(_str, _subStr)
+/// @desc Returns a boolean indicating whether the substring was found within the string.
+/// @arg {String} str Text string.
+/// @arg {String} substr The substring you want to search for within the string.
+/// @returns {Bool}
+function string_contains(_str, _subStr) {
+	return string_pos(_subStr, _str) > 0;
+}
+
 /// @desc Adds some zeros to the string.
 /// @param {string} str Text string.
 /// @param {real} zeroAmount The amount of zeros to be added.

@@ -161,9 +161,9 @@ function array_find_closest_number(_array, _value) {
 	var _closestIndex = -1;
 	var _closestDiff = abs(_value - _array[0]);
 	for(var i = 1; i < array_length(_array); i++) {
-		var diff = abs(_value - _array[i]);
-		if (diff < _closestDiff) {
-			_closestDiff = diff;
+		var _diff = abs(_value - _array[i]);
+		if (_diff < _closestDiff) {
+			_closestDiff = _diff;
 			_closestIndex = i;
 		}
 	}

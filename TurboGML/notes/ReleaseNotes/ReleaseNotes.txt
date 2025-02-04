@@ -3,6 +3,7 @@
 
 [ADDED] cryptography_xor() function.
 [ADDED] debug_resources() function. Show game resources usage (including memory) in a Debug View.
+[ADDED] string_contains() function. Returns a boolean indicating whether the substring was found within the string.
 [ADDED] Suffix to string_limit() and string_limit_nonmono().
 
 [FIXED] angle_get_portion() now works with negative angles.
