@@ -138,22 +138,22 @@ function angle_towards(_angle, _targetAngle, _amount) {
 	//return min(abs(_dir), spd) * sign(_dir);
 }
 
-/// @desc With this function, you can limit the rotation angle based on the target angle.
+// by Mozart Junior (@foxyofjungle)
+/// @desc With this function, you can limit the rotation angle based on the target angle. This can be useful to limit the rotation of a tank's turret.
 /// @param {Real} angle The angle to clamp.
 /// @param {Real} destAngle The destination angle to clamp from, based on FOV.
 /// @param {Real} fov The field of view. A value from 0 to 180.
 function clamp_angle_fov(_angle, _destAngle, _fov) {
-	// Mozart Junior (@foxyofjungle)
 	var _diff = angle_difference(_angle, _destAngle);
 	var _halfFov = _fov * 0.5;
 	if (abs(_diff) < _halfFov) {
 		return _angle;
 	} else {
 		if (_diff > 0) {
-            return _destAngle + _halfFov;
-        } else {
-            return _destAngle - _halfFov;
-        }
+			return _destAngle + _halfFov;
+		} else {
+			return _destAngle - _halfFov;
+		}
 	}
 }
 

@@ -2,13 +2,7 @@
 if (keyboard_check_pressed(vk_escape)) game_end();
 if (keyboard_check_pressed(ord("R"))) room_restart();
 
-tankAngle -= keyboard_check(vk_right) - keyboard_check(vk_left);
-tankAngle = wrap(tankAngle, 0, 360);
 
-var _aimDir = point_direction(150, 150, mouse_x, mouse_y);
-
-turretAngle = approach_angle(turretAngle, _aimDir, 1);
-turretAngle = clamp_angle_fov(turretAngle, tankAngle, 90);
 
 
 
@@ -16,7 +10,7 @@ turretAngle = clamp_angle_fov(turretAngle, tankAngle, 90);
 
 
 // Save and Load example, using rc4
-#macro GAMEDATA_KEY "aK74das#4%sdb574"
+/*#macro GAMEDATA_KEY "aK74das#4%sdb574"
 
 // save
 if (keyboard_check_pressed(ord("S"))) {
@@ -62,7 +56,7 @@ if (keyboard_check_pressed(ord("L"))) {
 		show_debug_message(_error.message);
 	}
 }
-
+*/
 
 /*if (keyboard_check_pressed(vk_space)) {
 	// generate pseudo-random action list

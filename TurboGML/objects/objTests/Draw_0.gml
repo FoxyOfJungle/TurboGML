@@ -1,9 +1,6 @@
 
 draw_text(100, 170, string_limit("the quick brown fox jumps over the lazy dog", mouse_x));
 
-//draw_cone(150, 150, tankAngle, 32, 90);
-//draw_line_vector(150, 150, turretAngle, 64);
-
 
 time += 1;
 yup = wave_period(time, 10*60, 50);
@@ -12,14 +9,18 @@ draw_circle(80, 100, 8, true);
 draw_circle(80, 100+yup, 32, true);
 
 
-
-draw_line(30, 30, 300, 50);
-
-var _dist = distance_to_line(mouse_x, mouse_y, 30, 30, 300, 50);
-
-draw_text(300, 30, _dist);
+//draw_line(30, 30, 300, 50);
+//var _dist = distance_to_line(mouse_x, mouse_y, 30, 30, 300, 50);
+//draw_text(300, 30, _dist);
 
 
+tankAngle -= keyboard_check(vk_right) - keyboard_check(vk_left);
+tankAngle = wrap(tankAngle, 0, 360);
+var _aimDir = point_direction(350, 250, mouse_x, mouse_y);
+turretAngle = approach_angle(turretAngle, _aimDir, 1);
+turretAngle = clamp_angle_fov(turretAngle, tankAngle, 75);
+draw_cone(350, 250, tankAngle, 32, 75);
+draw_line_vector(350, 250, turretAngle, 64);
 
 
 //var _deltaSpeed = 1 / 60;
