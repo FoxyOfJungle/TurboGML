@@ -118,7 +118,7 @@ for (var i = 0; i < _size; i+=GoldenAngle) {
 
 
 
-/*
+
 draw_path(Path1, 0, 0, true);
 var _pos = path_get_nearest_point_position(mouse_x, mouse_y, Path1);
 draw_circle(_pos.x, _pos.y, 4, true);
@@ -126,7 +126,8 @@ draw_circle(_pos.x, _pos.y, 4, true);
 
 _pos = path_get_nearest_position(mouse_x, mouse_y, Path1);
 draw_circle(path_get_x(Path1, _pos), path_get_y(Path1, _pos), 4, true);
-*/
+
+
 
 // raycasting
 /*

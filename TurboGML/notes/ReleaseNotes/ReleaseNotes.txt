@@ -1,4 +1,9 @@
 
+===================[ v5.1 ]===================
+
+[FIXED] path_get_nearest_position() was not working correctly.
+
+
 ===================[ v5.0 ]===================
 
 [ADDED] show_debug_resources() function. Show game resources usage (including memory) in a Debug View.

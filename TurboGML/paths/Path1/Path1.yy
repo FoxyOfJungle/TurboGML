@@ -1,0 +1,21 @@
+{
+  "$GMPath":"",
+  "%Name":"Path1",
+  "closed":true,
+  "kind":1,
+  "name":"Path1",
+  "parent":{
+    "name":"TurboGML",
+    "path":"TurboGML.yyp",
+  },
+  "points":[
+    {"speed":100.0,"x":51.0,"y":52.0,},
+    {"speed":100.0,"x":246.0,"y":63.0,},
+    {"speed":100.0,"x":372.0,"y":159.0,},
+    {"speed":100.0,"x":218.0,"y":272.0,},
+    {"speed":100.0,"x":106.0,"y":159.0,},
+  ],
+  "precision":4,
+  "resourceType":"GMPath",
+  "resourceVersion":"2.0",
+}

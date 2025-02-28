@@ -10,6 +10,7 @@
     {"name":"objEnemy","order":4,"path":"objects/objEnemy/objEnemy.yy",},
     {"name":"objPlayer","order":10,"path":"objects/objPlayer/objPlayer.yy",},
     {"name":"objSolid","order":12,"path":"objects/objSolid/objSolid.yy",},
+    {"name":"Path1","order":3,"path":"paths/Path1/Path1.yy",},
     {"name":"TGM_Arrays","order":2,"path":"scripts/TGM_Arrays/TGM_Arrays.yy",},
     {"name":"TGM_AudioLoad","order":1,"path":"scripts/TGM_AudioLoad/TGM_AudioLoad.yy",},
     {"name":"TGM_Cameras","order":3,"path":"scripts/TGM_Cameras/TGM_Cameras.yy",},

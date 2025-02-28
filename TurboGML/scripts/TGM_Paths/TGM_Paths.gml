@@ -141,7 +141,7 @@ function path_get_nearest_position(_x, _y, _path, _pixelPrecision=4) {
 	var _raycast = infinity, _pos = 0, _dst,
 	_precision = (1 / path_get_length(_path)) * clamp(_pixelPrecision, 1, 100);
 	for(var i = 0; i < 1; i += _precision;) {
-		_dst = point_distance(_x, _y, path_get_x(0, i), path_get_y(0, i));
+		_dst = point_distance(_x, _y, path_get_x(_path, i), path_get_y(_path, i));
 		if (_dst < _raycast) {
 			_pos = i;
 			_raycast = _dst;
