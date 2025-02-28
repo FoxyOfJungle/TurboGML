@@ -36,7 +36,6 @@
     {"id":{"name":"objPlayer","path":"objects/objPlayer/objPlayer.yy",},},
     {"id":{"name":"objSolid","path":"objects/objSolid/objSolid.yy",},},
     {"id":{"name":"objTests","path":"objects/objTests/objTests.yy",},},
-    {"id":{"name":"Path1","path":"paths/Path1/Path1.yy",},},
     {"id":{"name":"rmTest","path":"rooms/rmTest/rmTest.yy",},},
     {"id":{"name":"TGM_Arrays","path":"scripts/TGM_Arrays/TGM_Arrays.yy",},},
     {"id":{"name":"TGM_AudioLoad","path":"scripts/TGM_AudioLoad/TGM_AudioLoad.yy",},},
