@@ -18,6 +18,84 @@ function buffer_slice(_buffer, _start=0, _size=-1) {
 	return _newBuffer;
 }
 
+/// @func    buffer_create_from_surface
+/// @desc    Creates a fixed-size buffer containing the pixel data from the given surface. The buffer size is determined
+///          by the surface's dimensions and format. The buffer is populated with the surface's pixel data starting at byte offset 0.
+/// @param   {Id.Surface} _surf - The source surface from which to read pixel data.
+/// @returns {Id.Buffer} A buffer containing the surface's pixel data.
+function buffer_create_from_surface(_surf) {
+	// Get surface properties
+	var _width = surface_get_width(_surf);
+	var _height = surface_get_height(_surf);
+	var _format = surface_get_format(_surf);
+	
+	// Determine bytes per pixel based on format
+	var _bytes_per_pixel;
+	switch (_format) {
+		case surface_rgba4unorm:  _bytes_per_pixel = 2;  break;
+		case surface_rgba8unorm:  _bytes_per_pixel = 4;  break;
+		case surface_rgba16float: _bytes_per_pixel = 8;  break;
+		case surface_rgba32float: _bytes_per_pixel = 16; break;
+		case surface_r8unorm:     _bytes_per_pixel = 1;  break;
+		case surface_r16float:    _bytes_per_pixel = 2;  break;
+		case surface_r32float:    _bytes_per_pixel = 16; break;
+		case surface_rg8unorm:    _bytes_per_pixel = 2;  break;
+		default: throw "Unsupported format"
+	}
+	
+	// Create a buffer large enough to store the surface data
+	var _buff_size = _width * _height * _bytes_per_pixel;
+	var _buff = buffer_create(_buff_size, buffer_fixed, 1);
+	
+	// Write surface data into buffer
+	buffer_get_surface(_buff, _surf, 0);
+	buffer_seek(_buff, buffer_seek_start, 0);
+	
+	return _buff;
+}
+
+/// @func    surface_create_from_buffer
+/// @desc    Creates a new surface with the specified width, height, and format, and populates it with pixel data
+///          read from the provided buffer. The buffer data is written to the surface starting at byte offset 0.
+/// @param   {Id.Buffer} _buff - The buffer containing the pixel data to write to the surface.
+/// @param   {Real} _width - The width of the new surface.
+/// @param   {Real} _height - The height of the new surface.
+/// @param   {Constant.SurfaceFormatConstant} _format - The format to use for the new surface.
+/// @returns {Id.Surface} The newly created surface containing the pixel data from the buffer.
+function surface_create_from_buffer(_buff, _width, _height, _format=surface_rgba8unorm) {
+    // Create a new surface with the specified width, height, and format.
+    var _surf = surface_create(_width, _height, _format);
+    
+	// Determine bytes per pixel based on format
+	var _bytes_per_pixel;
+	switch (_format) {
+		case surface_rgba4unorm:  _bytes_per_pixel = 2;  break;
+		case surface_rgba8unorm:  _bytes_per_pixel = 4;  break;
+		case surface_rgba16float: _bytes_per_pixel = 8;  break;
+		case surface_rgba32float: _bytes_per_pixel = 16; break;
+		case surface_r8unorm:     _bytes_per_pixel = 1;  break;
+		case surface_r16float:    _bytes_per_pixel = 2;  break;
+		case surface_r32float:    _bytes_per_pixel = 16; break;
+		case surface_rg8unorm:    _bytes_per_pixel = 2;  break;
+		default: throw "Unsupported format"
+	}
+	
+	// Calculate the expected buffer size based on the surface dimensions and bytes per pixel.
+	var _expected_size = _width * _height * _bytes_per_pixel;
+	var _actual_size = buffer_get_size(_buff);
+	
+	// Safety check: Ensure the buffer size matches the expected size.
+	if (_actual_size != _expected_size) {
+		show_error("Buffer size mismatch: expected " + string(_expected_size) + " but got " + string(_actual_size), true);
+	}
+	
+    // Write the pixel data from the buffer into the surface, starting at byte offset 0.
+    buffer_set_surface(_buff, _surf, 0);
+    
+    // Return the newly created surface.
+    return _surf;
+}
+
 /// @desc The function implements the RC4 cryptography algorithm to encrypt or decrypt data in the given buffer using the provided key, offset, and length.
 /// @param {id.buffer} buffer The buffer to encrypt/decrypt.
 /// @param {string} key The unique key to encrypt/decrypt. You need to keep it secret.
